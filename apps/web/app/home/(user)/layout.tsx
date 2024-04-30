@@ -31,13 +31,8 @@ function UserHomeLayout({ children }: React.PropsWithChildren) {
       </PageNavigation>
 
       <PageMobileNavigation className={'flex items-center justify-between'}>
-        <div>
-          <AppLogo />
-        </div>
-
-        <div>
-          <HomeMobileNavigation workspace={workspace} />
-        </div>
+        <AppLogo />
+        <HomeMobileNavigation workspace={workspace} />
       </PageMobileNavigation>
 
       {children}

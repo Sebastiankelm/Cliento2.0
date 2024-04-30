@@ -36,7 +36,7 @@ export function HomeMenuNavigation(props: { workspace: UserWorkspace }) {
 
   return (
     <div className={'flex w-full flex-1 justify-between'}>
-      <div className={'flex items-center space-x-4'}>
+      <div className={'flex items-center space-x-8'}>
         <AppLogo />
 
         <BorderedNavigationMenu>
@@ -46,7 +46,7 @@ export function HomeMenuNavigation(props: { workspace: UserWorkspace }) {
         </BorderedNavigationMenu>
       </div>
 
-      <div className={'flex justify-end space-x-4'}>
+      <div className={'flex justify-end space-x-2.5'}>
         <HomeAccountSelector accounts={accounts} collapsed={false} />
 
         <UserNotifications userId={user.id} />

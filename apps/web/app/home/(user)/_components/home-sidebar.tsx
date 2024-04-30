@@ -5,6 +5,7 @@ import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
 import featuresFlagConfig from '~/config/feature-flags.config';
 import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
+import { UserNotifications } from '~/home/(user)/_components/user-notifications';
 
 // home imports
 import type { UserWorkspace } from '../_lib/server/load-user-workspace';
@@ -16,12 +17,16 @@ export function HomeSidebar(props: { workspace: UserWorkspace }) {
   return (
     <Sidebar>
       <SidebarContent className={'h-16 justify-center'}>
-        <If
-          condition={featuresFlagConfig.enableTeamAccounts}
-          fallback={<AppLogo className={'py-2'} />}
-        >
-          <HomeAccountSelector collapsed={false} accounts={accounts} />
-        </If>
+        <div className={'flex items-center justify-between'}>
+          <If
+            condition={featuresFlagConfig.enableTeamAccounts}
+            fallback={<AppLogo className={'py-2'} />}
+          >
+            <HomeAccountSelector collapsed={false} accounts={accounts} />
+          </If>
+
+          <UserNotifications userId={user.id} />
+        </div>
       </SidebarContent>
 
       <SidebarContent className={`mt-5 h-[calc(100%-160px)] overflow-y-auto`}>

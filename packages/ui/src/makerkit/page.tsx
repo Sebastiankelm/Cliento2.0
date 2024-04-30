@@ -56,7 +56,7 @@ export function PageMobileNavigation(
   }>,
 ) {
   return (
-    <div className={cn('w-full py-4 lg:hidden', props.className)}>
+    <div className={cn('w-full py-2 lg:hidden', props.className)}>
       {props.children}
     </div>
   );

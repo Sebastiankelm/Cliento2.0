@@ -38,7 +38,7 @@ export function TeamAccountNavigationMenu(props: {
 
   return (
     <div className={'flex w-full flex-1 justify-between'}>
-      <div className={'flex items-center space-x-4'}>
+      <div className={'flex items-center space-x-8'}>
         <AppLogo />
 
         <BorderedNavigationMenu>
@@ -48,7 +48,7 @@ export function TeamAccountNavigationMenu(props: {
         </BorderedNavigationMenu>
       </div>
 
-      <div className={'flex justify-end space-x-4'}>
+      <div className={'flex justify-end space-x-2.5'}>
         <TeamAccountAccountsSelector
           selectedAccount={account.id}
           accounts={accounts.map((account) => ({

@@ -5,7 +5,6 @@ import { Page, PageMobileNavigation, PageNavigation } from '@kit/ui/page';
 
 import { AppLogo } from '~/components/app-logo';
 import { getTeamAccountSidebarConfig } from '~/config/team-account-navigation.config';
-import { TeamAccountNotifications } from '~/home/[account]/_components/team-account-notifications';
 import { withI18n } from '~/lib/i18n/with-i18n';
 
 // local imports

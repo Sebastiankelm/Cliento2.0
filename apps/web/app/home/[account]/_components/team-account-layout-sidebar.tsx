@@ -16,6 +16,7 @@ import { Trans } from '@kit/ui/trans';
 import { cn } from '@kit/ui/utils';
 
 import { ProfileAccountDropdownContainer } from '~/components//personal-account-dropdown-container';
+import { TeamAccountNotifications } from '~/home/[account]/_components/team-account-notifications';
 
 import { TeamAccountAccountsSelector } from '../_components/team-account-accounts-selector';
 import { TeamAccountLayoutSidebarNavigation } from './team-account-layout-sidebar-navigation';
@@ -59,11 +60,18 @@ function SidebarContainer(props: {
 
   return (
     <>
-      <SidebarContent className={'mt-4 justify-center'}>
-        <TeamAccountAccountsSelector
-          selectedAccount={account}
-          accounts={accounts}
-        />
+      <SidebarContent className={'mt-4'}>
+        <div className={'flex items-center justify-between'}>
+          <TeamAccountAccountsSelector
+            selectedAccount={account}
+            accounts={accounts}
+          />
+
+          <TeamAccountNotifications
+            userId={props.user.id}
+            accountId={account}
+          />
+        </div>
       </SidebarContent>
 
       <SidebarContent className={`mt-5 h-[calc(100%-160px)] overflow-y-auto`}>
@@ -72,12 +80,10 @@ function SidebarContainer(props: {
 
       <div className={'absolute bottom-4 left-0 w-full'}>
         <SidebarContent>
-          <div className={'flex space-x-2'}>
-            <ProfileAccountDropdownContainer
-              user={props.user}
-              collapsed={props.collapsed}
-            />
-          </div>
+          <ProfileAccountDropdownContainer
+            user={props.user}
+            collapsed={props.collapsed}
+          />
 
           <If condition={props.collapsible}>
             <AppSidebarFooterMenu
