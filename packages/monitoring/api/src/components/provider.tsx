@@ -21,26 +21,13 @@ const SentryProvider = lazy(async () => {
   };
 });
 
-type Config = {
-  provider: InstrumentationProvider;
-  providerToken: string;
-};
-
-export function MonitoringProvider(
-  props: React.PropsWithChildren<{ config?: Config }>,
-) {
+export function MonitoringProvider(props: React.PropsWithChildren) {
   const provider = getMonitoringProvider();
-
-  if (!props.config) {
-    return <>{props.children}</>;
-  }
 
   switch (provider) {
     case InstrumentationProvider.Baselime:
       return (
-        <BaselimeProvider apiKey={props.config?.providerToken} enableWebVitals>
-          {props.children}
-        </BaselimeProvider>
+        <BaselimeProvider enableWebVitals>{props.children}</BaselimeProvider>
       );
 
     case InstrumentationProvider.Sentry:
