@@ -35,7 +35,7 @@ export async function registerMonitoringInstrumentation() {
 
     default:
       throw new Error(
-        `Unknown instrumentation provider: ${process.env.MONITORING_PROVIDER}`,
+        `Unknown instrumentation provider: ${process.env.NEXT_PUBLIC_MONITORING_PROVIDER}`,
       );
   }
 }
