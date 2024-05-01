@@ -213,7 +213,7 @@ export function PlanPicker(
                         return item.interval === selectedInterval;
                       });
 
-                      if (!plan) {
+                      if (!plan || plan.custom) {
                         return null;
                       }
 

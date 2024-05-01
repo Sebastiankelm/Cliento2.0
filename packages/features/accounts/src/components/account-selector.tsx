@@ -38,6 +38,7 @@ interface AccountSelectorProps {
 
   selectedAccount?: string;
   collapsed?: boolean;
+  className?: string;
 
   onAccountChange: (value: string | undefined) => void;
 }
@@ -48,6 +49,7 @@ export function AccountSelector({
   accounts,
   selectedAccount,
   onAccountChange,
+  className,
   features = {
     enableTeamCreation: true,
   },
@@ -104,6 +106,7 @@ export function AccountSelector({
                 'justify-start': !collapsed,
                 'justify-center': collapsed,
               },
+              className,
             )}
           >
             <If

@@ -61,7 +61,10 @@ function TeamWorkspaceLayout({
         <AppLogo />
 
         <div className={'flex space-x-4'}>
-          <TeamAccountLayoutMobileNavigation account={params.account} />
+          <TeamAccountLayoutMobileNavigation
+            accounts={accounts}
+            account={params.account}
+          />
         </div>
       </PageMobileNavigation>
 

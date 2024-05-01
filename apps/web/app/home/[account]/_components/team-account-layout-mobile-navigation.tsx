@@ -27,6 +27,12 @@ import featureFlagsConfig from '~/config/feature-flags.config';
 import pathsConfig from '~/config/paths.config';
 import { getTeamAccountSidebarConfig } from '~/config/team-account-navigation.config';
 
+type Accounts = Array<{
+  label: string | null;
+  value: string | null;
+  image: string | null;
+}>;
+
 const features = {
   enableTeamAccounts: featureFlagsConfig.enableTeamAccounts,
   enableTeamCreation: featureFlagsConfig.enableTeamCreation,
@@ -35,6 +41,7 @@ const features = {
 export const TeamAccountLayoutMobileNavigation = (
   props: React.PropsWithChildren<{
     account: string;
+    accounts: Accounts;
   }>,
 ) => {
   const signOut = useSignOut();
@@ -76,7 +83,7 @@ export const TeamAccountLayoutMobileNavigation = (
       </DropdownMenuTrigger>
 
       <DropdownMenuContent sideOffset={10} className={'w-screen rounded-none'}>
-        <TeamAccountsModal />
+        <TeamAccountsModal accounts={props.accounts} />
 
         {Links}
 
@@ -130,7 +137,7 @@ function SignOutDropdownItem(
   );
 }
 
-function TeamAccountsModal() {
+function TeamAccountsModal(props: { accounts: Accounts }) {
   const router = useRouter();
 
   return (
@@ -157,6 +164,7 @@ function TeamAccountsModal() {
 
         <div className={'py-16'}>
           <AccountSelector
+            className={'w-full max-w-full'}
             onAccountChange={(value) => {
               const path = value
                 ? pathsConfig.app.accountHome.replace('[account]', value)
@@ -164,7 +172,7 @@ function TeamAccountsModal() {
 
               router.replace(path);
             }}
-            accounts={[]}
+            accounts={props.accounts}
             features={features}
           />
         </div>
