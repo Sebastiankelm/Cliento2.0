@@ -61,9 +61,7 @@ async function PersonalAccountBillingPage() {
 
           <If condition={data}>
             {(data) => (
-              <div
-                className={'mx-auto flex w-full max-w-2xl flex-col space-y-6'}
-              >
+              <div className={'flex w-full max-w-2xl flex-col space-y-6'}>
                 {'active' in data ? (
                   <CurrentSubscriptionCard
                     subscription={data}
