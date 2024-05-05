@@ -9,12 +9,17 @@ import { Trans } from '@kit/ui/trans';
 
 type Role = string;
 
-export const MembershipRoleSelector: React.FC<{
+export function MembershipRoleSelector({
+  roles,
+  value,
+  currentUserRole,
+  onChange,
+}: {
   roles: Role[];
   value: Role;
   currentUserRole?: Role;
   onChange: (role: Role) => unknown;
-}> = ({ roles, value, currentUserRole, onChange }) => {
+}) {
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger data-test={'role-selector-trigger'}>
@@ -39,4 +44,4 @@ export const MembershipRoleSelector: React.FC<{
       </SelectContent>
     </Select>
   );
-};
+}

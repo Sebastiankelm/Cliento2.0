@@ -9,12 +9,7 @@ type Props = {
   className?: string;
 };
 
-export const CoverImage: React.FC<Props> = ({
-  title,
-  src,
-  preloadImage,
-  className,
-}) => {
+export function CoverImage({ title, src, preloadImage, className }: Props) {
   return (
     <Image
       className={cn(
@@ -30,4 +25,4 @@ export const CoverImage: React.FC<Props> = ({
       fill
     />
   );
-};
+}

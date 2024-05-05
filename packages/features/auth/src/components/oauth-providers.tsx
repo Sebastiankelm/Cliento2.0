@@ -12,7 +12,7 @@ import { Trans } from '@kit/ui/trans';
 import { AuthErrorAlert } from './auth-error-alert';
 import { AuthProviderButton } from './auth-provider-button';
 
-export const OauthProviders: React.FC<{
+export function OauthProviders(props: {
   inviteToken?: string;
   enabledProviders: Provider[];
 
@@ -20,7 +20,7 @@ export const OauthProviders: React.FC<{
     callback: string;
     returnPath: string;
   };
-}> = (props) => {
+}) {
   const signInWithProviderMutation = useSignInWithProvider();
 
   // we make the UI "busy" until the next page is fully loaded
@@ -102,7 +102,7 @@ export const OauthProviders: React.FC<{
       </div>
     </>
   );
-};
+}
 
 function getProviderName(providerId: string) {
   const capitalize = (value: string) =>

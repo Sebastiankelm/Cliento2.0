@@ -4,11 +4,15 @@ import { AtSign, Phone } from 'lucide-react';
 
 const DEFAULT_IMAGE_SIZE = 18;
 
-export const OauthProviderLogoImage: React.FC<{
+export function OauthProviderLogoImage({
+  providerId,
+  width,
+  height,
+}: {
   providerId: string;
   width?: number;
   height?: number;
-}> = ({ providerId, width, height }) => {
+}) {
   const image = getOAuthProviderLogos()[providerId];
 
   if (typeof image === `string`) {
@@ -25,7 +29,7 @@ export const OauthProviderLogoImage: React.FC<{
   }
 
   return <>{image}</>;
-};
+}
 
 function getOAuthProviderLogos(): Record<string, string | React.ReactNode> {
   return {

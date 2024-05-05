@@ -4,10 +4,13 @@ import { ContentRenderer } from '@kit/cms';
 import styles from './html-renderer.module.css';
 import { PostHeader } from './post-header';
 
-export const Post: React.FC<{
+export function Post({
+  post,
+  content,
+}: {
   post: Cms.ContentItem;
   content: unknown;
-}> = ({ post, content }) => {
+}) {
   return (
     <div>
       <PostHeader post={post} />
@@ -19,4 +22,4 @@ export const Post: React.FC<{
       </div>
     </div>
   );
-};
+}

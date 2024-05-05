@@ -16,12 +16,17 @@ import { Trans } from '@kit/ui/trans';
 
 import { renewInvitationAction } from '../../server/actions/team-invitations-server-actions';
 
-export const RenewInvitationDialog: React.FC<{
+export function RenewInvitationDialog({
+  isOpen,
+  setIsOpen,
+  invitationId,
+  email,
+}: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   invitationId: number;
   email: string;
-}> = ({ isOpen, setIsOpen, invitationId, email }) => {
+}) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -45,7 +50,7 @@ export const RenewInvitationDialog: React.FC<{
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
 function RenewInvitationForm({
   invitationId,

@@ -15,12 +15,14 @@ import {
 } from '../shadcn/dropdown-menu';
 import { Trans } from './trans';
 
-const MobileNavigationDropdown: React.FC<{
+function MobileNavigationDropdown({
+  links,
+}: {
   links: {
     path: string;
     label: string;
   }[];
-}> = ({ links }) => {
+}) {
   const path = usePathname();
 
   const items = useMemo(
@@ -70,6 +72,6 @@ const MobileNavigationDropdown: React.FC<{
       <DropdownMenuContent>{items}</DropdownMenuContent>
     </DropdownMenu>
   );
-};
+}
 
 export default MobileNavigationDropdown;

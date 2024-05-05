@@ -10,17 +10,20 @@ import { Menu } from 'lucide-react';
 import { Cms } from '@kit/cms';
 import { isBrowser } from '@kit/shared/utils';
 import { Button } from '@kit/ui/button';
-import { Heading } from '@kit/ui/heading';
 import { If } from '@kit/ui/if';
-import { Trans } from '@kit/ui/trans';
 import { cn, isRouteActive } from '@kit/ui/utils';
 
-const DocsNavLink: React.FC<{
+function DocsNavLink({
+  label,
+  url,
+  level,
+  activePath,
+}: {
   label: string;
   url: string;
   level: number;
   activePath: string;
-}> = ({ label, url, level, activePath }) => {
+}) {
   const isCurrent = isRouteActive(url, activePath, 0);
   const isFirstLevel = level === 0;
 
@@ -39,13 +42,17 @@ const DocsNavLink: React.FC<{
       </Link>
     </Button>
   );
-};
+}
 
-const Node: React.FC<{
+function Node({
+  node,
+  level,
+  activePath,
+}: {
   node: Cms.ContentItem;
   level: number;
   activePath: string;
-}> = ({ node, level, activePath }) => {
+}) {
   const pathPrefix = `/docs`;
   const url = `${pathPrefix}/${node.url}`;
 
@@ -67,7 +74,7 @@ const Node: React.FC<{
       )}
     </>
   );
-};
+}
 
 function Tree({
   pages,

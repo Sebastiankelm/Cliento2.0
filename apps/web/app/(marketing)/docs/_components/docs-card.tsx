@@ -4,13 +4,16 @@ import { ChevronRight } from 'lucide-react';
 
 import { Trans } from '@kit/ui/trans';
 
-export const DocsCard: React.FC<
-  React.PropsWithChildren<{
-    title: string;
-    subtitle?: string | null;
-    link: { url: string; label?: string };
-  }>
-> = ({ title, subtitle, children, link }) => {
+export function DocsCard({
+  title,
+  subtitle,
+  children,
+  link,
+}: React.PropsWithChildren<{
+  title: string;
+  subtitle?: string | null;
+  link: { url: string; label?: string };
+}>) {
   return (
     <div className="flex flex-col">
       <div
@@ -46,4 +49,4 @@ export const DocsCard: React.FC<
       )}
     </div>
   );
-};
+}

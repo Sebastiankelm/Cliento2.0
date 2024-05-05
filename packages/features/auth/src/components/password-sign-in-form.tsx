@@ -23,10 +23,13 @@ import { Trans } from '@kit/ui/trans';
 
 import { PasswordSignInSchema } from '../schemas/password-sign-in.schema';
 
-export const PasswordSignInForm: React.FC<{
+export function PasswordSignInForm({
+  onSubmit,
+  loading,
+}: {
   onSubmit: (params: z.infer<typeof PasswordSignInSchema>) => unknown;
   loading: boolean;
-}> = ({ onSubmit, loading }) => {
+}) {
   const { t } = useTranslation('auth');
 
   const form = useForm<z.infer<typeof PasswordSignInSchema>>({
@@ -129,4 +132,4 @@ export const PasswordSignInForm: React.FC<{
       </form>
     </Form>
   );
-};
+}

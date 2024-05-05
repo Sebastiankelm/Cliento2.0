@@ -17,9 +17,7 @@ const roleClassNameBuilder = cva('font-medium capitalize shadow-none', {
   },
 });
 
-export const RoleBadge: React.FC<{
-  role: Role;
-}> = ({ role }) => {
+export function RoleBadge({ role }: { role: Role }) {
   // @ts-expect-error: hard to type this since users can add custom roles
   const className = roleClassNameBuilder({ role });
   const isCustom = !(role in roles);
@@ -31,4 +29,4 @@ export const RoleBadge: React.FC<{
       </span>
     </Badge>
   );
-};
+}

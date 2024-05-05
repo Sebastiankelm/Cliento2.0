@@ -32,13 +32,19 @@ import { RolesDataProvider } from '../members/roles-data-provider';
 
 type Role = string;
 
-export const UpdateInvitationDialog: React.FC<{
+export function UpdateInvitationDialog({
+  isOpen,
+  setIsOpen,
+  invitationId,
+  userRole,
+  userRoleHierarchy,
+}: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   invitationId: number;
   userRole: Role;
   userRoleHierarchy: number;
-}> = ({ isOpen, setIsOpen, invitationId, userRole, userRoleHierarchy }) => {
+}) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
@@ -61,7 +67,7 @@ export const UpdateInvitationDialog: React.FC<{
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 function UpdateInvitationForm({
   invitationId,

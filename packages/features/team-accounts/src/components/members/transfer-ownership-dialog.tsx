@@ -32,13 +32,19 @@ import { Trans } from '@kit/ui/trans';
 import { TransferOwnershipConfirmationSchema } from '../../schema/transfer-ownership-confirmation.schema';
 import { transferOwnershipAction } from '../../server/actions/team-members-server-actions';
 
-export const TransferOwnershipDialog: React.FC<{
+export function TransferOwnershipDialog({
+  isOpen,
+  setIsOpen,
+  targetDisplayName,
+  accountId,
+  userId,
+}: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   accountId: string;
   userId: string;
   targetDisplayName: string;
-}> = ({ isOpen, setIsOpen, targetDisplayName, accountId, userId }) => {
+}) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -61,7 +67,7 @@ export const TransferOwnershipDialog: React.FC<{
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
 function TransferOrganizationOwnershipForm({
   accountId,

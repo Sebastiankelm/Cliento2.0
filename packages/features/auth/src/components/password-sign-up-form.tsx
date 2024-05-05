@@ -21,14 +21,17 @@ import { Trans } from '@kit/ui/trans';
 
 import { PasswordSignUpSchema } from '../schemas/password-sign-up.schema';
 
-export const PasswordSignUpForm: React.FC<{
+export function PasswordSignUpForm({
+  onSubmit,
+  loading,
+}: {
   onSubmit: (params: {
     email: string;
     password: string;
     repeatPassword: string;
   }) => unknown;
   loading: boolean;
-}> = ({ onSubmit, loading }) => {
+}) {
   const { t } = useTranslation();
 
   const form = useForm({
@@ -148,4 +151,4 @@ export const PasswordSignUpForm: React.FC<{
       </form>
     </Form>
   );
-};
+}

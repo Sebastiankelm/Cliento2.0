@@ -16,11 +16,15 @@ import { Trans } from '@kit/ui/trans';
 
 import { deleteInvitationAction } from '../../server/actions/team-invitations-server-actions';
 
-export const DeleteInvitationDialog: React.FC<{
+export function DeleteInvitationDialog({
+  isOpen,
+  setIsOpen,
+  invitationId,
+}: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   invitationId: number;
-}> = ({ isOpen, setIsOpen, invitationId }) => {
+}) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -41,7 +45,7 @@ export const DeleteInvitationDialog: React.FC<{
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
 function DeleteInvitationForm({
   invitationId,

@@ -16,12 +16,17 @@ import { Trans } from '@kit/ui/trans';
 
 import { removeMemberFromAccountAction } from '../../server/actions/team-members-server-actions';
 
-export const RemoveMemberDialog: React.FC<{
+export function RemoveMemberDialog({
+  isOpen,
+  setIsOpen,
+  teamAccountId,
+  userId,
+}: {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   teamAccountId: string;
   userId: string;
-}> = ({ isOpen, setIsOpen, teamAccountId, userId }) => {
+}) {
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogContent>
@@ -43,7 +48,7 @@ export const RemoveMemberDialog: React.FC<{
       </AlertDialogContent>
     </AlertDialog>
   );
-};
+}
 
 function RemoveMemberForm({
   accountId,

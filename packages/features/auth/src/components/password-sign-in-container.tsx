@@ -11,9 +11,11 @@ import type { PasswordSignInSchema } from '../schemas/password-sign-in.schema';
 import { AuthErrorAlert } from './auth-error-alert';
 import { PasswordSignInForm } from './password-sign-in-form';
 
-export const PasswordSignInContainer: React.FC<{
+export function PasswordSignInContainer({
+  onSignIn,
+}: {
   onSignIn?: (userId?: string) => unknown;
-}> = ({ onSignIn }) => {
+}) {
   const { captchaToken, resetCaptchaToken } = useCaptchaToken();
   const signInMutation = useSignInWithEmailPassword();
   const isLoading = signInMutation.isPending;
@@ -47,4 +49,4 @@ export const PasswordSignInContainer: React.FC<{
       <PasswordSignInForm onSubmit={onSubmit} loading={isLoading} />
     </>
   );
-};
+}
