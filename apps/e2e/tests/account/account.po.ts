@@ -32,13 +32,17 @@ export class AccountPageObject {
         email,
       );
 
-      await this.page.click('[data-test="account-email-form"] button');
+      const click = this.page.click('[data-test="account-email-form"] button');
 
-      const req = await this.page.waitForResponse((resp) => {
-        return resp.url().includes('auth/v1/user');
-      });
+      const req = await this.page
+        .waitForResponse((resp) => {
+          return resp.url().includes('auth/v1/user');
+        })
+        .then((response) => {
+          expect(response.status()).toBe(200);
+        });
 
-      expect(req.status()).toBe(200);
+      return Promise.all([click, req]);
     }).toPass();
   }
 
@@ -57,20 +61,28 @@ export class AccountPageObject {
   async deleteAccount() {
     await expect(async () => {
       await this.page.click('[data-test="delete-account-button"]');
+
       await this.page.fill(
         '[data-test="delete-account-input-field"]',
         'DELETE',
       );
-      await this.page.click('[data-test="confirm-delete-account-button"]');
 
-      const response = await this.page.waitForResponse((resp) => {
-        return (
-          resp.url().includes('home/settings') &&
-          resp.request().method() === 'POST'
-        );
-      });
+      const click = this.page.click(
+        '[data-test="confirm-delete-account-button"]',
+      );
 
-      expect(response.status()).toBe(204);
+      const response = await this.page
+        .waitForResponse((resp) => {
+          return (
+            resp.url().includes('home/settings') &&
+            resp.request().method() === 'POST'
+          );
+        })
+        .then((response) => {
+          expect(response.status()).toBe(303);
+        });
+
+      await Promise.all([click, response]);
     }).toPass();
   }
 

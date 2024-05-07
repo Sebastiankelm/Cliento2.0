@@ -16,11 +16,13 @@ test.describe('Account Settings', () => {
   test('user can update their profile name', async () => {
     const name = 'John Doe';
 
-    await account.updateName(name);
+    const request = account.updateName(name);
 
-    await page.waitForResponse((resp) => {
+    const response = page.waitForResponse((resp) => {
       return resp.url().includes('accounts');
     });
+
+    await Promise.all([request, response]);
 
     await expect(account.getProfileName()).toHaveText(name);
   });
@@ -34,11 +36,13 @@ test.describe('Account Settings', () => {
   test('user can update their password', async () => {
     const password = (Math.random() * 100000).toString();
 
-    await account.updatePassword(password);
+    const request = account.updatePassword(password);
 
-    await page.waitForResponse((resp) => {
+    const response = page.waitForResponse((resp) => {
       return resp.url().includes('auth/v1/user');
     });
+
+    await Promise.all([request, response]);
 
     await account.auth.signOut();
   });
@@ -49,16 +53,20 @@ test.describe('Account Deletion', () => {
     const account = new AccountPageObject(page);
 
     await account.setup();
-    await account.deleteAccount();
 
-    const response = await page.waitForResponse((resp) => {
-      return (
-        resp.url().includes('home/settings') &&
-        resp.request().method() === 'POST'
-      );
-    });
+    const request = account.deleteAccount();
 
-    // The server should respond with a 303 redirect
-    expect(response.status()).toBe(303);
+    const response = page
+      .waitForResponse((resp) => {
+        return (
+          resp.url().includes('home/settings') &&
+          resp.request().method() === 'POST'
+        );
+      })
+      .then((response) => {
+        expect(response.status()).toBe(303);
+      });
+
+    await Promise.all([request, response]);
   });
 });

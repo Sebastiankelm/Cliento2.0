@@ -1,4 +1,5 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
+
 import { AuthPageObject } from './auth.po';
 
 test.describe('Auth flow', () => {
@@ -14,19 +15,21 @@ test.describe('Auth flow', () => {
 
     console.log(`Signing up with email ${email} ...`);
 
-    await auth.signUp({
+    const signUp = auth.signUp({
       email,
       password: 'password',
       repeatPassword: 'password',
     });
 
-    await page.waitForResponse(resp => {
+    const response = page.waitForResponse((resp) => {
       return resp.url().includes('auth');
     });
 
+    await Promise.all([signUp, response]);
+
     await auth.visitConfirmEmailLink(email);
 
-    await page.waitForURL('http://localhost:3000/home');
+    await page.waitForURL('**/home');
 
     expect(page.url()).toContain('http://localhost:3000/home');
   });
@@ -42,7 +45,7 @@ test.describe('Auth flow', () => {
       password: 'password',
     });
 
-    await page.waitForURL('http://localhost:3000/home');
+    await page.waitForURL('**/home');
 
     expect(page.url()).toContain('/home');
 
@@ -53,15 +56,17 @@ test.describe('Auth flow', () => {
 });
 
 test.describe('Protected routes', () => {
-  test('will redirect to the sign-in page if not authenticated', async ({ page }) => {
+  test('will redirect to the sign-in page if not authenticated', async ({
+    page,
+  }) => {
     await page.goto('/home/settings');
 
     expect(page.url()).toContain('/auth/sign-in?next=/home/settings');
   });
 
   test('will return a 404 for the admin page', async ({ page }) => {
-    await page.goto('/admin')
+    await page.goto('/admin');
 
     expect(page.url()).toContain('/auth/sign-in');
   });
-})
+});

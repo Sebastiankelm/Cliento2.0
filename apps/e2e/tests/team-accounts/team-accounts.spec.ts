@@ -17,10 +17,13 @@ test.describe('Team Accounts', () => {
     const { teamName, slug } = teamAccounts.createTeamName();
 
     await teamAccounts.goToSettings();
-    await teamAccounts.updateName(teamName, slug);
+
+    const request = teamAccounts.updateName(teamName, slug);
 
     // the slug should be updated to match the new team name
-    await page.waitForURL(`http://localhost:3000/home/${slug}/settings`);
+    const newUrl = page.waitForURL(`**/home/${slug}/settings`);
+
+    await Promise.all([request, newUrl]);
 
     await teamAccounts.openAccountsSelector();
 
