@@ -1,5 +1,3 @@
-import { KeystaticContentRenderer } from '@kit/keystatic';
-
 import type { CmsType } from './cms.type';
 
 const CMS_CLIENT = process.env.CMS_CLIENT as CmsType;
