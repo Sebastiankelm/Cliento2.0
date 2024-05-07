@@ -40,7 +40,7 @@ const storage = z.union([local, cloud, github]).parse({
 });
 
 const keyStaticConfig = createKeyStaticConfig(
-  process.env.NEXT_PUBLIC_KEYSTATIC_CONTENT_PATH ?? 'content',
+  process.env.NEXT_PUBLIC_KEYSTATIC_CONTENT_PATH ?? '',
 );
 
 export default keyStaticConfig;
@@ -77,14 +77,18 @@ export type PostEntryProps = Entry<
   (typeof keyStaticConfig)['collections']['posts']
 >;
 
-function createKeyStaticConfig(path: string) {
+function createKeyStaticConfig(path = '') {
+  if (path && !path.endsWith('/')) {
+    path += '/';
+  }
+
   return config({
     storage,
     collections: {
       posts: collection({
         label: 'Posts',
         slugField: 'title',
-        path: `${path}/posts/*`,
+        path: `${path}posts/*`,
         format: { contentField: 'content' },
         schema: {
           title: fields.slug({ name: { label: 'Title' } }),
@@ -109,7 +113,7 @@ function createKeyStaticConfig(path: string) {
       documentation: collection({
         label: 'Documentation',
         slugField: 'title',
-        path: `${path}/documentation/**`,
+        path: `${path}documentation/**`,
         format: { contentField: 'content' },
         schema: {
           title: fields.slug({ name: { label: 'Title' } }),
