@@ -1,3 +1,5 @@
+import { KeystaticContentRenderer } from '@kit/keystatic';
+
 import type { CmsType } from './cms.type';
 
 const CMS_CLIENT = process.env.CMS_CLIENT as CmsType;
@@ -13,11 +15,11 @@ export async function ContentRenderer({
 }: ContentRendererProps) {
   switch (type) {
     case 'keystatic': {
-      const { KeystaticDocumentRenderer } = await import(
+      const { KeystaticContentRenderer } = await import(
         '../../keystatic/src/content-renderer'
       );
 
-      return <KeystaticDocumentRenderer content={content} />;
+      return <KeystaticContentRenderer content={content} />;
     }
 
     case 'wordpress': {

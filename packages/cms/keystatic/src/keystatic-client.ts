@@ -142,6 +142,7 @@ class KeystaticClient implements CmsClient {
 
     const markdoc = await item.entry.content();
     const content = Markdoc.transform(markdoc.node);
+    const html = Markdoc.renderers.html(content);
 
     return {
       id: item.slug,
@@ -150,7 +151,7 @@ class KeystaticClient implements CmsClient {
       slug: item.slug,
       description: item.entry.description,
       publishedAt: publishedAt.toISOString(),
-      content,
+      content: html,
       image: item.entry.image ?? undefined,
       categories:
         item.entry.categories.map((item) => {
