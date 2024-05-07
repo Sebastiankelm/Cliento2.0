@@ -1,15 +1,24 @@
-import { collection, config, fields } from '@keystatic/core';
+import {
+  CloudConfig,
+  GitHubConfig,
+  LocalConfig,
+  collection,
+  config,
+  fields,
+} from '@keystatic/core';
 import { Entry } from '@keystatic/core/reader';
 import { z } from 'zod';
 
+type ZodOutputFor<T> = z.ZodType<T, z.ZodTypeDef, unknown>;
+
 const local = z.object({
   kind: z.literal('local'),
-});
+}) satisfies ZodOutputFor<LocalConfig['storage']>;
 
 const cloud = z.object({
   kind: z.literal('cloud'),
   project: z.string(),
-});
+}) satisfies ZodOutputFor<CloudConfig['storage']>;
 
 const github = z.object({
   kind: z.literal('github'),
@@ -19,7 +28,7 @@ const github = z.object({
   githubToken: z.string({
     required_error: 'Please provide a GitHub token',
   }),
-});
+}) satisfies ZodOutputFor<GitHubConfig['storage']>;
 
 const storage = z.union([local, cloud, github]).parse({
   kind: process.env.KEYSTATIC_STORAGE_KIND ?? 'local',
@@ -33,6 +42,34 @@ const storage = z.union([local, cloud, github]).parse({
 const keyStaticConfig = createKeyStaticConfig();
 
 export default keyStaticConfig;
+
+function getContentField() {
+  return fields.markdoc({
+    label: 'Content',
+    options: {
+      link: true,
+      blockquote: true,
+      bold: true,
+      divider: true,
+      orderedList: true,
+      unorderedList: true,
+      strikethrough: true,
+      heading: true,
+      code: true,
+      italic: true,
+      image: {
+        directory: 'public/site/images',
+        publicPath: '/site/images',
+        schema: {
+          title: fields.text({
+            label: 'Caption',
+            description: 'The text to display under the image in a caption.',
+          }),
+        },
+      },
+    },
+  });
+}
 
 export type PostEntryProps = Entry<
   (typeof keyStaticConfig)['collections']['posts']
@@ -64,23 +101,7 @@ function createKeyStaticConfig() {
           }),
           language: fields.text({ label: 'Language' }),
           order: fields.number({ label: 'Order' }),
-          content: fields.document({
-            label: 'Content',
-            formatting: true,
-            dividers: true,
-            links: true,
-            images: {
-              directory: 'public/site/images',
-              publicPath: '/site/images',
-              schema: {
-                title: fields.text({
-                  label: 'Caption',
-                  description:
-                    'The text to display under the image in a caption.',
-                }),
-              },
-            },
-          }),
+          content: getContentField(),
         },
       }),
       documentation: collection({
@@ -90,23 +111,7 @@ function createKeyStaticConfig() {
         format: { contentField: 'content' },
         schema: {
           title: fields.slug({ name: { label: 'Title' } }),
-          content: fields.document({
-            label: 'Content',
-            formatting: true,
-            dividers: true,
-            links: true,
-            images: {
-              directory: 'public/site/images',
-              publicPath: '/site/images',
-              schema: {
-                title: fields.text({
-                  label: 'Caption',
-                  description:
-                    'The text to display under the image in a caption.',
-                }),
-              },
-            },
-          }),
+          content: getContentField(),
           image: fields.image({
             label: 'Image',
             directory: 'public/site/images',

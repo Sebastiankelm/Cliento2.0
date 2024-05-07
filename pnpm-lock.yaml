@@ -426,6 +426,9 @@ importers:
       '@keystatic/next':
         specifier: 5.0.0
         version: 5.0.0(@keystatic/core@0.5.14)(next@14.2.3)(react-dom@18.3.1)(react@18.3.1)
+      '@markdoc/markdoc':
+        specifier: ^0.4.0
+        version: 0.4.0(@types/react@18.3.1)(react@18.3.1)
     devDependencies:
       '@kit/cms':
         specifier: workspace:^
@@ -445,6 +448,12 @@ importers:
       '@types/node':
         specifier: ^20.12.8
         version: 20.12.10
+      '@types/react':
+        specifier: ^18.3.1
+        version: 18.3.1
+      react:
+        specifier: 18.3.1
+        version: 18.3.1
       zod:
         specifier: ^3.23.6
         version: 3.23.6
