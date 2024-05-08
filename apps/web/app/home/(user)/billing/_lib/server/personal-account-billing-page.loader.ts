@@ -2,8 +2,6 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { SupabaseClient } from '@supabase/supabase-js';
-
 import { z } from 'zod';
 
 import { createAccountsApi } from '@kit/accounts/api';

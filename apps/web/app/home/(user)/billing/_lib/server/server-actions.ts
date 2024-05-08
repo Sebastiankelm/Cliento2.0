@@ -5,8 +5,16 @@ import { redirect } from 'next/navigation';
 import { enhanceAction } from '@kit/next/actions';
 import { getSupabaseServerActionClient } from '@kit/supabase/server-actions-client';
 
+import featureFlagsConfig from '~/config/feature-flags.config';
+
 import { PersonalAccountCheckoutSchema } from '../schema/personal-account-checkout.schema';
 import { createUserBillingService } from './user-billing.service';
+
+/**
+ * @name enabled
+ * @description This feature flag is used to enable or disable personal account billing.
+ */
+const enabled = featureFlagsConfig.enablePersonalAccountBilling;
 
 /**
  * @name createPersonalAccountCheckoutSession
@@ -14,6 +22,10 @@ import { createUserBillingService } from './user-billing.service';
  */
 export const createPersonalAccountCheckoutSession = enhanceAction(
   async function (data) {
+    if (!enabled) {
+      throw new Error('Personal account billing is not enabled');
+    }
+
     const client = getSupabaseServerActionClient();
     const service = createUserBillingService(client);
 
@@ -30,6 +42,10 @@ export const createPersonalAccountCheckoutSession = enhanceAction(
  */
 export const createPersonalAccountBillingPortalSession = enhanceAction(
   async () => {
+    if (!enabled) {
+      throw new Error('Personal account billing is not enabled');
+    }
+
     const client = getSupabaseServerActionClient();
     const service = createUserBillingService(client);
 
