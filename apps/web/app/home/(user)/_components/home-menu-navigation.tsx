@@ -2,9 +2,11 @@ import {
   BorderedNavigationMenu,
   BorderedNavigationMenuItem,
 } from '@kit/ui/bordered-navigation-menu';
+import { If } from '@kit/ui/if';
 
 import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
+import featuresFlagConfig from '~/config/feature-flags.config';
 import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
 
 // home imports
@@ -47,7 +49,9 @@ export function HomeMenuNavigation(props: { workspace: UserWorkspace }) {
       </div>
 
       <div className={'flex justify-end space-x-2.5'}>
-        <HomeAccountSelector accounts={accounts} collapsed={false} />
+        <If condition={featuresFlagConfig.enableTeamAccounts}>
+          <HomeAccountSelector accounts={accounts} collapsed={false} />
+        </If>
 
         <UserNotifications userId={user.id} />
 
