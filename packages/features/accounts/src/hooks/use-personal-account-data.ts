@@ -3,9 +3,9 @@ import { useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import { useSupabase } from '@kit/supabase/hooks/use-supabase';
-import { useUser } from '@kit/supabase/hooks/use-user';
 
 export function usePersonalAccountData(
+  userId: string,
   partialAccount?:
     | {
         id: string | null;
@@ -15,9 +15,6 @@ export function usePersonalAccountData(
     | undefined,
 ) {
   const client = useSupabase();
-  const user = useUser();
-  const userId = user.data?.id;
-
   const queryKey = ['account:data', userId];
 
   const queryFn = async () => {

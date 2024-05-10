@@ -18,6 +18,7 @@ export function HomeAccountSelector(props: {
     image: string | null;
   }>;
 
+  userId: string;
   collapsed: boolean;
 }) {
   const router = useRouter();
@@ -27,6 +28,7 @@ export function HomeAccountSelector(props: {
       collapsed={props.collapsed}
       accounts={props.accounts}
       features={features}
+      userId={props.userId}
       onAccountChange={(value) => {
         if (value) {
           const path = pathsConfig.app.accountHome.replace('[account]', value);

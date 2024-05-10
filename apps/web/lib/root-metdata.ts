@@ -22,11 +22,6 @@ export const rootMetadata: Metadata = {
   },
   icons: {
     icon: '/images/favicon/favicon.ico',
-    shortcut: '/shortcut-icon.png',
     apple: '/images/favicon/apple-touch-icon.png',
-    other: {
-      rel: 'apple-touch-icon-precomposed',
-      url: '/apple-touch-icon-precomposed.png',
-    },
   },
 };

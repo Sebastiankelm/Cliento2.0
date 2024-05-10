@@ -38,8 +38,7 @@ export function PersonalAccountDropdown({
   features,
   account,
 }: {
-  className?: string;
-  user: User | null;
+  user: User;
 
   account?: {
     id: string | null;
@@ -48,7 +47,6 @@ export function PersonalAccountDropdown({
   };
 
   signOutRequested: () => unknown;
-  showProfileName?: boolean;
 
   paths: {
     home: string;
@@ -57,8 +55,14 @@ export function PersonalAccountDropdown({
   features: {
     enableThemeToggle: boolean;
   };
+
+  className?: string;
+  showProfileName?: boolean;
 }) {
-  const { data: personalAccountData } = usePersonalAccountData(account);
+  const { data: personalAccountData } = usePersonalAccountData(
+    user.id,
+    account,
+  );
 
   const signedInAsLabel = useMemo(() => {
     const email = user?.email ?? undefined;

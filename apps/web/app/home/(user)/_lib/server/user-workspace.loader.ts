@@ -1,6 +1,9 @@
 import { cache } from 'react';
 
+import { redirect } from 'next/navigation';
+
 import { createAccountsApi } from '@kit/accounts/api';
+import { requireUser } from '@kit/supabase/require-user';
 import { getSupabaseServerComponentClient } from '@kit/supabase/server-component-client';
 
 import featureFlagsConfig from '~/config/feature-flags.config';
@@ -24,19 +27,18 @@ export const loadUserWorkspace = cache(async () => {
     : () => Promise.resolve([]);
 
   const workspacePromise = api.getAccountWorkspace();
-  const userPromise = client.auth.getUser();
 
-  const [accounts, workspace, userResult] = await Promise.all([
+  const [accounts, workspace, auth] = await Promise.all([
     accountsPromise(),
     workspacePromise,
-    userPromise,
+    requireUser(client),
   ]);
 
-  const user = userResult.data.user;
-
-  if (!user) {
-    throw new Error('User is not logged in');
+  if (!auth.data) {
+    return redirect(auth.redirectTo);
   }
+
+  const user = auth.data;
 
   return {
     accounts,

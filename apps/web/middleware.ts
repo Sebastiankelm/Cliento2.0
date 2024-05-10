@@ -1,8 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse, URLPattern } from 'next/server';
 
-import type { UserResponse } from '@supabase/supabase-js';
-
 import { CsrfError, createCsrfProtect } from '@edge-csrf/nextjs';
 
 import { checkRequiresMultiFactorAuthentication } from '@kit/supabase/check-requires-mfa';
@@ -15,17 +13,17 @@ const CSRF_SECRET_COOKIE = 'csrfSecret';
 const NEXT_ACTION_HEADER = 'next-action';
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|locales|assets|api/*).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|images|locales|assets|api/*).*)'],
+};
+
+const getUser = (request: NextRequest, response: NextResponse) => {
+  const supabase = createMiddlewareClient(request, response);
+
+  return supabase.auth.getUser();
 };
 
 export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
-  const supabase = createMiddlewareClient(request, response);
-
-  // get the user from the session (no matter if it's logged in or not)
-  const userResponse = await supabase.auth.getUser();
 
   // set a unique request ID for each request
   // this helps us log and trace requests
@@ -39,11 +37,7 @@ export async function middleware(request: NextRequest) {
 
   // if a pattern handler exists, call it
   if (handlePattern) {
-    const patternHandlerResponse = await handlePattern(
-      request,
-      csrfResponse,
-      userResponse,
-    );
+    const patternHandlerResponse = await handlePattern(request, csrfResponse);
 
     // if a pattern handler returns a response, return it
     if (patternHandlerResponse) {
@@ -95,18 +89,14 @@ function isServerAction(request: NextRequest) {
   return headers.has(NEXT_ACTION_HEADER);
 }
 
-function adminMiddleware(
-  request: NextRequest,
-  response: NextResponse,
-  userResponse: UserResponse,
-) {
+async function adminMiddleware(request: NextRequest, response: NextResponse) {
   const isAdminPath = request.nextUrl.pathname.startsWith('/admin');
 
   if (!isAdminPath) {
     return response;
   }
 
-  const { data, error } = userResponse;
+  const { data, error } = await getUser(request, response);
 
   // If user is not logged in, redirect to sign in page.
   // This should never happen, but just in case.
@@ -138,12 +128,8 @@ function getPatterns() {
     },
     {
       pattern: new URLPattern({ pathname: '/auth*' }),
-      handler: (
-        req: NextRequest,
-        _: NextResponse,
-        userResponse: UserResponse,
-      ) => {
-        const user = userResponse.data.user;
+      handler: async (req: NextRequest, res: NextResponse) => {
+        const { data: user } = await getUser(req, res);
 
         // the user is logged out, so we don't need to do anything
         if (!user) {
@@ -164,14 +150,8 @@ function getPatterns() {
     },
     {
       pattern: new URLPattern({ pathname: '/home*' }),
-      handler: async (
-        req: NextRequest,
-        res: NextResponse,
-        userResponse: UserResponse,
-      ) => {
-        const {
-          data: { user },
-        } = userResponse;
+      handler: async (req: NextRequest, res: NextResponse) => {
+        const { data: user } = await getUser(req, res);
 
         const origin = req.nextUrl.origin;
         const next = req.nextUrl.pathname;

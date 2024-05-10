@@ -8,7 +8,7 @@ import { personalAccountNavigationConfig } from '~/config/personal-account-navig
 import { UserNotifications } from '~/home/(user)/_components/user-notifications';
 
 // home imports
-import type { UserWorkspace } from '../_lib/server/load-user-workspace';
+import type { UserWorkspace } from '../_lib/server/user-workspace.loader';
 import { HomeAccountSelector } from './home-account-selector';
 
 export function HomeSidebar(props: { workspace: UserWorkspace }) {
@@ -22,7 +22,11 @@ export function HomeSidebar(props: { workspace: UserWorkspace }) {
             condition={featuresFlagConfig.enableTeamAccounts}
             fallback={<AppLogo className={'py-2'} />}
           >
-            <HomeAccountSelector collapsed={false} accounts={accounts} />
+            <HomeAccountSelector
+              userId={user.id}
+              collapsed={false}
+              accounts={accounts}
+            />
           </If>
 
           <UserNotifications userId={user.id} />

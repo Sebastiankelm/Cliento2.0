@@ -36,6 +36,7 @@ interface AccountSelectorProps {
     enableTeamCreation: boolean;
   };
 
+  userId: string;
   selectedAccount?: string;
   collapsed?: boolean;
   className?: string;
@@ -49,6 +50,7 @@ export function AccountSelector({
   accounts,
   selectedAccount,
   onAccountChange,
+  userId,
   className,
   features = {
     enableTeamCreation: true,
@@ -63,7 +65,7 @@ export function AccountSelector({
   );
 
   const { t } = useTranslation('teams');
-  const personalData = usePersonalAccountData();
+  const personalData = usePersonalAccountData(userId);
 
   useEffect(() => {
     setValue(selectedAccount ?? PERSONAL_ACCOUNT_SLUG);

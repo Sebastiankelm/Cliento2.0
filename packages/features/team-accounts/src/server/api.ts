@@ -78,16 +78,9 @@ export class TeamAccountsApi {
 
     const accountsPromise = this.client.from('user_accounts').select('*');
 
-    const [
-      accountResult,
-      accountsResult,
-      {
-        data: { user },
-      },
-    ] = await Promise.all([
+    const [accountResult, accountsResult] = await Promise.all([
       accountPromise,
       accountsPromise,
-      this.client.auth.getUser(),
     ]);
 
     if (accountResult.error) {
@@ -100,13 +93,6 @@ export class TeamAccountsApi {
     if (accountsResult.error) {
       return {
         error: accountsResult.error,
-        data: null,
-      };
-    }
-
-    if (!user) {
-      return {
-        error: new Error('User is not logged in'),
         data: null,
       };
     }
@@ -124,7 +110,6 @@ export class TeamAccountsApi {
       data: {
         account: accountData,
         accounts: accountsResult.data,
-        user,
       },
       error: null,
     };

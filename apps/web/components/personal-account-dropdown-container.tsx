@@ -19,7 +19,7 @@ const features = {
 
 export function ProfileAccountDropdownContainer(props: {
   collapsed: boolean;
-  user: User | null;
+  user: User;
 
   account?: {
     id: string | null;
@@ -29,7 +29,7 @@ export function ProfileAccountDropdownContainer(props: {
 }) {
   const signOut = useSignOut();
   const user = useUser(props.user);
-  const userData = user.data ?? props.user ?? null;
+  const userData = user.data as User;
 
   return (
     <div className={props.collapsed ? '' : 'w-full'}>

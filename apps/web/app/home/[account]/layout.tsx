@@ -62,6 +62,7 @@ function TeamWorkspaceLayout({
 
         <div className={'flex space-x-4'}>
           <TeamAccountLayoutMobileNavigation
+            userId={data.user.id}
             accounts={accounts}
             account={params.account}
           />

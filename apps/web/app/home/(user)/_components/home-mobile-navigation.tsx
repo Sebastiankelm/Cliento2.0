@@ -22,7 +22,7 @@ import { personalAccountNavigationConfig } from '~/config/personal-account-navig
 
 // home imports
 import { HomeAccountSelector } from '../_components/home-account-selector';
-import type { UserWorkspace } from '../_lib/server/load-user-workspace';
+import type { UserWorkspace } from '../_lib/server/user-workspace.loader';
 
 export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
   const signOut = useSignOut();
@@ -69,6 +69,7 @@ export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
             </DropdownMenuLabel>
 
             <HomeAccountSelector
+              userId={props.workspace.user.id}
               accounts={props.workspace.accounts}
               collapsed={false}
             />
