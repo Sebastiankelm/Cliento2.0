@@ -7,7 +7,6 @@ import { z } from 'zod';
 
 import { getLogger } from '@kit/shared/logger';
 import { Database } from '@kit/supabase/database';
-import { getSupabaseServerAdminClient } from '@kit/supabase/server-admin-client';
 
 import type { DeleteInvitationSchema } from '../../schema/delete-invitation.schema';
 import type { InviteMembersSchema } from '../../schema/invite-members.schema';
@@ -344,71 +343,13 @@ class AccountInvitationsService {
     }
 
     const logger = await getLogger();
-    const adminClient = getSupabaseServerAdminClient();
     const service = createAccountInvitationsDispatchService(this.client);
 
     const results = await Promise.allSettled(
       invitations.map(async (invitation) => {
-        const joinTeamLink = service.getInvitationLink(invitation.invite_token);
-        const authCallbackUrl = service.getAuthCallbackUrl(joinTeamLink);
-
-        const getEmailLinkType = async () => {
-          const user = await adminClient
-            .from('accounts')
-            .select('*')
-            .eq('email', invitation.email)
-            .single();
-
-          // if the user is not found, return the invite type
-          // this link allows the user to register to the platform
-          if (user.error || !user.data) {
-            return 'invite';
-          }
-
-          // if the user is found, return the email link type to sign in
-          return 'magiclink';
-        };
-
-        const emailLinkType = await getEmailLinkType();
-
-        // generate an invitation link with Supabase admin client
-        // use the "redirectTo" parameter to redirect the user to the invitation page after the link is clicked
-        const generateLinkResponse = await adminClient.auth.admin.generateLink({
-          email: invitation.email,
-          type: emailLinkType,
-        });
-
-        // if the link generation fails, throw an error
-        if (generateLinkResponse.error) {
-          logger.error(
-            {
-              ...ctx,
-              error: generateLinkResponse.error,
-            },
-            'Failed to generate link',
-          );
-
-          throw generateLinkResponse.error;
-        }
-
-        // get the link from the response
-        const verifyLink = generateLinkResponse.data.properties?.action_link;
-
-        // extract token
-        const token = new URL(verifyLink).searchParams.get('token');
-
-        if (!token) {
-          // return error
-          throw new Error(
-            'Token in verify link from Supabase Auth was not found',
-          );
-        }
-
-        // add search params to be consumed by /auth/confirm route
-        authCallbackUrl.searchParams.set('token_hash', token);
-        authCallbackUrl.searchParams.set('type', emailLinkType);
-
-        const link = authCallbackUrl.href;
+        // Generate internal link that will validate and generate auth token on-demand
+        // This solves the 24-hour auth token expiry issue
+        const link = service.getAcceptInvitationLink(invitation.invite_token);
 
         // send the invitation email
         const data = await service.sendInvitationEmail({

@@ -56,7 +56,7 @@ export class AccountPageObject {
       password,
     );
 
-    await this.page.click('[data-test="account-password-form"] button');
+    await this.page.click('[data-test="identity-form"] button');
   }
 
   async deleteAccount(email: string) {

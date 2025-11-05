@@ -2,7 +2,7 @@ This file provides guidance to Claude Code when working with code in this reposi
 
 ## Core Technologies
 
-- **Next.js 15** with App Router
+- **Next.js 16** with App Router
 - **Supabase** for database, auth, and storage
 - **React 19**
 - **TypeScript**

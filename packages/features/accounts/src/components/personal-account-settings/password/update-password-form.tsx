@@ -98,7 +98,7 @@ export const UpdatePasswordForm = ({
   return (
     <Form {...form}>
       <form
-        data-test={'account-password-form'}
+        data-test="identity-form"
         onSubmit={form.handleSubmit(updatePasswordCallback)}
       >
         <div className={'flex flex-col space-y-4'}>
@@ -178,7 +178,10 @@ export const UpdatePasswordForm = ({
           </div>
 
           <div>
-            <Button disabled={updateUserMutation.isPending}>
+            <Button
+              disabled={updateUserMutation.isPending}
+              data-test="identity-form-submit"
+            >
               <Trans i18nKey={'account:updatePasswordSubmitLabel'} />
             </Button>
           </div>

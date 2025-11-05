@@ -132,16 +132,32 @@ export class InvitationsPageObject {
     await this.page.waitForTimeout(500);
 
     // skip authentication setup
-    const skipIdentitiesButton = this.page.locator(
-      '[data-test="skip-identities-button"]',
+    const continueButton = this.page.locator(
+      '[data-test="continue-button"]',
     );
 
     if (
-      await skipIdentitiesButton.isVisible({
+      await continueButton.isVisible({
         timeout: 1000,
       })
     ) {
-      await skipIdentitiesButton.click();
+      await continueButton.click();
+
+      // Handle confirmation dialog that appears when skipping without adding auth
+      const confirmationDialog = this.page.locator(
+        '[data-test="no-auth-method-dialog"]',
+      );
+
+      if (
+        await confirmationDialog.isVisible({
+          timeout: 2000,
+        })
+      ) {
+        console.log('Confirmation dialog appeared, clicking Continue...');
+        await this.page
+          .locator('[data-test="no-auth-dialog-continue"]')
+          .click();
+      }
     }
 
     // wait for redirect to account home

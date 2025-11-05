@@ -1,15 +1,10 @@
 import { Metadata } from 'next';
 
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import type { Provider } from '@supabase/supabase-js';
-
-import { LinkAccountsList } from '@kit/accounts/personal-account-settings';
 import { AuthLayoutShell } from '@kit/auth/shared';
 import { requireUser } from '@kit/supabase/require-user';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
-import { Button } from '@kit/ui/button';
 import { Heading } from '@kit/ui/heading';
 import { Trans } from '@kit/ui/trans';
 
@@ -18,6 +13,8 @@ import authConfig from '~/config/auth.config';
 import pathsConfig from '~/config/paths.config';
 import { createI18nServerInstance } from '~/lib/i18n/i18n.server';
 import { withI18n } from '~/lib/i18n/with-i18n';
+
+import { IdentitiesStepWrapper } from './_components/identities-step-wrapper';
 
 export const meta = async (): Promise<Metadata> => {
   const i18n = await createI18nServerInstance();
@@ -42,6 +39,7 @@ async function IdentitiesPage(props: IdentitiesPageProps) {
     showEmailOption,
     oAuthProviders,
     enableIdentityLinking,
+    requiresConfirmation,
   } = await fetchData(props);
 
   return (
@@ -55,24 +53,30 @@ async function IdentitiesPage(props: IdentitiesPageProps) {
         }
       >
         <div className={'flex flex-col items-center gap-1'}>
-          <Heading level={4} className="text-center">
+          <Heading
+            level={4}
+            className="text-center"
+            data-test="identities-page-heading"
+          >
             <Trans i18nKey={'auth:linkAccountToSignIn'} />
           </Heading>
 
           <Heading
             level={6}
             className={'text-muted-foreground text-center text-sm'}
+            data-test="identities-page-description"
           >
             <Trans i18nKey={'auth:linkAccountToSignInDescription'} />
           </Heading>
         </div>
 
-        <IdentitiesStep
+        <IdentitiesStepWrapper
           nextPath={nextPath}
           showPasswordOption={showPasswordOption}
           showEmailOption={showEmailOption}
           oAuthProviders={oAuthProviders}
           enableIdentityLinking={enableIdentityLinking}
+          requiresConfirmation={requiresConfirmation}
         />
       </div>
     </AuthLayoutShell>
@@ -80,42 +84,6 @@ async function IdentitiesPage(props: IdentitiesPageProps) {
 }
 
 export default withI18n(IdentitiesPage);
-
-/**
- * @name IdentitiesStep
- * @description Displays linked accounts and available authentication methods.
- * LinkAccountsList component handles all authentication options including OAuth and Email/Password.
- */
-function IdentitiesStep(props: {
-  nextPath: string;
-  showPasswordOption: boolean;
-  showEmailOption: boolean;
-  enableIdentityLinking: boolean;
-  oAuthProviders: Provider[];
-}) {
-  return (
-    <div
-      className={
-        'animate-in fade-in slide-in-from-bottom-4 mx-auto flex w-full max-w-md flex-col space-y-4 duration-500'
-      }
-      data-test="join-step-two"
-    >
-      <LinkAccountsList
-        providers={props.oAuthProviders}
-        showPasswordOption={props.showPasswordOption}
-        showEmailOption={props.showEmailOption}
-        redirectTo={props.nextPath}
-        enabled={props.enableIdentityLinking}
-      />
-
-      <Button asChild data-test="skip-identities-button">
-        <Link href={props.nextPath}>
-          <Trans i18nKey={'common:continueKey'} />
-        </Link>
-      </Button>
-    </div>
-  );
-}
 
 async function fetchData(props: IdentitiesPageProps) {
   const searchParams = await props.searchParams;
@@ -142,11 +110,16 @@ async function fetchData(props: IdentitiesPageProps) {
   const oAuthProviders = authConfig.providers.oAuth;
   const enableIdentityLinking = authConfig.enableIdentityLinking;
 
+  // Only require confirmation if password or oauth providers are enabled
+  const requiresConfirmation =
+    authConfig.providers.password || oAuthProviders.length > 0;
+
   return {
     nextPath,
     showPasswordOption,
     showEmailOption,
     oAuthProviders,
     enableIdentityLinking,
+    requiresConfirmation,
   };
 }

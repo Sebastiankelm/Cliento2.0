@@ -40,7 +40,7 @@ The `[account]` parameter is the `accounts.slug` property, not the ID
 
 ## React Server Components - Async Pattern
 
-**CRITICAL**: In Next.js 15, always await params directly in async server components:
+**CRITICAL**: In Next.js 16, always await params directly in async server components:
 
 ```typescript
 // ❌ WRONG - Don't use React.use() in async functions
@@ -48,12 +48,12 @@ async function Page({ params }: Props) {
   const { account } = use(params);
 }
 
-// ✅ CORRECT - await params directly in Next.js 15
+// ✅ CORRECT - await params directly in Next.js 16
 async function Page({ params }: Props) {
   const { account } = await params; // ✅ Server component pattern
 }
 
-// ✅ CORRECT - "use" in non-async functions in Next.js 15
+// ✅ CORRECT - "use" in non-async functions in Next.js 16
 function Page({ params }: Props) {
   const { account } = use(params); // ✅ Server component pattern
 }

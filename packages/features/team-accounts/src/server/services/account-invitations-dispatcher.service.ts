@@ -152,6 +152,21 @@ class AccountInvitationsDispatchService {
   }
 
   /**
+   * @name getAcceptInvitationLink
+   * @description Generates an internal link that validates invitation and generates auth token on-demand.
+   * This solves the 24-hour Supabase auth token expiry issue by generating fresh tokens when clicked.
+   * @param token - The invitation token to use
+   */
+  getAcceptInvitationLink(token: string) {
+    const siteUrl = env.siteURL;
+    const url = new URL('/join/accept', siteUrl);
+
+    url.searchParams.set('invite_token', token);
+
+    return url.href;
+  }
+
+  /**
    * @name sendEmail
    * @description Sends an invitation email to the invited user
    * @param invitation - The invitation to send

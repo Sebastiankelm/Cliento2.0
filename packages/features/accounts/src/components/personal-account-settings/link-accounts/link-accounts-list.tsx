@@ -55,12 +55,18 @@ interface LinkAccountsListProps {
   showEmailOption?: boolean;
   enabled?: boolean;
   redirectTo?: string;
+  onPasswordSet?: () => void;
+  onProviderLinked?: () => void;
 }
 
 export function LinkAccountsList(props: LinkAccountsListProps) {
   const unlinkMutation = useUnlinkUserIdentity();
-  const linkMutation = useLinkIdentityWithProvider();
   const pathname = usePathname();
+  const user = useUser();
+
+  const linkMutation = useLinkIdentityWithProvider({
+    redirectToPath: props.redirectTo,
+  });
 
   const {
     identities,
@@ -81,7 +87,6 @@ export function LinkAccountsList(props: LinkAccountsListProps) {
     ? props.providers.filter((provider) => !isProviderConnected(provider))
     : [];
 
-  const user = useUser();
   const amr = user.data ? user.data.amr : [];
 
   const isConnectedWithPassword = amr.some(
@@ -118,7 +123,10 @@ export function LinkAccountsList(props: LinkAccountsListProps) {
    * @param provider
    */
   const handleLinkAccount = (provider: Provider) => {
-    const promise = linkMutation.mutateAsync(provider);
+    const promise = linkMutation.mutateAsync(provider).then((result) => {
+      props.onProviderLinked?.();
+      return result;
+    });
 
     toast.promise(promise, {
       loading: <Trans i18nKey={'account:linkingAccount'} />,
@@ -252,6 +260,7 @@ export function LinkAccountsList(props: LinkAccountsListProps) {
               <UpdatePasswordDialog
                 userEmail={userEmail}
                 redirectTo={props.redirectTo || '/home'}
+                onPasswordSet={props.onPasswordSet}
               />
             </If>
 
@@ -358,12 +367,13 @@ function UpdateEmailDialog(props: { redirectTo: string }) {
 function UpdatePasswordDialog(props: {
   redirectTo: string;
   userEmail: string;
+  onPasswordSet?: () => void;
 }) {
   const [open, setOpen] = useState(false);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild data-test="open-password-dialog-trigger">
         <Item variant="outline" role="button" className="hover:bg-muted/50">
           <ItemMedia>
             <div className="text-muted-foreground flex h-5 w-5 items-center justify-center">
@@ -406,6 +416,7 @@ function UpdatePasswordDialog(props: {
             email={props.userEmail}
             onSuccess={() => {
               setOpen(false);
+              props.onPasswordSet?.();
             }}
           />
         </Suspense>

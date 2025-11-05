@@ -75,7 +75,7 @@ export class PromptsManager {
 - Proper error handling with try/catch and typed error objects
 - Clean, clear, well-designed code without obvious comments
 
-**React & Next.js 15 Best Practices:**
+**React & Next.js 16 Best Practices:**
 - Functional components only with 'use client' directive for client components
 - Encapsulate repeated blocks of code into reusable local components
 - Avoid useEffect (code smell) - justify if absolutely necessary

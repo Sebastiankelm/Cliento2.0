@@ -62,7 +62,7 @@ export default AdminGuard(AdminPageComponent);
 ### Async Server Component Pattern
 
 ```typescript
-// ✅ CORRECT - Next.js 15 pattern
+// ✅ CORRECT - Next.js 16 pattern
 async function AdminPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params; // ✅ await params directly
 
