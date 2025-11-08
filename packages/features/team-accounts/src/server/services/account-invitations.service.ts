@@ -260,6 +260,8 @@ class AccountInvitationsService {
         ...ctx,
         error: 'Invitation email does not match user email',
       });
+
+      throw new Error('Invitation email does not match user email');
     }
 
     const { error, data } = await adminClient.rpc('accept_invitation', {

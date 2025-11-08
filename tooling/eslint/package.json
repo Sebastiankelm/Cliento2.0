@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@kit/prettier-config": "workspace:*",
-    "eslint": "^9.39.0"
+    "eslint": "^9.39.1"
   },
   "prettier": "@kit/prettier-config"
 }
