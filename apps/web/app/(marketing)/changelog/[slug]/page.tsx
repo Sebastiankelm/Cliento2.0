@@ -35,17 +35,17 @@ async function changelogEntryLoader(slug: string) {
 
   // Find previous and next entries in the timeline
   const currentIndex = allEntries.items.findIndex((item) => item.slug === slug);
-  const previousEntry =
+  const newerEntry =
     currentIndex > 0 ? allEntries.items[currentIndex - 1] : null;
-  const nextEntry =
+  const olderEntry =
     currentIndex < allEntries.items.length - 1
       ? allEntries.items[currentIndex + 1]
       : null;
 
   return {
     entry,
-    previousEntry,
-    nextEntry,
+    previousEntry: olderEntry,
+    nextEntry: newerEntry,
   };
 }
 
