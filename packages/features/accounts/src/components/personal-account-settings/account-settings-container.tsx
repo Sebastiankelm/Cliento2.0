@@ -33,6 +33,7 @@ export function PersonalAccountSettingsContainer(
       enableAccountDeletion: boolean;
       enablePasswordUpdate: boolean;
       enableAccountLinking: boolean;
+      showLinkEmailOption: boolean;
     };
 
     paths: {
@@ -171,8 +172,8 @@ export function PersonalAccountSettingsContainer(
           <LinkAccountsList
             providers={props.providers}
             enabled={props.features.enableAccountLinking}
-            showEmailOption
-            showPasswordOption
+            showEmailOption={props.features.showLinkEmailOption}
+            showPasswordOption={props.features.enablePasswordUpdate}
           />
         </CardContent>
       </Card>
