@@ -23,7 +23,7 @@
     "@kit/prettier-config": "workspace:*",
     "@kit/shared": "workspace:*",
     "@kit/tsconfig": "workspace:*",
-    "zod": "^3.25.74"
+    "zod": "catalog:"
   },
   "prettier": "@kit/prettier-config"
 }

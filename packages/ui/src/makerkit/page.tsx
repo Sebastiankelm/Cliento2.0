@@ -35,18 +35,22 @@ function PageWithSidebar(props: PageProps) {
   const { Navigation, Children, MobileNavigation } = getSlotsFromPage(props);
 
   return (
-    <div className={cn('flex min-w-0 flex-1', props.className)}>
+    <div
+      className={cn('flex min-w-0 flex-1 overflow-x-hidden', props.className)}
+    >
       {Navigation}
 
       <div
         className={
           props.contentContainerClassName ??
-          'mx-auto flex h-screen w-full flex-col bg-inherit'
+          'mx-auto flex h-screen w-full min-w-0 flex-1 flex-col bg-inherit'
         }
       >
         {MobileNavigation}
 
-        <div className={'bg-background flex flex-1 flex-col px-4 lg:px-0'}>
+        <div
+          className={'bg-background flex min-w-0 flex-1 flex-col px-4 lg:px-0'}
+        >
           {Children}
         </div>
       </div>
@@ -109,13 +113,13 @@ export function PageBody(
     className?: string;
   }>,
 ) {
-  const className = cn('flex w-full flex-1 flex-col lg:px-4', props.className);
+  const className = cn('flex min-w-0 flex-1 flex-col lg:px-4', props.className);
 
   return <div className={className}>{props.children}</div>;
 }
 
 export function PageNavigation(props: React.PropsWithChildren) {
-  return <div className={'flex-1 bg-inherit'}>{props.children}</div>;
+  return <div className={'bg-inherit'}>{props.children}</div>;
 }
 
 export function PageDescription(props: React.PropsWithChildren) {

@@ -26,8 +26,8 @@
     "@kit/ui": "workspace:*",
     "@types/react": "catalog:",
     "next": "catalog:",
-    "react": "19.2.0",
-    "zod": "^3.25.74"
+    "react": "catalog:",
+    "zod": "catalog:"
   },
   "typesVersions": {
     "*": {

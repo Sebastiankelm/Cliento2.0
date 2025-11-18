@@ -358,6 +358,14 @@ export function DataTable<RecordData extends DataItem>({
                   >
                     {header.isPlaceholder ? null : (
                       <div
+                        onClick={() =>
+                          header.column.getCanSort() &&
+                          header.column.toggleSorting(
+                            header.column.getIsSorted() === 'asc'
+                              ? true
+                              : false,
+                          )
+                        }
                         className={cn(
                           'flex items-center gap-2',
                           header.column.getCanSort()
@@ -380,6 +388,7 @@ export function DataTable<RecordData extends DataItem>({
                                   : 'text-muted-foreground/50',
                               )}
                             />
+
                             <ChevronDown
                               className={cn(
                                 '-mt-1 h-3 w-3',
