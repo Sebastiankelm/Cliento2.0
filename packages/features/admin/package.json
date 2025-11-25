@@ -24,11 +24,11 @@
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-table": "^8.21.3",
     "@types/react": "catalog:",
-    "lucide-react": "^0.553.0",
+    "lucide-react": "^0.554.0",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "19.2.0",
-    "react-hook-form": "^7.66.0",
+    "react-hook-form": "^7.66.1",
     "zod": "catalog:"
   },
   "exports": {

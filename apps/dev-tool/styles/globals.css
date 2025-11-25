@@ -13,11 +13,11 @@
 @import './shadcn-ui.css';
 
 /* plugins - update the below if you add a new plugin */
-@plugin "tailwindcss-animate";
+@plugin 'tailwindcss-animate';
 
 /* content sources - update the below if you add a new path */
-@source "../../../packages/ui/src/**/*.{ts,tsx}";
-@source "../{app,components}/**/*.{ts,tsx}";
+@source '../../../packages/ui/src/**/*.{ts,tsx}';
+@source '../{app,components}/**/*.{ts,tsx}';
 
 /* variants - update the below if you add a new variant */
 @variant dark (&:where(.dark, .dark *));
@@ -25,7 +25,9 @@
 @layer base {
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
   }
 
   *,
