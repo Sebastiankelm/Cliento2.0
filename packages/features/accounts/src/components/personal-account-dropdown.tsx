@@ -87,7 +87,7 @@ export function PersonalAccountDropdown({
         aria-label="Open your profile menu"
         data-test={'account-dropdown-trigger'}
         className={cn(
-          'animate-in group/trigger fade-in focus:outline-primary flex cursor-pointer items-center group-data-[minimized=true]/sidebar:px-0',
+          'group/trigger fade-in focus:outline-primary flex cursor-pointer items-center group-data-[minimized=true]/sidebar:px-0',
           className ?? '',
           {
             ['active:bg-secondary/50 items-center gap-4 rounded-md' +
@@ -108,7 +108,7 @@ export function PersonalAccountDropdown({
         <If condition={showProfileName}>
           <div
             className={
-              'fade-in animate-in flex w-full flex-col truncate text-left group-data-[minimized=true]/sidebar:hidden'
+              'fade-in flex w-full flex-col truncate text-left group-data-[minimized=true]/sidebar:hidden'
             }
           >
             <span

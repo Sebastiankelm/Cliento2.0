@@ -417,7 +417,11 @@ function PlanIntervalSwitcher(
   }>,
 ) {
   return (
-    <div className={'flex gap-x-1 rounded-full border'}>
+    <div
+      className={
+        'hover:border-border flex gap-x-1 rounded-full border border-transparent transition-colors'
+      }
+    >
       {props.intervals.map((plan, index) => {
         const selected = plan === props.interval;
 
@@ -434,13 +438,14 @@ function PlanIntervalSwitcher(
         return (
           <Button
             key={plan}
+            size={'sm'}
             variant={selected ? 'secondary' : 'ghost'}
             className={className}
             onClick={() => props.setInterval(plan)}
           >
             <span className={'flex items-center'}>
               <CheckCircle
-                className={cn('animate-in fade-in zoom-in-95 h-3.5', {
+                className={cn('animate-in fade-in zoom-in-95 h-3', {
                   hidden: !selected,
                   'slide-in-from-left-4': index === 0,
                   'slide-in-from-right-4': index === props.intervals.length - 1,

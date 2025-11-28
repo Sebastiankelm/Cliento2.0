@@ -18,11 +18,8 @@ export function AdminMembersTable(props: { members: Memberships[] }) {
 function getColumns(): ColumnDef<Memberships>[] {
   return [
     {
-      header: 'User ID',
-      accessorKey: 'user_id',
-    },
-    {
       header: 'Name',
+      enableSorting: false,
       cell: ({ row }) => {
         const name = row.original.name ?? row.original.email;
 
@@ -48,9 +45,11 @@ function getColumns(): ColumnDef<Memberships>[] {
     {
       header: 'Email',
       accessorKey: 'email',
+      enableSorting: false,
     },
     {
       header: 'Role',
+      enableSorting: false,
       cell: ({ row }) => {
         return row.original.role;
       },
@@ -58,10 +57,22 @@ function getColumns(): ColumnDef<Memberships>[] {
     {
       header: 'Created At',
       accessorKey: 'created_at',
+      enableSorting: false,
+      cell: ({ row }) => {
+        return renderDate(row.original.created_at);
+      },
     },
     {
       header: 'Updated At',
       accessorKey: 'updated_at',
+      enableSorting: false,
+      cell: ({ row }) => {
+        return renderDate(row.original.updated_at);
+      },
     },
   ];
+}
+
+function renderDate(date: string) {
+  return <span className={'text-xs'}>{new Date(date).toTimeString()}</span>;
 }

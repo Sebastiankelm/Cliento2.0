@@ -26,7 +26,7 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       className={cn(
-        'site-footer bg-muted/20 relative mt-auto w-full py-8 2xl:py-20',
+        'site-footer bg-muted/20 relative mt-auto w-full py-8 xl:py-16 2xl:py-20',
         className,
       )}
       {...props}

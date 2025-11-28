@@ -123,7 +123,7 @@
   "linkEmailPasswordSuccess": "Email and password linked",
   "linkEmailPasswordError": "Failed to link email and password",
   "linkingAccount": "Linking account...",
-  "accountLinked": "Account linked",
+  "accountLinked": "Account linking request sent. Please wait...",
   "unlinkAccount": "Unlink Account",
   "failedToLinkAccount": "Failed to link account",
   "availableMethods": "Available Methods",

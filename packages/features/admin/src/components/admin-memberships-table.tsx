@@ -21,11 +21,8 @@ export function AdminMembershipsTable(props: { memberships: Membership[] }) {
 function getColumns(): ColumnDef<Membership>[] {
   return [
     {
-      header: 'User ID',
-      accessorKey: 'user_id',
-    },
-    {
       header: 'Team',
+      enableSorting: false,
       cell: ({ row }) => {
         return (
           <Link
@@ -40,14 +37,27 @@ function getColumns(): ColumnDef<Membership>[] {
     {
       header: 'Role',
       accessorKey: 'account_role',
+      enableSorting: false,
     },
     {
       header: 'Created At',
       accessorKey: 'created_at',
+      enableSorting: false,
+      cell: ({ row }) => {
+        return renderDate(row.original.created_at);
+      },
     },
     {
       header: 'Updated At',
       accessorKey: 'updated_at',
+      enableSorting: false,
+      cell: ({ row }) => {
+        return renderDate(row.original.updated_at);
+      },
     },
   ];
+}
+
+function renderDate(date: string) {
+  return <span className={'text-xs'}>{new Date(date).toTimeString()}</span>;
 }
