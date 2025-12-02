@@ -15,6 +15,7 @@ import {
   FormItem,
   FormMessage,
 } from '@kit/ui/form';
+import { If } from '@kit/ui/if';
 import { Trans } from '@kit/ui/trans';
 
 import { useCaptcha } from '../captcha/client';
@@ -26,6 +27,7 @@ export function ResendAuthLinkForm(props: {
 }) {
   const captcha = useCaptcha({ siteKey: props.captchaSiteKey });
   const resendLink = useResendLink(captcha.token);
+  const captchaLoading = !captcha.isReady;
 
   const form = useForm({
     resolver: zodResolver(z.object({ email: z.string().email() })),
@@ -83,7 +85,15 @@ export function ResendAuthLinkForm(props: {
           }}
         />
 
-        <Button disabled={resendLink.isPending}>
+        <Button disabled={resendLink.isPending || captchaLoading}>
+          <If condition={captchaLoading}>
+            <Trans i18nKey={'auth:verifyingCaptcha'} />
+          </If>
+
+          <If condition={resendLink.isPending && !captchaLoading}>
+            <Trans i18nKey={'auth:resendingLink'} />
+          </If>
+
           <Trans i18nKey={'auth:resendLink'} defaults={'Resend Link'} />
         </Button>
       </form>

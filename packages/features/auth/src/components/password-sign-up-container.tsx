@@ -29,6 +29,7 @@ export function EmailPasswordSignUpContainer({
   captchaSiteKey,
 }: EmailPasswordSignUpContainerProps) {
   const captcha = useCaptcha({ siteKey: captchaSiteKey });
+  const captchaLoading = !captcha.isReady;
 
   const {
     signUp: onSignupRequested,
@@ -57,6 +58,7 @@ export function EmailPasswordSignUpContainer({
             loading={loading}
             defaultValues={defaultValues}
             displayTermsCheckbox={displayTermsCheckbox}
+            captchaLoading={captchaLoading}
           />
 
           {captcha.field}

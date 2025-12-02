@@ -49,6 +49,8 @@ export function MagicLinkAuthContainer({
   const appEvents = useAppEvents();
   const { recordAuthMethod } = useLastAuthMethod();
 
+  const captchaLoading = !captcha.isReady;
+
   const form = useForm({
     resolver: zodResolver(
       z.object({
@@ -131,12 +133,17 @@ export function MagicLinkAuthContainer({
             <TermsAndConditionsFormField />
           </If>
 
-          <Button disabled={signInWithOtpMutation.isPending}>
-            <If
-              condition={signInWithOtpMutation.isPending}
-              fallback={<Trans i18nKey={'auth:sendEmailLink'} />}
-            >
+          <Button disabled={signInWithOtpMutation.isPending || captchaLoading}>
+            <If condition={captchaLoading}>
+              <Trans i18nKey={'auth:verifyingCaptcha'} />
+            </If>
+
+            <If condition={signInWithOtpMutation.isPending && !captchaLoading}>
               <Trans i18nKey={'auth:sendingEmailLink'} />
+            </If>
+
+            <If condition={!signInWithOtpMutation.isPending && !captchaLoading}>
+              <Trans i18nKey={'auth:sendEmailLink'} />
             </If>
           </Button>
         </div>

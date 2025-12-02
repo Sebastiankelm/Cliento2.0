@@ -29,10 +29,12 @@ import { PasswordInput } from './password-input';
 
 export function PasswordSignInForm({
   onSubmit,
+  captchaLoading = false,
   loading = false,
   redirecting = false,
 }: {
   onSubmit: (params: z.infer<typeof PasswordSignInSchema>) => unknown;
+  captchaLoading: boolean;
   loading: boolean;
   redirecting: boolean;
 }) {
@@ -123,6 +125,12 @@ export function PasswordSignInForm({
           <If condition={loading}>
             <span className={'animate-in fade-in slide-in-from-bottom-24'}>
               <Trans i18nKey={'auth:signingIn'} />
+            </span>
+          </If>
+
+          <If condition={captchaLoading}>
+            <span className={'animate-in fade-in slide-in-from-bottom-24'}>
+              <Trans i18nKey={'auth:verifyingCaptcha'} />
             </span>
           </If>
 

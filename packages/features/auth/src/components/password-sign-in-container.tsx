@@ -24,6 +24,7 @@ export function PasswordSignInContainer({
   const { recordAuthMethod } = useLastAuthMethod();
   const isLoading = signInMutation.isPending;
   const isRedirecting = signInMutation.isSuccess;
+  const captchaLoading = !captcha.isReady;
 
   const onSubmit = useCallback(
     async (credentials: z.infer<typeof PasswordSignInSchema>) => {
@@ -59,6 +60,7 @@ export function PasswordSignInContainer({
           onSubmit={onSubmit}
           loading={isLoading}
           redirecting={isRedirecting}
+          captchaLoading={captchaLoading}
         />
 
         {captcha.field}

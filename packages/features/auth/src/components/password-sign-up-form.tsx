@@ -33,7 +33,9 @@ interface PasswordSignUpFormProps {
     password: string;
     repeatPassword: string;
   }) => unknown;
+
   loading: boolean;
+  captchaLoading: boolean;
 }
 
 export function PasswordSignUpForm({
@@ -41,6 +43,7 @@ export function PasswordSignUpForm({
   displayTermsCheckbox,
   onSubmit,
   loading,
+  captchaLoading,
 }: PasswordSignUpFormProps) {
   const form = useForm({
     resolver: zodResolver(PasswordSignUpSchema),
@@ -116,23 +119,26 @@ export function PasswordSignUpForm({
           data-test={'auth-submit-button'}
           className={'w-full'}
           type="submit"
-          disabled={loading}
+          disabled={loading || captchaLoading}
         >
-          <If
-            condition={loading}
-            fallback={
-              <>
-                <Trans i18nKey={'auth:signUpWithEmail'} />
+          <If condition={captchaLoading}>
+            <Trans i18nKey={'auth:verifyingCaptcha'} />
+          </If>
 
-                <ArrowRight
-                  className={
-                    'zoom-in animate-in slide-in-from-left-2 fill-mode-both h-4 delay-500 duration-500'
-                  }
-                />
-              </>
-            }
-          >
+          <If condition={loading && !captchaLoading}>
             <Trans i18nKey={'auth:signingUp'} />
+          </If>
+
+          <If condition={!loading && !captchaLoading}>
+            <>
+              <Trans i18nKey={'auth:signUpWithEmail'} />
+
+              <ArrowRight
+                className={
+                  'zoom-in animate-in slide-in-from-left-2 fill-mode-both h-4 delay-500 duration-500'
+                }
+              />
+            </>
           </If>
         </Button>
       </form>

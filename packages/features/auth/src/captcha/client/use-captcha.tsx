@@ -67,15 +67,20 @@ export function useCaptcha(
     [siteKey, nonce, handleTokenChange, handleInstanceChange],
   );
 
+  // Ready when captcha is not configured (no siteKey) or token is available
+  const isReady = !siteKey || token !== '';
+
   return useMemo(
     () => ({
       /** The current captcha token */
       token,
+      /** Whether the captcha is ready (not configured or token available) */
+      isReady,
       /** Reset the captcha (clears token and resets widget) */
       reset,
       /** The captcha field component to render */
       field,
     }),
-    [token, reset, field],
+    [token, isReady, reset, field],
   );
 }
