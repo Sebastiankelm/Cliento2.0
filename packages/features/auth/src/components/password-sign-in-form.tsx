@@ -134,7 +134,7 @@ export function PasswordSignInForm({
             </span>
           </If>
 
-          <If condition={!redirecting && !loading}>
+          <If condition={!redirecting && !loading && !captchaLoading}>
             <span className={'animate-out fade-out flex items-center'}>
               <Trans i18nKey={'auth:signInWithEmail'} />
 

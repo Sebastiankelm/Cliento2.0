@@ -94,7 +94,9 @@ export function ResendAuthLinkForm(props: {
             <Trans i18nKey={'auth:resendingLink'} />
           </If>
 
-          <Trans i18nKey={'auth:resendLink'} defaults={'Resend Link'} />
+          <If condition={!resendLink.isPending && !captchaLoading}>
+            <Trans i18nKey={'auth:resendLink'} defaults={'Resend Link'} />
+          </If>
         </Button>
       </form>
 

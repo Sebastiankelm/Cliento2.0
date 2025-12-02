@@ -107,9 +107,18 @@ export function PasswordResetRequestContainer(params: {
                 type="submit"
               >
                 <If
-                  condition={captchaLoading}
-                  fallback={<Trans i18nKey={'auth:passwordResetLabel'} />}
+                  condition={
+                    !resetPasswordMutation.isPending && !captchaLoading
+                  }
                 >
+                  <Trans i18nKey={'auth:passwordResetLabel'} />
+                </If>
+
+                <If condition={resetPasswordMutation.isPending}>
+                  <Trans i18nKey={'auth:passwordResetLabel'} />
+                </If>
+
+                <If condition={captchaLoading}>
                   <Trans i18nKey={'auth:verifyingCaptcha'} />
                 </If>
               </Button>
