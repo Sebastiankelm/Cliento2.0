@@ -17,7 +17,7 @@
     "next": "catalog:",
     "nodemailer": "^7.0.11",
     "react": "catalog:",
-    "react-dom": "19.2.0",
+    "react-dom": "catalog:",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {

@@ -27,7 +27,7 @@
     "lucide-react": "^0.555.0",
     "next": "catalog:",
     "react": "catalog:",
-    "react-dom": "19.2.0",
+    "react-dom": "catalog:",
     "react-hook-form": "^7.67.0",
     "zod": "catalog:"
   },
