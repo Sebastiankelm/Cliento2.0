@@ -36,9 +36,8 @@ class DatabaseWebhookRouterService {
     body: RecordChange<'subscriptions'>,
   ) {
     if (body.type === 'DELETE' && body.old_record) {
-      const { createBillingWebhooksService } = await import(
-        '@kit/billing-gateway'
-      );
+      const { createBillingWebhooksService } =
+        await import('@kit/billing-gateway');
 
       const service = createBillingWebhooksService();
 

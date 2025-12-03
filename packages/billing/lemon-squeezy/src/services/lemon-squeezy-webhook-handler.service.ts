@@ -41,9 +41,7 @@ interface LineItem {
 
 type OrderStatus = 'pending' | 'failed' | 'paid' | 'refunded';
 
-export class LemonSqueezyWebhookHandlerService
-  implements BillingWebhookHandlerService
-{
+export class LemonSqueezyWebhookHandlerService implements BillingWebhookHandlerService {
   private readonly provider: BillingProvider = 'lemon-squeezy';
 
   private readonly namespace = 'billing.lemon-squeezy';

@@ -31,9 +31,7 @@ import { createLemonSqueezySubscriptionPayloadBuilderService } from './lemon-squ
  * @name LemonSqueezyBillingStrategyService
  * @description This class is used to create a billing strategy for Lemon Squeezy
  */
-export class LemonSqueezyBillingStrategyService
-  implements BillingStrategyProviderService
-{
+export class LemonSqueezyBillingStrategyService implements BillingStrategyProviderService {
   private readonly namespace = 'billing.lemon-squeezy';
 
   /**

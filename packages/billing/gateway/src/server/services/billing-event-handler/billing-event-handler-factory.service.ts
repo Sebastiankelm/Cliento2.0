@@ -32,9 +32,8 @@ export function createBillingEventHandlerFactoryService(
 
   // Register the Lemon Squeezy webhook handler
   billingWebhookHandlerRegistry.register('lemon-squeezy', async () => {
-    const { LemonSqueezyWebhookHandlerService } = await import(
-      '@kit/lemon-squeezy'
-    );
+    const { LemonSqueezyWebhookHandlerService } =
+      await import('@kit/lemon-squeezy');
 
     return new LemonSqueezyWebhookHandlerService(planTypesMap);
   });

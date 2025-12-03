@@ -11,7 +11,7 @@
   },
   "author": "Makerkit",
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.57.0",
     "@supabase/supabase-js": "catalog:",
     "@types/node": "catalog:",
     "dotenv": "17.2.3",

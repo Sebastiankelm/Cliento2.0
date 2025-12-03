@@ -22,9 +22,8 @@ billingStrategyRegistry.register('stripe', async () => {
 
 // Register the Lemon Squeezy billing strategy
 billingStrategyRegistry.register('lemon-squeezy', async () => {
-  const { LemonSqueezyBillingStrategyService } = await import(
-    '@kit/lemon-squeezy'
-  );
+  const { LemonSqueezyBillingStrategyService } =
+    await import('@kit/lemon-squeezy');
   return new LemonSqueezyBillingStrategyService();
 });
 

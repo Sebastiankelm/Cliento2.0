@@ -12,9 +12,8 @@ const StripeCheckoutLazy = lazy(async () => {
 });
 
 const LemonSqueezyCheckoutLazy = lazy(async () => {
-  const { LemonSqueezyEmbeddedCheckout } = await import(
-    '@kit/lemon-squeezy/components'
-  );
+  const { LemonSqueezyEmbeddedCheckout } =
+    await import('@kit/lemon-squeezy/components');
   return { default: LemonSqueezyEmbeddedCheckout };
 });
 

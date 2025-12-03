@@ -8,9 +8,8 @@ export async function createKeystaticClient() {
     process.env.NEXT_RUNTIME === 'nodejs' ||
     process.env.KEYSTATIC_STORAGE_KIND !== 'local'
   ) {
-    const { createKeystaticClient: createClient } = await import(
-      './keystatic-client'
-    );
+    const { createKeystaticClient: createClient } =
+      await import('./keystatic-client');
 
     return createClient();
   }

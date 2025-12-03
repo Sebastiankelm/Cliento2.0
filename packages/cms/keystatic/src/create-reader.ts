@@ -24,9 +24,8 @@ export async function createKeystaticReader() {
 
     case 'github':
     case 'cloud': {
-      const { createGitHubReader } = await import(
-        '@keystatic/core/reader/github'
-      );
+      const { createGitHubReader } =
+        await import('@keystatic/core/reader/github');
 
       return createGitHubReader(
         keyStaticConfig,

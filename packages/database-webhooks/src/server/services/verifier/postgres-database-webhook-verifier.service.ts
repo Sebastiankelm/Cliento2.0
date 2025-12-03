@@ -14,9 +14,7 @@ export function createDatabaseWebhookVerifierService() {
   return new PostgresDatabaseWebhookVerifierService();
 }
 
-class PostgresDatabaseWebhookVerifierService
-  implements DatabaseWebhookVerifierService
-{
+class PostgresDatabaseWebhookVerifierService implements DatabaseWebhookVerifierService {
   verifySignatureOrThrow(header: string) {
     if (header !== webhooksSecret) {
       throw new Error('Invalid signature');

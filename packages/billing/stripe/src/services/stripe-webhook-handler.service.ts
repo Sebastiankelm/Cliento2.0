@@ -31,9 +31,7 @@ type UpsertOrderParams =
 
 type BillingProvider = Enums<'billing_provider'>;
 
-export class StripeWebhookHandlerService
-  implements BillingWebhookHandlerService
-{
+export class StripeWebhookHandlerService implements BillingWebhookHandlerService {
   private stripe: Stripe | undefined;
 
   constructor(private readonly planTypesMap: PlanTypeMap) {}

@@ -35,7 +35,4 @@ export interface CreateAnalyticsManagerOptions<
 }
 
 export interface AnalyticsManager
-  extends TrackPageView,
-    TrackEvent,
-    Identify,
-    ProviderManager {}
+  extends TrackPageView, TrackEvent, Identify, ProviderManager {}

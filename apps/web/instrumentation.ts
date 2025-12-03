@@ -5,9 +5,8 @@
 import { type Instrumentation } from 'next';
 
 export async function register() {
-  const { registerMonitoringInstrumentation } = await import(
-    '@kit/monitoring/instrumentation'
-  );
+  const { registerMonitoringInstrumentation } =
+    await import('@kit/monitoring/instrumentation');
 
   // Register monitoring instrumentation
   // based on the MONITORING_PROVIDER environment variable.

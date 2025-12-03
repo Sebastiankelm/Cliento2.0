@@ -26,9 +26,7 @@ import { createStripeSubscriptionPayloadBuilderService } from './stripe-subscrip
  * @class StripeBillingStrategyService
  * @implements {BillingStrategyProviderService}
  */
-export class StripeBillingStrategyService
-  implements BillingStrategyProviderService
-{
+export class StripeBillingStrategyService implements BillingStrategyProviderService {
   private readonly namespace = 'billing.stripe';
 
   /**
