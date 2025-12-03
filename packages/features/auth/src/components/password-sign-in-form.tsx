@@ -114,7 +114,7 @@ export function PasswordSignInForm({
           data-test="auth-submit-button"
           className={'group w-full'}
           type="submit"
-          disabled={loading || redirecting}
+          disabled={loading || redirecting || captchaLoading}
         >
           <If condition={redirecting}>
             <span className={'animate-in fade-in slide-in-from-bottom-24'}>
@@ -135,7 +135,11 @@ export function PasswordSignInForm({
           </If>
 
           <If condition={!redirecting && !loading && !captchaLoading}>
-            <span className={'animate-out fade-out flex items-center'}>
+            <span
+              className={
+                'animate-in fade-in slide-in-from-bottom-24 flex items-center'
+              }
+            >
               <Trans i18nKey={'auth:signInWithEmail'} />
 
               <ArrowRight

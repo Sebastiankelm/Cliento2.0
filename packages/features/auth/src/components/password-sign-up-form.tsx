@@ -122,15 +122,23 @@ export function PasswordSignUpForm({
           disabled={loading || captchaLoading}
         >
           <If condition={captchaLoading}>
-            <Trans i18nKey={'auth:verifyingCaptcha'} />
+            <span className={'animate-in fade-in slide-in-from-bottom-24'}>
+              <Trans i18nKey={'auth:verifyingCaptcha'} />
+            </span>
           </If>
 
           <If condition={loading && !captchaLoading}>
-            <Trans i18nKey={'auth:signingUp'} />
+            <span className={'animate-in fade-in slide-in-from-bottom-24'}>
+              <Trans i18nKey={'auth:signingUp'} />
+            </span>
           </If>
 
           <If condition={!loading && !captchaLoading}>
-            <>
+            <span
+              className={
+                'animate-in fade-in slide-in-from-bottom-24 flex items-center'
+              }
+            >
               <Trans i18nKey={'auth:signUpWithEmail'} />
 
               <ArrowRight
@@ -138,7 +146,7 @@ export function PasswordSignUpForm({
                   'zoom-in animate-in slide-in-from-left-2 fill-mode-both h-4 delay-500 duration-500'
                 }
               />
-            </>
+            </span>
           </If>
         </Button>
       </form>
