@@ -7,7 +7,7 @@ dotenvConfig({ path: '.env.local' });
 /**
  * Number of workers to use in CI. Tweak based on your CI provider's resources.
  */
-const CI_WORKERS = 2;
+const CI_WORKERS = 1;
 
 const enableBillingTests = process.env.ENABLE_BILLING_TESTS === 'true';
 
