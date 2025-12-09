@@ -130,7 +130,8 @@ export async function GET(request: NextRequest) {
       joinUrl.searchParams.set('is_new_user', 'true');
     }
 
-    authCallbackUrl.searchParams.set('next', joinUrl.href);
+    // Use pathname + search to create a safe relative path for validation
+    authCallbackUrl.searchParams.set('next', joinUrl.pathname + joinUrl.search);
 
     logger.info(
       {

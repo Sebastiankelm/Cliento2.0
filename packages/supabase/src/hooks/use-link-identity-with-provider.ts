@@ -2,6 +2,8 @@ import type { Provider } from '@supabase/supabase-js';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { getSafeRedirectPath } from '@kit/shared/utils';
+
 import { useSupabase } from './use-supabase';
 
 export function useLinkIdentityWithProvider(
@@ -14,7 +16,12 @@ export function useLinkIdentityWithProvider(
 
   const mutationFn = async (provider: Provider) => {
     const origin = window.location.origin;
-    const redirectToPath = props.redirectToPath ?? '/home/settings';
+
+    // Validate the redirect path to prevent open redirect attacks
+    const redirectToPath = getSafeRedirectPath(
+      props.redirectToPath,
+      '/home/settings',
+    );
 
     const url = new URL('/auth/callback', origin);
     url.searchParams.set('redirectTo', redirectToPath);

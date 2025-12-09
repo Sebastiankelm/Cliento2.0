@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { UpdatePasswordForm } from '@kit/auth/password-reset';
 import { AuthLayoutShell } from '@kit/auth/shared';
+import { getSafeRedirectPath } from '@kit/shared/utils';
 import { requireUser } from '@kit/supabase/require-user';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
@@ -38,7 +39,7 @@ async function UpdatePasswordPage(props: UpdatePasswordPageProps) {
   }
 
   const { callback } = await props.searchParams;
-  const redirectTo = callback ?? pathsConfig.app.home;
+  const redirectTo = getSafeRedirectPath(callback, pathsConfig.app.home);
 
   return (
     <AuthLayoutShell Logo={Logo}>

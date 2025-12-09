@@ -2,7 +2,7 @@
 
 import type { Provider } from '@supabase/supabase-js';
 
-import { isBrowser } from '@kit/shared/utils';
+import { isBrowser, isSafeRedirectPath } from '@kit/shared/utils';
 import { If } from '@kit/ui/if';
 import { Separator } from '@kit/ui/separator';
 import { Trans } from '@kit/ui/trans';
@@ -114,7 +114,8 @@ function getCallbackUrl(props: {
   const searchParams = new URLSearchParams(window.location.search);
   const next = searchParams.get('next');
 
-  if (next) {
+  // Only pass through the next param if it's a safe internal path
+  if (next && isSafeRedirectPath(next)) {
     url.searchParams.set('next', next);
   }
 

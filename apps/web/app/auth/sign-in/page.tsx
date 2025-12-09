@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { SignInMethodsContainer } from '@kit/auth/sign-in';
+import { getSafeRedirectPath } from '@kit/shared/utils';
 import { Button } from '@kit/ui/button';
 import { Heading } from '@kit/ui/heading';
 import { Trans } from '@kit/ui/trans';
@@ -29,7 +30,7 @@ async function SignInPage({ searchParams }: SignInPageProps) {
 
   const paths = {
     callback: pathsConfig.auth.callback,
-    returnPath: next || pathsConfig.app.home,
+    returnPath: getSafeRedirectPath(next, pathsConfig.app.home),
     joinTeam: pathsConfig.app.joinTeam,
   };
 

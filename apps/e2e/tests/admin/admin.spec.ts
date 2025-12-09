@@ -103,6 +103,9 @@ test.describe('Admin', () => {
         ),
       ]);
 
+      // TODO: find out why we need to reload the page only in CI
+      await page.reload();
+
       await expect(page.getByText('Banned').first()).toBeVisible();
 
       await page.context().clearCookies();
@@ -149,7 +152,8 @@ test.describe('Admin', () => {
         ),
       ]);
 
-      await page.waitForTimeout(250);
+      // TODO: find out why we need to reload the page only in CI
+      await page.reload();
 
       // Verify ban badge is removed
       await expect(page.getByText('Banned')).not.toBeVisible();

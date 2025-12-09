@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { AuthLayoutShell } from '@kit/auth/shared';
+import { getSafeRedirectPath } from '@kit/shared/utils';
 import { requireUser } from '@kit/supabase/require-user';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { Heading } from '@kit/ui/heading';
@@ -96,7 +97,7 @@ async function fetchData(props: IdentitiesPageProps) {
   }
 
   // Get the next path from URL params (where to redirect after setup)
-  const nextPath = searchParams.next || pathsConfig.app.home;
+  const nextPath = getSafeRedirectPath(searchParams.next, pathsConfig.app.home);
 
   // Available auth methods to add
   const showPasswordOption = authConfig.providers.password;

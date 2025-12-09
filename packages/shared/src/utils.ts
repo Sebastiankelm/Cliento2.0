@@ -21,3 +21,43 @@ export function formatCurrency(params: {
     currency: params.currencyCode,
   }).format(Number(params.value));
 }
+
+/**
+ * @name isSafeRedirectPath
+ * @description Checks if a path is safe for redirects (prevents open redirect attacks).
+ * Safe paths must:
+ * - Start with a single `/`
+ * - NOT start with `//` (protocol-relative URLs)
+ * - NOT contain `://` (absolute URLs)
+ * - NOT contain backslash (URL normalization attacks)
+ */
+export function isSafeRedirectPath(path: string): boolean {
+  if (!path || typeof path !== 'string') return false;
+
+  // Must start with exactly one forward slash (relative path)
+  if (!path.startsWith('/') || path.startsWith('//')) return false;
+
+  // Must not contain protocol indicators
+  if (path.includes('://')) return false;
+
+  // Must not contain backslashes (can be normalized to forward slashes)
+  if (path.includes('\\')) return false;
+
+  return true;
+}
+
+/**
+ * @name getSafeRedirectPath
+ * @description Returns the path if safe, otherwise returns the fallback.
+ * Use this to validate user-supplied redirect URLs to prevent open redirect attacks.
+ */
+export function getSafeRedirectPath(
+  path: string | null | undefined,
+  fallback: string,
+): string {
+  if (path && isSafeRedirectPath(path)) {
+    return path;
+  }
+
+  return fallback;
+}

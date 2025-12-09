@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { CsrfError, createCsrfProtect } from '@edge-csrf/nextjs';
 
 import { isSuperAdmin } from '@kit/admin';
+import { getSafeRedirectPath } from '@kit/shared/utils';
 import { checkRequiresMultiFactorAuthentication } from '@kit/supabase/check-requires-mfa';
 import { createMiddlewareClient } from '@kit/supabase/middleware-client';
 
@@ -158,8 +159,10 @@ async function getPatterns() {
         // If user is logged in and does not need to verify MFA,
         // redirect to home page.
         if (!isVerifyMfa) {
-          const nextPath =
-            req.nextUrl.searchParams.get('next') ?? pathsConfig.app.home;
+          const nextPath = getSafeRedirectPath(
+            req.nextUrl.searchParams.get('next'),
+            pathsConfig.app.home,
+          );
 
           return NextResponse.redirect(
             new URL(nextPath, req.nextUrl.origin).href,

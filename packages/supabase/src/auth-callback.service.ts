@@ -6,6 +6,8 @@ import {
   SupabaseClient,
 } from '@supabase/supabase-js';
 
+import { isSafeRedirectPath } from '@kit/shared/utils';
+
 /**
  * @name createAuthCallbackService
  * @description Creates an instance of the AuthCallbackService
@@ -71,9 +73,11 @@ class AuthCallbackService {
 
     const errorPath = params.errorPath ?? '/auth/callback/error';
 
-    // remove the query params from the url
+    // remove the auth-related query params from the url
     searchParams.delete('token_hash');
+    searchParams.delete('type');
     searchParams.delete('next');
+    searchParams.delete('callback');
 
     // if we have a next path, we redirect to that path
     if (nextPath) {
@@ -132,7 +136,11 @@ class AuthCallbackService {
     const nextUrlPathFromParams = searchParams.get('next');
     const errorPath = params.errorPath ?? '/auth/callback/error';
 
-    const nextUrl = nextUrlPathFromParams ?? params.redirectPath;
+    // Validate the next URL to prevent open redirect attacks
+    const nextUrl =
+      nextUrlPathFromParams && isSafeRedirectPath(nextUrlPathFromParams)
+        ? nextUrlPathFromParams
+        : params.redirectPath;
 
     if (authCode) {
       try {
@@ -188,6 +196,7 @@ class AuthCallbackService {
   /**
    * Parses a redirect URL and extracts the destination path and query params
    * Handles nested 'next' parameters for chained redirects
+   * Validates paths to prevent open redirect attacks
    */
   private parseRedirectDestination(redirectParam: string | null): {
     path: string;
@@ -197,29 +206,45 @@ class AuthCallbackService {
       return null;
     }
 
+    // First, try as a simple relative path with optional query string
+    const [pathPart, queryPart] = redirectParam.split('?') as [
+      string,
+      string | undefined,
+    ];
+
+    if (isSafeRedirectPath(pathPart)) {
+      return {
+        path: pathPart,
+        params: new URLSearchParams(queryPart ?? ''),
+      };
+    }
+
+    // Handle full URLs (e.g., from Supabase callback parameter)
     try {
-      const redirectUrl = new URL(redirectParam);
+      const url = new URL(redirectParam);
 
-      // check for nested 'next' parameter (chained redirect)
-      const nestedNext = redirectUrl.searchParams.get('next');
+      // Check for nested 'next' parameter - this is the final destination
+      const nestedNext = url.searchParams.get('next');
 
-      if (nestedNext) {
-        // use the nested path as the final destination
+      if (nestedNext && isSafeRedirectPath(nestedNext)) {
         return {
           path: nestedNext,
-          params: redirectUrl.searchParams,
+          params: url.searchParams,
         };
       }
 
-      // no nested redirect, use the pathname directly
-      return {
-        path: redirectUrl.pathname,
-        params: redirectUrl.searchParams,
-      };
+      // No nested next, use pathname if safe
+      if (isSafeRedirectPath(url.pathname)) {
+        return {
+          path: url.pathname,
+          params: url.searchParams,
+        };
+      }
     } catch {
-      // invalid URL, ignore
-      return null;
+      // Invalid URL, ignore
     }
+
+    return null;
   }
 
   private isLocalhost(host: string | null) {
