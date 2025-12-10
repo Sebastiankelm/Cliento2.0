@@ -8,7 +8,7 @@
     "format": "prettier --check --write \"**/*.{ts,tsx}\" --ignore-path=\"../../.prettierignore\""
   },
   "dependencies": {
-    "@ai-sdk/openai": "^2.0.77",
+    "@ai-sdk/openai": "^2.0.80",
     "@faker-js/faker": "^10.1.0",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "catalog:",

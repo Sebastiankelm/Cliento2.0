@@ -53,7 +53,15 @@ export class InvitationsPageObject {
       }
     }
 
-    await form.locator('button[type="submit"]').click();
+    await Promise.all([
+      form.locator('button[type="submit"]').click(),
+      this.page.waitForResponse((response) => {
+        return (
+          response.url().includes('/members') &&
+          response.request().method() === 'POST'
+        );
+      }),
+    ]);
   }
 
   navigateToMembers() {
@@ -132,9 +140,7 @@ export class InvitationsPageObject {
     await this.page.waitForTimeout(500);
 
     // skip authentication setup
-    const continueButton = this.page.locator(
-      '[data-test="continue-button"]',
-    );
+    const continueButton = this.page.locator('[data-test="continue-button"]');
 
     if (
       await continueButton.isVisible({
