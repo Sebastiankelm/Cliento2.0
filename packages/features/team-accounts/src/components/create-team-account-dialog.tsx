@@ -6,7 +6,6 @@ import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 import { Alert, AlertDescription, AlertTitle } from '@kit/ui/alert';
 import { Button } from '@kit/ui/button';
@@ -65,7 +64,7 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
   const [error, setError] = useState<boolean>();
   const [pending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof CreateTeamSchema>>({
+  const form = useForm({
     defaultValues: {
       name: '',
     },

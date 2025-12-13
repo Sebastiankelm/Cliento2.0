@@ -21,10 +21,10 @@ import { Trans } from '@kit/ui/trans';
 
 - Use **Tailwind CSS v4** with semantic classes
 - Prefer Shadcn-ui classes like `bg-background`, `text-muted-foreground`
-- Use `cn()` utility from `@kit/ui/cn` for class merging
+- Use `cn()` utility from `@kit/ui/utils` for class merging
 
 ```tsx
-import { cn } from '@kit/ui/cn';
+import { cn } from '@kit/ui/utils';
 
 function MyComponent({ className }) {
   return (

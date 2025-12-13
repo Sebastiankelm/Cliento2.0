@@ -7,7 +7,6 @@ import { ExclamationTriangleIcon } from '@radix-ui/react-icons';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import type { z } from 'zod';
 
 import { useUpdateUser } from '@kit/supabase/hooks/use-update-user-mutation';
 import { Alert, AlertDescription, AlertTitle } from '@kit/ui/alert';
@@ -34,7 +33,7 @@ export function UpdatePasswordForm(params: {
   const router = useRouter();
   const { t } = useTranslation();
 
-  const form = useForm<z.infer<typeof PasswordResetSchema>>({
+  const form = useForm({
     resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
       password: '',

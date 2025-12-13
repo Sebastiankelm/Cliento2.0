@@ -42,7 +42,7 @@ export function AdminCreateUserDialog(props: React.PropsWithChildren) {
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
-  const form = useForm<CreateUserSchemaType>({
+  const form = useForm({
     resolver: zodResolver(CreateUserSchema),
     defaultValues: {
       email: '',

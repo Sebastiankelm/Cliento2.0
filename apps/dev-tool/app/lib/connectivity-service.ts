@@ -95,8 +95,7 @@ class ConnectivityService {
     try {
       const response = await fetch(endpoint, {
         headers: {
-          apikey,
-          Authorization: `Bearer ${adminKey}`,
+          apikey: adminKey,
         },
       });
 

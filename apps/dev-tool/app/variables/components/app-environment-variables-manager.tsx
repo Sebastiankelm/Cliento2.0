@@ -73,36 +73,51 @@ function EnvListDisplay({
         }
       >
         <div className="bg-muted/50 sticky top-0 flex flex-col gap-y-1 rounded-lg p-4">
-          <div className={'sticky top-0 h-full overflow-auto pb-16 break-all'}>
+          <div
+            className={
+              'sticky top-0 flex h-full flex-col overflow-auto pb-16 break-all'
+            }
+          >
             {groups.map((group) => (
               <div className="mb-4" key={group.category}>
                 <span># {group.category}</span>
 
-                {group.variables.map((variable) => {
-                  const model = envVariables.find(
-                    (item) => item.name === variable.key,
-                  );
+                <div className="flex flex-col gap-y-1">
+                  {group.variables.map((variable) => {
+                    const model = envVariables.find(
+                      (item) => item.name === variable.key,
+                    );
 
-                  const isSecret = model?.secret;
-                  const value =
-                    isSecret && hideSecret
-                      ? '••••••••'
-                      : variable.effectiveValue;
+                    const isSecret = model?.secret;
 
-                  return (
-                    <Link
-                      href={`#var_${variable.key.toLowerCase()}`}
-                      className={cn('block transition-all hover:underline', {
-                        ['text-orange-500']: variable.isOverridden,
-                        ['text-destructive']: !variable.validation.success,
-                        ['opacity-20']: !variable.isVisible,
-                      })}
-                      key={variable.key}
-                    >
-                      <span>{variable.key}</span>: {value}
-                    </Link>
-                  );
-                })}
+                    const value =
+                      isSecret && hideSecret
+                        ? '••••••••'
+                        : variable.effectiveValue;
+
+                    return (
+                      <Link
+                        href={`#var_${variable.key.toLowerCase()}`}
+                        className={cn(
+                          'hover:bg-accent block p-px transition-all',
+                          {
+                            ['text-orange-500']: variable.isOverridden,
+                            ['text-destructive']: !variable.validation.success,
+                            ['opacity-20']: !variable.isVisible,
+                          },
+                        )}
+                        key={variable.key}
+                      >
+                        <b>{variable.key}</b>:{' '}
+                        {value && (
+                          <span className={'bg-muted rounded p-0.5'}>
+                            {value}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             ))}
           </div>

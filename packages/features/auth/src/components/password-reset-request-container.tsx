@@ -39,7 +39,7 @@ export function PasswordResetRequestContainer(params: {
   const error = resetPasswordMutation.error;
   const success = resetPasswordMutation.data;
 
-  const form = useForm<z.infer<typeof PasswordResetSchema>>({
+  const form = useForm({
     resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
       email: '',

@@ -75,11 +75,7 @@ function TransferOrganizationOwnershipForm({
   const [error, setError] = useState<boolean>();
   const { data: user } = useUser();
 
-  const form = useForm<{
-    accountId: string;
-    userId: string;
-    otp: string;
-  }>({
+  const form = useForm({
     resolver: zodResolver(TransferOwnershipConfirmationSchema),
     defaultValues: {
       accountId,

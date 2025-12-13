@@ -165,7 +165,9 @@ export class TeamAccountsPageObject {
       await this.page.click(`[data-test="role-option-${newRole}"]`);
 
       // Wait for the update to complete and page to reload
-      const response = this.page.waitForResponse('**/members');
+      const response = this.page.waitForResponse(response => {
+        return response.url().includes('members') && response.request().method() === 'POST'
+      });
 
       return Promise.all([
         this.page.click('[data-test="confirm-update-member-role"]'),

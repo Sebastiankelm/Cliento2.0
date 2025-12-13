@@ -34,7 +34,7 @@ export function NewsletterSignup({
   className,
   ...props
 }: NewsletterSignupProps) {
-  const form = useForm<NewsletterFormValues>({
+  const form = useForm({
     resolver: zodResolver(NewsletterFormSchema),
     defaultValues: {
       email: '',

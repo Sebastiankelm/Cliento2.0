@@ -40,7 +40,7 @@ export function PasswordSignInForm({
 }) {
   const { t } = useTranslation('auth');
 
-  const form = useForm<z.infer<typeof PasswordSignInSchema>>({
+  const form = useForm({
     resolver: zodResolver(PasswordSignInSchema),
     defaultValues: {
       email: '',

@@ -69,7 +69,7 @@ export function VerifyOtpForm({
   const [, setVerificationSuccess] = useState(false);
 
   // Email form
-  const emailForm = useForm<z.infer<typeof SendOtpSchema>>({
+  const emailForm = useForm({
     resolver: zodResolver(SendOtpSchema),
     defaultValues: {
       email,
@@ -77,7 +77,7 @@ export function VerifyOtpForm({
   });
 
   // OTP verification form
-  const otpForm = useForm<z.infer<typeof VerifyOtpSchema>>({
+  const otpForm = useForm({
     resolver: zodResolver(VerifyOtpSchema),
     defaultValues: {
       otp: '',
