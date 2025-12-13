@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .next .turbo node_modules",
-    "dev": "next dev --port=3011 | pino-pretty -c",
+    "dev": "next dev --port=3010 | pino-pretty -c",
     "format": "prettier --check --write \"**/*.{ts,tsx}\" --ignore-path=\"../../.prettierignore\""
   },
   "dependencies": {
