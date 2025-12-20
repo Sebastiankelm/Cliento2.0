@@ -2,6 +2,8 @@
 
 import { useCallback, useMemo, useState } from 'react';
 
+import dynamic from 'next/dynamic';
+
 import { Dialog as DialogPrimitive } from 'radix-ui';
 
 import { Button } from '../shadcn/button';
@@ -17,7 +19,11 @@ enum ConsentStatus {
   Unknown = 'unknown',
 }
 
-export function CookieBanner() {
+export const CookieBanner = dynamic(async () => CookieBannerComponent, {
+  ssr: false,
+});
+
+export function CookieBannerComponent() {
   const { status, accept, reject } = useCookieConsent();
 
   if (!isBrowser()) {
@@ -32,15 +38,13 @@ export function CookieBanner() {
     <DialogPrimitive.Root open modal={false}>
       <DialogPrimitive.Content
         onOpenAutoFocus={(e) => e.preventDefault()}
-        className={`dark:shadow-primary-500/40 bg-background animate-in fade-in zoom-in-95 slide-in-from-bottom-16 fill-mode-both fixed bottom-0 w-full max-w-lg border p-6 shadow-2xl delay-1000 duration-1000 lg:bottom-[2rem] lg:left-[2rem] lg:h-48 lg:rounded-lg`}
+        className={`dark:shadow-primary-500/40 bg-background animate-in fade-in zoom-in-95 slide-in-from-bottom-16 fill-mode-both fixed bottom-0 z-50 w-full max-w-lg border p-6 shadow-2xl delay-1000 duration-1000 lg:bottom-[2rem] lg:left-[2rem] lg:h-48 lg:rounded-lg`}
       >
-        <div className={'flex flex-col space-y-4'}>
-          <div>
-            <Heading level={3}>
-              <Trans i18nKey={'cookieBanner.title'} />
-            </Heading>
-          </div>
+        <DialogPrimitive.Title className="text-lg font-semibold">
+          <Trans i18nKey={'cookieBanner.title'} />
+        </DialogPrimitive.Title>
 
+        <div className={'flex flex-col space-y-4'}>
           <div className={'text-gray-500 dark:text-gray-400'}>
             <Trans i18nKey={'cookieBanner.description'} />
           </div>
