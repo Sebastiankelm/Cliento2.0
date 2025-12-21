@@ -30,7 +30,7 @@
     "@types/react-dom": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
-    "react-hook-form": "^7.68.0",
+    "react-hook-form": "catalog:",
     "zod": "catalog:"
   },
   "typesVersions": {

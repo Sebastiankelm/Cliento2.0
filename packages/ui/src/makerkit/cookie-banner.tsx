@@ -7,7 +7,6 @@ import dynamic from 'next/dynamic';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 
 import { Button } from '../shadcn/button';
-import { Heading } from '../shadcn/heading';
 import { Trans } from './trans';
 
 // configure this as you wish

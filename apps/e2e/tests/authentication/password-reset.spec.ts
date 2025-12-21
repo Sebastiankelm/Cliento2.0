@@ -7,37 +7,48 @@ const newPassword = (Math.random() * 10000).toString();
 test.describe('Password Reset Flow', () => {
   test('will reset the password and sign in with new one', async ({ page }) => {
     const auth = new AuthPageObject(page);
+    const email = auth.createRandomEmail();
 
-    let email = '';
+    await auth.bootstrapUser({
+      email,
+      password: 'password',
+      name: 'Test User',
+    });
+
+    await page.goto('/auth/password-reset');
+    await page.waitForTimeout(200);
+
+    const emailLocator = page.locator('[name=email]');
+
+    await expect(emailLocator).toBeEnabled();
+
+    await emailLocator.fill(email);
 
     await expect(async () => {
-      email = auth.createRandomEmail();
+      const button = page.locator('button[type="submit"]');
 
-      auth.bootstrapUser({
-        email,
-        password: 'password',
-        name: 'Test User',
-      });
+      await expect(button).toBeEnabled();
 
-      await page.goto('/auth/password-reset');
-
-      await page.fill('[name="email"]', email);
-      await page.click('[type="submit"]');
-
-      await auth.visitConfirmEmailLink(email, {
-        deleteAfter: true,
-        subject: 'Reset your password',
-      });
-
-      await page.waitForURL(new RegExp('/update-password?.*'));
-
-      await auth.updatePassword(newPassword);
-
-      await page.waitForURL('/home');
+      return Promise.all([
+        button.click(),
+        page.waitForResponse((resp) => resp.request().method() === 'POST'),
+      ]);
     }).toPass();
+
+    await auth.visitConfirmEmailLink(email, {
+      deleteAfter: true,
+    });
+
+    await page.waitForURL(new RegExp('/update-password?.*'), {
+      timeout: 2000,
+    });
+
+    await auth.updatePassword(newPassword);
+    await page.waitForURL('/home');
 
     await page.context().clearCookies();
     await page.reload();
+
     await page.goto('/auth/sign-in');
 
     await auth.loginAsUser({
