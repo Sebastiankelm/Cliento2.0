@@ -160,6 +160,7 @@
   "leaveTeamInputDescription": "By leaving the team, you will no longer have access to it.",
   "reservedNameError": "This name is reserved. Please choose a different one.",
   "specialCharactersError": "This name cannot contain special characters. Please choose a different one.",
+  "nonLatinCharactersError": "This name can only contain Latin characters (a-z), numbers, spaces, and hyphens.",
   "checkingPolicies": "Loading. Please wait...",
   "policyCheckError": "We are unable to verify invitations restrictions. Please try again.",
   "invitationsBlockedMultiple": "Invitations are currently not allowed for the following reasons:",

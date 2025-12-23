@@ -15,6 +15,11 @@ const RESERVED_NAMES_ARRAY = [
 const SPECIAL_CHARACTERS_REGEX = /[!@#$%^&*()+=[\]{};':"\\|,.<>/?]/;
 
 /**
+ * Regex that matches only Latin characters (a-z, A-Z), numbers, spaces, and hyphens
+ */
+const LATIN_ONLY_REGEX = /^[a-zA-Z0-9\s-]+$/;
+
+/**
  * @name TeamNameSchema
  */
 export const TeamNameSchema = z
@@ -29,6 +34,14 @@ export const TeamNameSchema = z
     },
     {
       message: 'teams:specialCharactersError',
+    },
+  )
+  .refine(
+    (name) => {
+      return LATIN_ONLY_REGEX.test(name);
+    },
+    {
+      message: 'teams:nonLatinCharactersError',
     },
   )
   .refine(

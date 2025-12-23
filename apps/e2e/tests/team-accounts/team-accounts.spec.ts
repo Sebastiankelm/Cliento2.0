@@ -175,6 +175,56 @@ test.describe('Team Accounts', () => {
     await teamAccounts.tryCreateTeam('Test Name]');
     await expectError();
   });
+
+  test('cannot create a Team account using non-latin characters', async ({
+    page,
+  }) => {
+    const teamAccounts = new TeamAccountsPageObject(page);
+    await teamAccounts.createTeam();
+
+    await teamAccounts.openAccountsSelector();
+    await page.click('[data-test="create-team-account-trigger"]');
+
+    function expectNonLatinError() {
+      return expect(
+        page.getByText(
+          'This name can only contain Latin characters (a-z), numbers, spaces, and hyphens.',
+        ),
+      ).toBeVisible();
+    }
+
+    // Test Cyrillic characters
+    await teamAccounts.tryCreateTeam('Тест Команда');
+    await expectNonLatinError();
+
+    // Test Chinese characters
+    await teamAccounts.tryCreateTeam('测试团队');
+    await expectNonLatinError();
+
+    // Test Japanese characters
+    await teamAccounts.tryCreateTeam('テストチーム');
+    await expectNonLatinError();
+
+    // Test Arabic characters
+    await teamAccounts.tryCreateTeam('فريق اختبار');
+    await expectNonLatinError();
+
+    // Test mixed Latin and non-Latin
+    await teamAccounts.tryCreateTeam('Test Команда');
+    await expectNonLatinError();
+
+    // Test emoji
+    await teamAccounts.tryCreateTeam('Test Team 🚀');
+    await expectNonLatinError();
+
+    // Ensure valid Latin names still work (should NOT show error)
+    await teamAccounts.tryCreateTeam('Valid Team Name 123');
+    await expect(
+      page.getByText(
+        'This name can only contain Latin characters (a-z), numbers, spaces, and hyphens.',
+      ),
+    ).not.toBeVisible();
+  });
 });
 
 test.describe('Team Account Deletion', () => {
