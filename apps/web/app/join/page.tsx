@@ -81,8 +81,17 @@ async function JoinTeamAccountPage(props: JoinTeamAccountPageProps) {
   // the user is logged in, we can now check if the token is valid
   const invitation = await api.getInvitation(adminClient, token);
 
-  // the invitation is not found or expired or the email is not the same as the user's email
-  const isInvitationValid = invitation?.email === auth.data.email;
+  if (!invitation) {
+    return (
+      <AuthLayoutShell Logo={AppLogo}>
+        <InviteNotFoundOrExpired />
+      </AuthLayoutShell>
+    );
+  }
+
+  // the invitation is not found or expired or the email is not the same as the user's email (case insensitive)
+  const isInvitationValid =
+    invitation.email.toLowerCase() === auth.data.email.toLowerCase();
 
   if (!isInvitationValid) {
     return (

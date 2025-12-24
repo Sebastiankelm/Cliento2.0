@@ -1,6 +1,6 @@
 {
   "name": "next-supabase-saas-kit-turbo",
-  "version": "2.21.18",
+  "version": "2.21.19",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -48,7 +48,7 @@
     "@turbo/gen": "^2.7.0",
     "cross-env": "^10.0.0",
     "prettier": "^3.7.4",
-    "turbo": "2.7.0",
+    "turbo": "2.7.1",
     "typescript": "^5.9.3"
   }
 }
