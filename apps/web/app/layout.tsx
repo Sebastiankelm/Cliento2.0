@@ -46,7 +46,7 @@ function getRootClassName(theme: string) {
   const fontsClassName = getFontsClassName(theme);
 
   return cn(
-    'bg-background min-h-screen overscroll-y-none antialiased',
+    'bg-background min-h-screen antialiased md:overscroll-y-none',
     fontsClassName,
   );
 }
