@@ -7,6 +7,7 @@ import { getLogger } from '@kit/shared/logger';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { CreateTeamSchema } from '../../schema/create-team.schema';
+import { createAccountCreationPolicyEvaluator } from '../policies';
 import { createCreateTeamAccountService } from '../services/create-team-account.service';
 
 export const createTeamAccountAction = enhanceAction(
@@ -23,18 +24,39 @@ export const createTeamAccountAction = enhanceAction(
 
     logger.info(ctx, `Creating team account...`);
 
-    const { data, error } = await service.createNewOrganizationAccount({
+    // Check policies before creating
+    const evaluator = createAccountCreationPolicyEvaluator();
+
+    if (await evaluator.hasPoliciesForStage('submission')) {
+      const policyContext = {
+        timestamp: new Date().toISOString(),
+        userId: user.id,
+        accountName: name,
+      };
+
+      const result = await evaluator.canCreateAccount(
+        policyContext,
+        'submission',
+      );
+
+      if (!result.allowed) {
+        logger.warn(
+          { ...ctx, reasons: result.reasons },
+          `Policy denied team account creation`,
+        );
+
+        return {
+          error: true,
+          message: result.reasons[0] ?? 'Policy denied account creation',
+        };
+      }
+    }
+
+    // Service throws on error, so no need to check for error
+    const { data } = await service.createNewOrganizationAccount({
       name,
       userId: user.id,
     });
-
-    if (error) {
-      logger.error({ ...ctx, error }, `Failed to create team account`);
-
-      return {
-        error: true,
-      };
-    }
 
     logger.info(ctx, `Team account created`);
 

@@ -14,7 +14,6 @@
     "./hooks/*": "./src/hooks/*.ts",
     "./webhooks": "./src/server/services/webhooks/index.ts",
     "./policies": "./src/server/policies/index.ts",
-    "./policies/orchestrator": "./src/server/policies/orchestrator.ts",
     "./services/account-invitations.service": "./src/server/services/account-invitations.service.ts"
   },
   "dependencies": {

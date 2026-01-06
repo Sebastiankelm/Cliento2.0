@@ -19,10 +19,12 @@ import { loadUserWorkspace } from '../_lib/server/load-user-workspace';
 import { HomeAddAccountButton } from './home-add-account-button';
 
 export function HomeAccountsList() {
-  const { accounts } = use(loadUserWorkspace());
+  const { accounts, canCreateTeamAccount } = use(loadUserWorkspace());
 
   if (!accounts.length) {
-    return <HomeAccountsListEmptyState />;
+    return (
+      <HomeAccountsListEmptyState canCreateTeamAccount={canCreateTeamAccount} />
+    );
   }
 
   return (
@@ -42,12 +44,17 @@ export function HomeAccountsList() {
   );
 }
 
-function HomeAccountsListEmptyState() {
+function HomeAccountsListEmptyState(props: {
+  canCreateTeamAccount: { allowed: boolean; reason?: string };
+}) {
   return (
     <div className={'flex flex-1'}>
       <EmptyState>
         <EmptyStateButton asChild>
-          <HomeAddAccountButton className={'mt-4'} />
+          <HomeAddAccountButton
+            className={'mt-4'}
+            canCreateTeamAccount={props.canCreateTeamAccount}
+          />
         </EmptyStateButton>
         <EmptyStateHeading>
           <Trans i18nKey={'account:noTeamsYet'} />

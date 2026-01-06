@@ -61,7 +61,7 @@ export function CreateTeamAccountDialog(
 }
 
 function CreateOrganizationAccountForm(props: { onClose: () => void }) {
-  const [error, setError] = useState<boolean>();
+  const [error, setError] = useState<{ message?: string } | undefined>();
   const [pending, startTransition] = useTransition();
 
   const form = useForm({
@@ -78,14 +78,14 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
         onSubmit={form.handleSubmit((data) => {
           startTransition(async () => {
             try {
-              const { error } = await createTeamAccountAction(data);
+              const result = await createTeamAccountAction(data);
 
-              if (error) {
-                setError(true);
+              if (result.error) {
+                setError({ message: result.message });
               }
-            } catch (error) {
-              if (!isRedirectError(error)) {
-                setError(true);
+            } catch (e) {
+              if (!isRedirectError(e)) {
+                setError({});
               }
             }
           });
@@ -93,7 +93,7 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
       >
         <div className={'flex flex-col space-y-4'}>
           <If condition={error}>
-            <CreateOrganizationErrorAlert />
+            <CreateOrganizationErrorAlert message={error?.message} />
           </If>
 
           <FormField
@@ -150,7 +150,7 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
   );
 }
 
-function CreateOrganizationErrorAlert() {
+function CreateOrganizationErrorAlert(props: { message?: string }) {
   return (
     <Alert variant={'destructive'}>
       <AlertTitle>
@@ -158,7 +158,11 @@ function CreateOrganizationErrorAlert() {
       </AlertTitle>
 
       <AlertDescription>
-        <Trans i18nKey={'teams:createTeamErrorMessage'} />
+        {props.message ? (
+          <Trans i18nKey={props.message} defaults={props.message} />
+        ) : (
+          <Trans i18nKey={'teams:createTeamErrorMessage'} />
+        )}
       </AlertDescription>
     </Alert>
   );
