@@ -38,7 +38,7 @@
     "@tanstack/react-query": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "catalog:",
     "next": "catalog:",
     "next-themes": "0.4.6",
     "react": "catalog:",

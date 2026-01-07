@@ -22,7 +22,7 @@
     "@supabase/supabase-js": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@types/react": "catalog:",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",
     "react-i18next": "catalog:"

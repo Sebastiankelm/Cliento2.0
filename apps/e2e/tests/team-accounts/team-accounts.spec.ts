@@ -282,9 +282,6 @@ test.describe('Team Ownership Transfer', () => {
     // Transfer ownership to the member
     await teamAccounts.transferOwnership(memberEmail, ownerEmail);
 
-    // Wait for the page to fully load after the transfer
-    await page.waitForTimeout(500);
-
     // Verify the transfer was successful by checking if the primary owner badge
     // is now on the new owner's row
     const memberRow = page.getByRole('row', { name: memberEmail });

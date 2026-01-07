@@ -45,9 +45,12 @@ export function UpdateMemberRoleDialog({
   userRole: Role;
   userRoleHierarchy: number;
 }>) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
+
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
@@ -66,6 +69,7 @@ export function UpdateMemberRoleDialog({
               teamAccountId={teamAccountId}
               userRole={userRole}
               roles={data}
+              onSuccess={() => setOpen(false)}
             />
           )}
         </RolesDataProvider>
@@ -79,11 +83,13 @@ function UpdateMemberForm({
   userRole,
   teamAccountId,
   roles,
+  onSuccess,
 }: React.PropsWithChildren<{
   userId: string;
   userRole: Role;
   teamAccountId: string;
   roles: Role[];
+  onSuccess: () => unknown;
 }>) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<boolean>();
@@ -97,6 +103,8 @@ function UpdateMemberForm({
           userId,
           role,
         });
+
+        onSuccess();
       } catch {
         setError(true);
       }

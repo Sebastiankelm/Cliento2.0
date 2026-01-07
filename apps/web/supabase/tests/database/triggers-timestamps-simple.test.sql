@@ -42,6 +42,9 @@ SELECT ok(
 INSERT INTO public.accounts (name, is_personal_account)
 VALUES ('Invitation Test Team', false);
 
+-- Switch to service_role to insert invitations (INSERT policy removed, handled by server action)
+set role service_role;
+
 -- Test invitation insert
 INSERT INTO public.invitations (email, account_id, invited_by, role, invite_token, expires_at)
 VALUES (
@@ -52,6 +55,9 @@ VALUES (
     'test-token-123',
     now() + interval '7 days'
 );
+
+-- Switch back to authenticated user for assertion
+select makerkit.authenticate_as('trigger_test_user1');
 
 SELECT ok(
     (SELECT created_at IS NOT NULL FROM public.invitations WHERE email = 'invitee@example.com'),

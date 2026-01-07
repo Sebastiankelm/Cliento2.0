@@ -42,7 +42,7 @@
     "@types/react-dom": "catalog:",
     "class-variance-authority": "^0.7.1",
     "date-fns": "^4.1.0",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "catalog:",
     "next": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",

@@ -9,6 +9,21 @@ interface Credentials {
   captchaToken?: string;
 }
 
+const _WeakPasswordReasons = ['length', 'characters', 'pwned'] as const;
+
+export type WeakPasswordReason = (typeof _WeakPasswordReasons)[number];
+
+export class WeakPasswordError extends Error {
+  readonly code = 'weak_password';
+  readonly reasons: WeakPasswordReason[];
+
+  constructor(reasons: WeakPasswordReason[]) {
+    super('weak_password');
+    this.name = 'WeakPasswordError';
+    this.reasons = reasons;
+  }
+}
+
 export function useSignUpWithEmailAndPassword() {
   const client = useSupabase();
   const mutationKey = ['auth', 'sign-up-with-email-password'];
@@ -25,6 +40,15 @@ export function useSignUpWithEmailAndPassword() {
     });
 
     if (response.error) {
+      // Handle weak password errors specially (AuthWeakPasswordError from Supabase)
+      if (response.error.code === 'weak_password') {
+        const errorObj = response.error as unknown as {
+          reasons?: WeakPasswordReason[];
+        };
+
+        throw new WeakPasswordError(errorObj.reasons ?? []);
+      }
+
       throw response.error.message;
     }
 

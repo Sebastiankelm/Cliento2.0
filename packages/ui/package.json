@@ -14,7 +14,7 @@
     "clsx": "^2.1.1",
     "cmdk": "1.1.1",
     "input-otp": "1.4.2",
-    "lucide-react": "^0.562.0",
+    "lucide-react": "catalog:",
     "radix-ui": "1.4.3",
     "react-dropzone": "^14.3.8",
     "react-top-loading-bar": "3.0.2",

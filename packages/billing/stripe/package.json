@@ -15,9 +15,9 @@
     "./components": "./src/components/index.ts"
   },
   "dependencies": {
-    "@stripe/react-stripe-js": "^5.4.1",
-    "@stripe/stripe-js": "^8.6.0",
-    "stripe": "^20.1.0"
+    "@stripe/react-stripe-js": "catalog:",
+    "@stripe/stripe-js": "catalog:",
+    "stripe": "catalog:"
   },
   "devDependencies": {
     "@kit/billing": "workspace:*",

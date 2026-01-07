@@ -12,49 +12,53 @@ select makerkit.set_identifier('owner', 'owner@makerkit.dev');
 
 select makerkit.authenticate_as('test');
 
-select lives_ok(
+select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite1@makerkit.dev', auth.uid(),  makerkit.get_account_id_by_slug('makerkit'), 'member', gen_random_uuid()); $$,
-'owner should be able to create invitations'
+    'new row violates row-level security policy for table "invitations"',
+    'direct inserts should be blocked'
 );
 
--- check two invitations to the same email/account are not allowed
+-- direct inserts are blocked even for duplicates
 select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite1@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'member', gen_random_uuid()) $$,
-    'duplicate key value violates unique constraint "invitations_email_account_id_key"'
+    'new row violates row-level security policy for table "invitations"',
+    'direct inserts should be blocked'
 );
 
 select makerkit.authenticate_as('member');
 
--- check a member cannot invite members with higher roles
+-- direct inserts are blocked regardless of role
 select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite2@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'owner', gen_random_uuid()) $$,
     'new row violates row-level security policy for table "invitations"'
 );
 
--- check a member can invite members with the same or lower roles
-select lives_ok(
+-- direct inserts are blocked regardless of role
+select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite2@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'member', gen_random_uuid()) $$,
-    'member should be able to create invitations for members or lower roles'
+    'new row violates row-level security policy for table "invitations"',
+    'direct inserts should be blocked'
 );
 
--- test invite exists
-select isnt_empty(
+-- direct inserts should not create invitations
+select is_empty(
     $$ select * from public.invitations where account_id = makerkit.get_account_id_by_slug('makerkit') $$,
-    'invitations should be listed'
+    'invitations should not be listed when inserts are blocked'
 );
 
 select makerkit.authenticate_as('owner');
 
--- check the owner can invite members with lower roles
-select lives_ok(
+-- direct inserts are blocked regardless of role
+select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite3@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'member', gen_random_uuid()) $$,
-    'owner should be able to create invitations'
+    'new row violates row-level security policy for table "invitations"',
+    'direct inserts should be blocked'
 );
 
 -- authenticate_as the custom role
 select makerkit.authenticate_as('custom');
 
--- it will fail because the custom role does not have the invites.manage permission
+-- direct inserts are blocked regardless of role
 select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite3@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'custom-role', gen_random_uuid()) $$,
     'new row violates row-level security policy for table "invitations"'
@@ -62,26 +66,28 @@ select throws_ok(
 
 set local role postgres;
 
--- add permissions to invite members to the custom role
+-- adding permissions should not bypass direct insert restrictions
 insert into public.role_permissions (role, permission) values ('custom-role', 'invites.manage');
 
 -- authenticate_as the custom role
 select makerkit.authenticate_as('custom');
 
-select lives_ok(
+select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite4@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'custom-role', gen_random_uuid()) $$,
-    'custom role should be able to create invitations'
-);
-
-select lives_ok(
-    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example@makerkit.dev', 'custom-role')::public.invitation]); $$,
-    'custom role should be able to create invitations using the function public.add_invitations_to_account'
+    'new row violates row-level security policy for table "invitations"',
+    'direct inserts should be blocked'
 );
 
 select throws_ok(
-    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example2@makerkit.dev', 'owner')::public.invitation]); $$,
-    'new row violates row-level security policy for table "invitations"',
-    'cannot invite members with higher roles'
+    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example@makerkit.dev', 'custom-role')::public.invitation], auth.uid()); $$,
+    'permission denied for function add_invitations_to_account',
+    'authenticated users cannot call add_invitations_to_account'
+);
+
+select throws_ok(
+    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example2@makerkit.dev', 'owner')::public.invitation], auth.uid()); $$,
+    'permission denied for function add_invitations_to_account',
+    'authenticated users cannot call add_invitations_to_account'
 );
 
 -- Foreigners should not be able to create invitations
@@ -90,15 +96,15 @@ select tests.create_supabase_user('user');
 
 select makerkit.authenticate_as('user');
 
--- it will fail because the user is not a member of the account
+-- direct inserts are blocked regardless of membership
 select throws_ok(
     $$ insert into public.invitations (email, invited_by, account_id, role, invite_token) values ('invite4@makerkit.dev', auth.uid(), makerkit.get_account_id_by_slug('makerkit'), 'member', gen_random_uuid()) $$,
     'new row violates row-level security policy for table "invitations"'
 );
 
 select throws_ok(
-    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example@example.com', 'member')::public.invitation]); $$,
-    'new row violates row-level security policy for table "invitations"'
+    $$ SELECT public.add_invitations_to_account('makerkit', ARRAY[ROW('example@example.com', 'member')::public.invitation], auth.uid()); $$,
+    'permission denied for function add_invitations_to_account'
 );
 
 select is_empty($$

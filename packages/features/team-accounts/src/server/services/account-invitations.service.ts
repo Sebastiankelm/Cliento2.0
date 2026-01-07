@@ -139,9 +139,11 @@ class AccountInvitationsService {
   async sendInvitations({
     accountSlug,
     invitations,
+    invitedBy,
   }: {
     invitations: z.infer<typeof InviteMembersSchema>['invitations'];
     accountSlug: string;
+    invitedBy: string;
   }) {
     const logger = await getLogger();
 
@@ -188,6 +190,7 @@ class AccountInvitationsService {
     const response = await this.client.rpc('add_invitations_to_account', {
       invitations,
       account_slug: accountSlug,
+      invited_by: invitedBy,
     });
 
     if (response.error) {

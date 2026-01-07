@@ -502,15 +502,6 @@ execute on function public.create_team_account (text) to authenticated,
 service_role;
 
 -- RLS(public.accounts)
--- Authenticated users can create team accounts
-create policy create_org_account on public.accounts for insert to authenticated
-with
-  check (
-    public.is_set ('enable_team_accounts')
-    and public.accounts.is_personal_account = false
-  );
-
--- RLS(public.accounts)
 -- Authenticated users can delete team accounts
 create policy delete_team_account
     on public.accounts

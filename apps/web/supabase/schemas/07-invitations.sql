@@ -96,36 +96,9 @@ select
   to authenticated using (public.has_role_on_account (account_id));
 
 -- INSERT(invitations):
--- Users can create invitations to users of an account they are
--- a member of and have the 'invites.manage' permission AND the target role is not higher than the user's role
-create policy invitations_create_self on public.invitations for insert to authenticated
-with
-  check (
-    public.is_set ('enable_team_accounts')
-    and public.has_permission (
-      (
-        select
-          auth.uid ()
-      ),
-      account_id,
-      'invites.manage'::public.app_permissions
-    )
-    and (public.has_more_elevated_role (
-      (
-        select
-          auth.uid ()
-      ),
-      account_id,
-      role
-    ) or public.has_same_role_hierarchy_level(
-      (
-        select
-          auth.uid ()
-      ),
-      account_id,
-      role
-    ))
-  );
+-- Invitations are created through server actions using admin client.
+-- Permission and role hierarchy checks are enforced in the server action.
+-- No RLS policy needed for INSERT.
 
 -- UPDATE(invitations):
 -- Users can update invitations to users of an account they are a member of and have the 'invites.manage' permission AND
@@ -311,7 +284,8 @@ service_role;
 create
 or replace function public.add_invitations_to_account (
   account_slug text,
-  invitations public.invitation[]
+  invitations public.invitation[],
+  invited_by uuid
 ) returns public.invitations[]
 set
   search_path = '' as $$
@@ -340,7 +314,10 @@ begin
                 from
                     public.accounts
                 where
-                    slug = account_slug), auth.uid(), role, invite_token)
+                    slug = account_slug),
+            invited_by,
+            role,
+            invite_token)
     returning
         * into new_invitation;
 
@@ -355,5 +332,4 @@ end;
 $$ language plpgsql;
 
 grant
-execute on function public.add_invitations_to_account (text, public.invitation[]) to authenticated,
-service_role;
+execute on function public.add_invitations_to_account (text, public.invitation[], uuid) to service_role;

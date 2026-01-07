@@ -1,6 +1,26 @@
 
 ## End-to-End Testing with Playwright
 
+## Running Tests
+
+Running the tests for testing single file:
+```bash
+pnpm --filter web-e2e exec playwright test <partial-name-or-folder-name> --workers=1
+```
+
+Example:
+```bash
+pnpm --filter web-e2e exec playwright test <partial-name-or-folder-name> --workers=1
+```
+
+This is useful for quickly testing a single file or a specific feature and should be your default choice.
+
+Running all tests (rarely needed, only use if asked by the user):
+
+```bash
+pnpm test
+```
+
 ### Page Object Pattern (Required)
 
 Always use Page Objects for test organization and reusability:

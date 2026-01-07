@@ -37,8 +37,10 @@ export function TransferOwnershipDialog({
   userId: string;
   targetDisplayName: string;
 }) {
+  const [open, setOpen] = useState(false);
+
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
 
       <AlertDialogContent>
@@ -56,6 +58,7 @@ export function TransferOwnershipDialog({
           accountId={accountId}
           userId={userId}
           targetDisplayName={targetDisplayName}
+          onSuccess={() => setOpen(false)}
         />
       </AlertDialogContent>
     </AlertDialog>
@@ -66,10 +69,12 @@ function TransferOrganizationOwnershipForm({
   accountId,
   userId,
   targetDisplayName,
+  onSuccess,
 }: {
   userId: string;
   accountId: string;
   targetDisplayName: string;
+  onSuccess: () => unknown;
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<boolean>();
@@ -115,6 +120,8 @@ function TransferOrganizationOwnershipForm({
           startTransition(async () => {
             try {
               await transferOwnershipAction(data);
+
+              onSuccess();
             } catch {
               setError(true);
             }

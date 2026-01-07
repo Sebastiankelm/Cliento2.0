@@ -35,10 +35,22 @@ class InvitationContextBuilder {
     // Fetch all data in parallel for optimal performance
     const account = await this.getAccount(params.accountSlug);
 
-    // Fetch subscription and member count in parallel using account ID
+    return this.buildContextWithAccountId(params, user, account.id);
+  }
+
+  /**
+   * Build policy context when account ID is already known
+   * (avoids duplicate account lookup)
+   */
+  async buildContextWithAccountId(
+    params: z.infer<typeof InviteMembersSchema> & { accountSlug: string },
+    user: JWTUserData,
+    accountId: string,
+  ): Promise<FeaturePolicyInvitationContext> {
+    // Fetch subscription and member count in parallel
     const [subscription, memberCount] = await Promise.all([
-      this.getSubscription(account.id),
-      this.getMemberCount(account.id),
+      this.getSubscription(accountId),
+      this.getMemberCount(accountId),
     ]);
 
     return {
@@ -52,7 +64,7 @@ class InvitationContextBuilder {
 
       // Invitation-specific fields
       accountSlug: params.accountSlug,
-      accountId: account.id,
+      accountId,
       subscription,
       currentMemberCount: memberCount,
       invitations: params.invitations,

@@ -23,9 +23,9 @@ let version: string | null = null;
 
 /**
  * Default interval time in seconds to check for new version
- * By default, it is set to 120 seconds
+ * By default, it is set to 60 seconds
  */
-const DEFAULT_REFETCH_INTERVAL = 120;
+const DEFAULT_REFETCH_INTERVAL = 60;
 
 /**
  * Default interval time in seconds to check for new version
@@ -99,7 +99,9 @@ function useVersionUpdater(props: { intervalTimeInSecond?: number } = {}) {
     refetchInterval,
     initialData: null,
     queryFn: async () => {
-      const response = await fetch('/version');
+      const url = new URL('/api/version', process.env.NEXT_PUBLIC_SITE_URL);
+      const response = await fetch(url.toString());
+
       const currentVersion = await response.text();
       const oldVersion = version;
 
