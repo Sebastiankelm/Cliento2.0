@@ -223,37 +223,6 @@ $$ language plpgsql;
 grant
 execute on function public.get_upper_system_role () to service_role;
 
--- Function "kit.add_current_user_to_new_account"
--- Trigger to add the current user to a new account as the primary owner
-create
-or replace function kit.add_current_user_to_new_account () returns trigger language plpgsql security definer
-set
-  search_path = '' as $$
-begin
-    if new.primary_owner_user_id = auth.uid() then
-        insert into public.accounts_memberships(
-            account_id,
-            user_id,
-            account_role)
-        values(
-            new.id,
-            auth.uid(),
-            public.get_upper_system_role());
-
-    end if;
-
-    return NEW;
-
-end;
-
-$$;
-
--- trigger the function whenever a new account is created
-create trigger "add_current_user_to_new_account"
-after insert on public.accounts for each row
-when (new.is_personal_account = false)
-execute function kit.add_current_user_to_new_account ();
-
 -- create a trigger to update the account email when the primary owner email is updated
 create
 or replace function kit.handle_update_user_email () returns trigger language plpgsql security definer
@@ -470,36 +439,62 @@ execute procedure kit.setup_new_user ();
  * -------------------------------------------------------
  */
 -- Function "public.create_team_account"
--- Create a team account if team accounts are enabled
+-- Create a team account with membership in a single transaction
+-- Called by service_role only (Policies API enforced in application layer)
 create
-or replace function public.create_team_account (account_name text) returns public.accounts
+or replace function public.create_team_account (
+    account_name text,
+    user_id uuid,
+    account_slug text default null
+) returns public.accounts
+language plpgsql
+security definer
 set
   search_path = '' as $$
 declare
     new_account public.accounts;
+    owner_role varchar(50);
 begin
     if (not public.is_set('enable_team_accounts')) then
         raise exception 'Team accounts are not enabled';
     end if;
 
+    -- Get the highest system role for the owner
+    select public.get_upper_system_role() into owner_role;
+
+    -- Insert the new team account
+    -- The slug will be auto-generated from name by the "set_slug_from_account_name"
+    -- trigger if account_slug is null
     insert into public.accounts(
         name,
-        is_personal_account)
+        slug,
+        is_personal_account,
+        primary_owner_user_id)
     values (
         account_name,
-        false)
-returning
-    * into new_account;
+        account_slug,
+        false,
+        user_id)
+    returning * into new_account;
+
+    -- Create membership for the owner (atomic with account creation)
+    insert into public.accounts_memberships(
+        account_id,
+        user_id,
+        account_role)
+    values (
+        new_account.id,
+        user_id,
+        coalesce(owner_role, 'owner'));
 
     return new_account;
 
 end;
 
-$$ language plpgsql;
+$$;
 
 grant
-execute on function public.create_team_account (text) to authenticated,
-service_role;
+execute on function public.create_team_account (text, uuid, text) to service_role;
 
 -- RLS(public.accounts)
 -- Authenticated users can delete team accounts

@@ -65,22 +65,20 @@ test.describe('Team Accounts', () => {
     await teamAccounts.setup();
   });
 
-  test('user can update their team name (and slug)', async ({ page }) => {
+  test('user can update their team name', async ({ page }) => {
     const teamAccounts = new TeamAccountsPageObject(page);
-    const { teamName, slug } = teamAccounts.createTeamName();
+    const newTeamName = `Updated-Team-${(Math.random() * 100000000).toFixed(0)}`;
 
     await teamAccounts.goToSettings();
 
-    const request = teamAccounts.updateName(teamName, slug);
+    // Update just the name (slug stays the same for Latin names)
+    await teamAccounts.updateTeamName(newTeamName);
 
-    // the slug should be updated to match the new team name
-    const newUrl = page.waitForURL(`**/home/${slug}/settings`);
-
-    await Promise.all([request, newUrl]);
+    await page.waitForTimeout(500);
 
     await teamAccounts.openAccountsSelector();
 
-    await expect(teamAccounts.getTeamFromSelector(teamName)).toBeVisible();
+    await expect(teamAccounts.getTeamFromSelector(newTeamName)).toBeVisible();
   });
 
   test('cannot create a Team account using reserved names', async ({
@@ -176,54 +174,73 @@ test.describe('Team Accounts', () => {
     await expectError();
   });
 
-  test('cannot create a Team account using non-latin characters', async ({
+  test('can create a Team account with non-Latin name when providing a slug', async ({
     page,
   }) => {
     const teamAccounts = new TeamAccountsPageObject(page);
     await teamAccounts.createTeam();
 
+    const random = (Math.random() * 100000000).toFixed(0);
+    const slug = `korean-team-${random}`;
+
+    // Create team with Korean name
+    await teamAccounts.createTeamWithNonLatinName('한국 팀', slug);
+
+    // Verify we're on the team page
+    await expect(page).toHaveURL(`/home/${slug}`);
+
+    // Verify team appears in selector
+    await teamAccounts.openAccountsSelector();
+    await expect(teamAccounts.getTeamFromSelector('한국 팀')).toBeVisible();
+  });
+
+  test('slug validation shows error for invalid characters', async ({
+    page,
+  }) => {
+    const teamAccounts = new TeamAccountsPageObject(page);
+    await teamAccounts.createTeam();
+
+    // Use non-Latin name to trigger the slug field visibility
     await teamAccounts.openAccountsSelector();
     await page.click('[data-test="create-team-account-trigger"]');
 
-    function expectNonLatinError() {
-      return expect(
-        page.getByText(
-          'This name can only contain Latin characters (a-z), numbers, spaces, and hyphens.',
-        ),
-      ).toBeVisible();
-    }
+    await page.fill(
+      '[data-test="create-team-form"] [data-test="team-name-input"]',
+      'テストチーム',
+    );
 
-    // Test Cyrillic characters
-    await teamAccounts.tryCreateTeam('Тест Команда');
-    await expectNonLatinError();
+    // Wait for slug field to appear (triggered by non-Latin name)
+    await expect(teamAccounts.getSlugField()).toBeVisible();
 
-    // Test Chinese characters
-    await teamAccounts.tryCreateTeam('测试团队');
-    await expectNonLatinError();
+    // Test invalid slug with uppercase
+    await page.fill(
+      '[data-test="create-team-form"] [data-test="team-slug-input"]',
+      'Invalid-Slug',
+    );
 
-    // Test Japanese characters
-    await teamAccounts.tryCreateTeam('テストチーム');
-    await expectNonLatinError();
+    await page.click('[data-test="create-team-form"] button:last-child');
 
-    // Test Arabic characters
-    await teamAccounts.tryCreateTeam('فريق اختبار');
-    await expectNonLatinError();
-
-    // Test mixed Latin and non-Latin
-    await teamAccounts.tryCreateTeam('Test Команда');
-    await expectNonLatinError();
-
-    // Test emoji
-    await teamAccounts.tryCreateTeam('Test Team 🚀');
-    await expectNonLatinError();
-
-    // Ensure valid Latin names still work (should NOT show error)
-    await teamAccounts.tryCreateTeam('Valid Team Name 123');
     await expect(
       page.getByText(
-        'This name can only contain Latin characters (a-z), numbers, spaces, and hyphens.',
+        'Only English letters (a-z), numbers (0-9), and hyphens (-) are allowed',
+        { exact: true },
       ),
-    ).not.toBeVisible();
+    ).toBeVisible();
+
+    // Test invalid slug with non-Latin characters
+    await page.fill(
+      '[data-test="create-team-form"] [data-test="team-slug-input"]',
+      'тест-slug',
+    );
+
+    await page.click('[data-test="create-team-form"] button:last-child');
+
+    await expect(
+      page.getByText(
+        'Only English letters (a-z), numbers (0-9), and hyphens (-) are allowed',
+        { exact: true },
+      ),
+    ).toBeVisible();
   });
 });
 

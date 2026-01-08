@@ -1,20 +1,20 @@
 'use server';
 
+import 'server-only';
+
 import { redirect } from 'next/navigation';
 
 import { enhanceAction } from '@kit/next/actions';
 import { getLogger } from '@kit/shared/logger';
-import { getSupabaseServerClient } from '@kit/supabase/server-client';
 
 import { CreateTeamSchema } from '../../schema/create-team.schema';
 import { createAccountCreationPolicyEvaluator } from '../policies';
 import { createCreateTeamAccountService } from '../services/create-team-account.service';
 
 export const createTeamAccountAction = enhanceAction(
-  async ({ name }, user) => {
+  async ({ name, slug }, user) => {
     const logger = await getLogger();
-    const client = getSupabaseServerClient();
-    const service = createCreateTeamAccountService(client);
+    const service = createCreateTeamAccountService();
 
     const ctx = {
       name: 'team-accounts.create',
@@ -52,11 +52,18 @@ export const createTeamAccountAction = enhanceAction(
       }
     }
 
-    // Service throws on error, so no need to check for error
-    const { data } = await service.createNewOrganizationAccount({
+    const { data, error } = await service.createNewOrganizationAccount({
       name,
       userId: user.id,
+      slug,
     });
+
+    if (error === 'duplicate_slug') {
+      return {
+        error: true,
+        message: 'teams:duplicateSlugError',
+      };
+    }
 
     logger.info(ctx, `Team account created`);
 

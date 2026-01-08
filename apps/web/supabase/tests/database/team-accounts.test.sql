@@ -12,12 +12,19 @@ select
 select
     tests.create_supabase_user('test2');
 
--- Create an team account
-select
-    makerkit.authenticate_as('test1');
+-- Create an team account (without explicit slug, should auto-generate)
+-- DON'T authenticate first - the add_current_user_to_new_account trigger
+-- would also create a membership if auth.uid() = primary_owner_user_id
+-- The function already creates the membership, so we avoid duplicate by keeping auth.uid() NULL
+set local role service_role;
 
 select
-    public.create_team_account('Test');
+    public.create_team_account('Test', tests.get_supabase_uid('test1'));
+
+-- Reset to postgres and then authenticate as test1 for proper RLS context
+set local role postgres;
+select
+    makerkit.authenticate_as('test1');
 
 select
     row_eq($$
@@ -27,6 +34,44 @@ select
 		row (tests.get_supabase_uid('test1'), false,
 		'test'::text, 'Test'::varchar),
 		'Users can create a team account');
+
+-- Test creating team account with explicit slug parameter
+select
+    tests.create_supabase_user('slugtest1', 'slugtest1@test.com');
+
+-- Switch to service_role to call the function
+set local role service_role;
+
+select
+    public.create_team_account('Custom Team Name', tests.get_supabase_uid('slugtest1'), 'custom-slug-123');
+
+-- Switch back to authenticated user for testing
+select
+    makerkit.authenticate_as('slugtest1');
+
+select
+    row_eq($$
+        select
+            primary_owner_user_id, is_personal_account, slug, name
+        from makerkit.get_account_by_slug('custom-slug-123') $$,
+        row (tests.get_supabase_uid('slugtest1'), false,
+        'custom-slug-123'::text, 'Custom Team Name'::varchar),
+        'Users can create a team account with custom slug');
+
+-- Verify membership is created for custom slug team
+select
+    row_eq($$
+        select
+            account_role from public.accounts_memberships
+            where
+                account_id = (select id from public.accounts where slug = 'custom-slug-123')
+                and user_id = tests.get_supabase_uid('slugtest1')
+        $$, row ('owner'::varchar),
+        'The primary owner should have the owner role for team with custom slug');
+
+-- Switch back to test1 for testing the original 'test' account
+select
+    makerkit.authenticate_as('test1');
 
 -- Should be the primary owner of the team account by default
 select
@@ -106,12 +151,13 @@ create or replace function kit.single_account_per_owner()
 declare
     total_accounts int;
 begin
+    -- Check if this user already owns an account by checking NEW.primary_owner_user_id
     select
         count(id)
     from
         public.accounts
     where
-        primary_owner_user_id = auth.uid() into total_accounts;
+        primary_owner_user_id = NEW.primary_owner_user_id into total_accounts;
 
     if total_accounts > 0 then
         raise exception 'User can only own 1 account';
@@ -129,14 +175,13 @@ create trigger single_account_per_owner
     before insert on public.accounts for each row
     execute function kit.single_account_per_owner();
 
--- Create an team account
-select
-    makerkit.authenticate_as('test1');
+-- Try to create another team account for the same owner (should fail due to trigger)
+set local role service_role;
 
 select
     throws_ok(
         $$ select
-            public.create_team_account('Test2') $$, 'User can only own 1 account');
+            public.create_team_account('Test2', tests.get_supabase_uid('test1')) $$, 'User can only own 1 account');
 
 set local role postgres;
 
@@ -151,11 +196,10 @@ select
     tests.create_supabase_user('updatetest2', 'updatetest2@test.com');
 
 -- Create a team account for update tests
-select
-    makerkit.authenticate_as('updatetest1');
+set local role service_role;
 
 select
-    public.create_team_account('UpdateTeam');
+    public.create_team_account('UpdateTeam', tests.get_supabase_uid('updatetest1'));
 
 -- Add updatetest2 as a member
 set local role postgres;
@@ -259,11 +303,10 @@ select
     tests.create_supabase_user('roletest2', 'roletest2@test.com');
 
 -- Create a team account for role tests
-select
-    makerkit.authenticate_as('roletest1');
+set local role service_role;
 
 select
-    public.create_team_account('RoleTeam');
+    public.create_team_account('RoleTeam', tests.get_supabase_uid('roletest1'));
 
 -- Add roletest2 as a member
 set local role postgres;
@@ -333,11 +376,10 @@ select
     tests.create_supabase_user('deletetest2', 'deletetest2@test.com');
 
 -- Create a team account for delete tests
-select
-    makerkit.authenticate_as('deletetest1');
+set local role service_role;
 
 select
-    public.create_team_account('DeleteTeam');
+    public.create_team_account('DeleteTeam', tests.get_supabase_uid('deletetest1'));
 
 -- Add deletetest2 as a member
 set local role postgres;
@@ -383,8 +425,8 @@ select tests.create_supabase_user('permtest2', 'permtest2@test.com');
 select tests.create_supabase_user('permtest3', 'permtest3@test.com');
 
 -- Create a team account for permission tests
-select makerkit.authenticate_as('permtest1');
-select public.create_team_account('PermTeam');
+set local role service_role;
+select public.create_team_account('PermTeam', tests.get_supabase_uid('permtest1'));
 
 -- Get the account ID for PermTeam to avoid NULL references
 set local role postgres;
@@ -470,8 +512,8 @@ select tests.create_supabase_user('hiertest3', 'hiertest3@test.com');
 select tests.create_supabase_user('hiertest4', 'hiertest4@test.com');
 
 -- Create a team account for hierarchy tests
-select makerkit.authenticate_as('hiertest1');
-select public.create_team_account('HierTeam');
+set local role service_role;
+select public.create_team_account('HierTeam', tests.get_supabase_uid('hiertest1'));
 
 -- Add users with different roles
 set local role postgres;
@@ -540,8 +582,8 @@ select tests.create_supabase_user('vistest2', 'vistest2@test.com');
 select tests.create_supabase_user('vistest3', 'vistest3@test.com');
 
 -- Create a team account
-select makerkit.authenticate_as('vistest1');
-select public.create_team_account('VisTeam');
+set local role service_role;
+select public.create_team_account('VisTeam', tests.get_supabase_uid('vistest1'));
 
 -- Add vistest2 as a member
 set local role postgres;
@@ -578,8 +620,8 @@ select tests.create_supabase_user('functest1', 'functest1@test.com');
 select tests.create_supabase_user('functest2', 'functest2@test.com');
 
 -- Create team account
-select makerkit.authenticate_as('functest1');
-select public.create_team_account('FuncTeam');
+set local role service_role;
+select public.create_team_account('FuncTeam', tests.get_supabase_uid('functest1'));
 
 -- Test: get_account_members function properly restricts data
 select makerkit.authenticate_as('functest2');
@@ -619,10 +661,11 @@ select tests.create_supabase_user('ownerupdate1', 'ownerupdate1@test.com');
 select tests.create_supabase_user('ownerupdate2', 'ownerupdate2@test.com');
 
 -- Create team account
-select makerkit.authenticate_as('ownerupdate1');
-select public.create_team_account('TeamChange');
+set local role service_role;
+select public.create_team_account('TeamChange', tests.get_supabase_uid('ownerupdate1'));
 
 -- Update the team name as the owner
+select makerkit.authenticate_as('ownerupdate1');
 select lives_ok(
     $$ UPDATE public.accounts 
        SET name = 'Updated Owner Team' 
@@ -668,23 +711,16 @@ select
     tests.create_supabase_user('crosstest2', 'crosstest2@test.com');
 
 -- Create first team account with crosstest1 as owner
-select
-    makerkit.authenticate_as('crosstest1');
+set local role service_role;
 
 select
-    public.create_team_account('TeamA');
+    public.create_team_account('TeamA', tests.get_supabase_uid('crosstest1'));
 
 -- Create second team account with crosstest2 as owner
 select
-    makerkit.authenticate_as('crosstest2');
-
-select
-    public.create_team_account('TeamB');
+    public.create_team_account('TeamB', tests.get_supabase_uid('crosstest2'));
 
 -- Add crosstest2 as a member to TeamA
-select
-    makerkit.authenticate_as('crosstest1');
-
 set local role postgres;
 
 -- Add member to first team
@@ -765,6 +801,31 @@ select
         $$,
         row ('TeamB'::varchar),
         'TeamB name should remain unchanged after attempted update by non-member'
+    );
+
+-- Test 7: Security - Public/anon role cannot execute create_team_account
+select
+    tests.create_supabase_user('securitytest1', 'securitytest1@test.com');
+
+-- Test as anon role (public) - should get permission denied (either for schema or function)
+set local role anon;
+
+select
+    throws_ok(
+        $$ select public.create_team_account('SecurityTeam', tests.get_supabase_uid('securitytest1')) $$,
+        'permission denied for schema public',
+        'Anonymous/public role should not be able to execute create_team_account'
+    );
+
+-- Test as authenticated role (still should fail - only service_role is allowed)
+select
+    makerkit.authenticate_as('securitytest1');
+
+select
+    throws_ok(
+        $$ select public.create_team_account('SecurityTeam', tests.get_supabase_uid('securitytest1')) $$,
+        'permission denied for function create_team_account',
+        'Authenticated role should not be able to execute create_team_account directly'
     );
 
 select

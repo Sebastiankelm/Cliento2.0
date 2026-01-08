@@ -743,7 +743,7 @@ export type Database = {
         Returns: Json
       }
       create_team_account: {
-        Args: { account_name: string }
+        Args: { account_name: string; account_slug?: string }
         Returns: {
           created_at: string | null
           created_by: string | null

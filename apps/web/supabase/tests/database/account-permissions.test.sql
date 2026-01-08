@@ -9,11 +9,13 @@ select tests.create_supabase_user('test1', 'test1@test.com');
 
 select tests.create_supabase_user('test2');
 
--- Create an team account
+-- Create team account using service_role (function is now service_role only)
+set local role service_role;
 
+select public.create_team_account('Test', tests.get_supabase_uid('test1'));
+
+-- Switch back to authenticated user for testing
 select makerkit.authenticate_as('test1');
-
-select public.create_team_account('Test');
 
 -- the owner account has permissions to manage members
 select row_eq(

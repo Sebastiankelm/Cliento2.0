@@ -9,13 +9,15 @@ select tests.create_supabase_user('test1', 'test1@test.com');
 
 select tests.create_supabase_user('test2');
 
--- Create an team account
+-- Create team accounts using service_role (function is now service_role only)
+set local role service_role;
 
+select public.create_team_account('Test', tests.get_supabase_uid('test1'));
+select public.create_team_account('Test', tests.get_supabase_uid('test1'));
+select public.create_team_account('Test', tests.get_supabase_uid('test1'));
+
+-- Switch back to authenticated user for testing
 select makerkit.authenticate_as('test1');
-
-select public.create_team_account('Test');
-select public.create_team_account('Test');
-select public.create_team_account('Test');
 
 -- should automatically create slugs for the accounts
 select row_eq(

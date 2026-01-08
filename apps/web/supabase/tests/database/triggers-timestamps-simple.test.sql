@@ -9,15 +9,15 @@ select plan(12);
 --- Create test users
 select tests.create_supabase_user('trigger_test_user1', 'test1@example.com');
 
--- Authenticate as test user
-select makerkit.authenticate_as('trigger_test_user1');
-
 ------------
 --- Test accounts table timestamp triggers - INSERT
 ------------
 
-INSERT INTO public.accounts (name, is_personal_account)
-VALUES ('Test Account', false);
+-- Use service_role to insert (create_org_account policy was removed)
+set role service_role;
+
+INSERT INTO public.accounts (name, is_personal_account, primary_owner_user_id)
+VALUES ('Test Account', false, tests.get_supabase_uid('trigger_test_user1'));
 
 SELECT ok(
     (SELECT created_at IS NOT NULL FROM public.accounts WHERE name = 'Test Account'),
@@ -38,9 +38,9 @@ SELECT ok(
 --- Test invitations table timestamp triggers - INSERT
 ------------
 
--- Create a team account for invitation testing
-INSERT INTO public.accounts (name, is_personal_account)
-VALUES ('Invitation Test Team', false);
+-- Create a team account for invitation testing (still in service_role from above)
+INSERT INTO public.accounts (name, is_personal_account, primary_owner_user_id)
+VALUES ('Invitation Test Team', false, tests.get_supabase_uid('trigger_test_user1'));
 
 -- Switch to service_role to insert invitations (INSERT policy removed, handled by server action)
 set role service_role;
@@ -56,9 +56,7 @@ VALUES (
     now() + interval '7 days'
 );
 
--- Switch back to authenticated user for assertion
-select makerkit.authenticate_as('trigger_test_user1');
-
+-- Stay in service_role for assertions (testing triggers, not RLS)
 SELECT ok(
     (SELECT created_at IS NOT NULL FROM public.invitations WHERE email = 'invitee@example.com'),
     'invitations: created_at should be set automatically on insert'

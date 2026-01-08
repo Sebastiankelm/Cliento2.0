@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { Alert, AlertDescription, AlertTitle } from '@kit/ui/alert';
 import { Button } from '@kit/ui/button';
@@ -29,7 +29,10 @@ import { If } from '@kit/ui/if';
 import { Input } from '@kit/ui/input';
 import { Trans } from '@kit/ui/trans';
 
-import { CreateTeamSchema } from '../schema/create-team.schema';
+import {
+  CreateTeamSchema,
+  NON_LATIN_REGEX,
+} from '../schema/create-team.schema';
 import { createTeamAccountAction } from '../server/actions/create-team-account-server-actions';
 
 export function CreateTeamAccountDialog(
@@ -67,9 +70,17 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
   const form = useForm({
     defaultValues: {
       name: '',
+      slug: '',
     },
     resolver: zodResolver(CreateTeamSchema),
   });
+
+  const nameValue = useWatch({ control: form.control, name: 'name' });
+
+  const showSlugField = useMemo(
+    () => NON_LATIN_REGEX.test(nameValue ?? ''),
+    [nameValue],
+  );
 
   return (
     <Form {...form}>
@@ -107,7 +118,7 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
 
                   <FormControl>
                     <Input
-                      data-test={'create-team-name-input'}
+                      data-test={'team-name-input'}
                       required
                       minLength={2}
                       maxLength={50}
@@ -125,6 +136,38 @@ function CreateOrganizationAccountForm(props: { onClose: () => void }) {
               );
             }}
           />
+
+          <If condition={showSlugField}>
+            <FormField
+              name={'slug'}
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>
+                      <Trans i18nKey={'teams:teamSlugLabel'} />
+                    </FormLabel>
+
+                    <FormControl>
+                      <Input
+                        data-test={'team-slug-input'}
+                        required
+                        minLength={2}
+                        maxLength={50}
+                        placeholder={'my-team'}
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormDescription>
+                      <Trans i18nKey={'teams:teamSlugDescription'} />
+                    </FormDescription>
+
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+          </If>
 
           <div className={'flex justify-end space-x-2'}>
             <Button

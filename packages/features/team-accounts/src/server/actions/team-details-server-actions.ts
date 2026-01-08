@@ -12,7 +12,9 @@ export const updateTeamAccountName = enhanceAction(
   async (params) => {
     const client = getSupabaseServerClient();
     const logger = await getLogger();
-    const { name, path, slug } = params;
+    const { name, path, slug, newSlug } = params;
+
+    const slugToUpdate = newSlug ?? slug;
 
     const ctx = {
       name: 'team-accounts.update',
@@ -25,7 +27,7 @@ export const updateTeamAccountName = enhanceAction(
       .from('accounts')
       .update({
         name,
-        slug,
+        slug: slugToUpdate,
       })
       .match({
         slug,
@@ -34,17 +36,25 @@ export const updateTeamAccountName = enhanceAction(
       .single();
 
     if (error) {
+      // Handle duplicate slug error
+      if (error.code === '23505') {
+        return {
+          success: false,
+          error: 'teams:duplicateSlugError',
+        };
+      }
+
       logger.error({ ...ctx, error }, `Failed to update team name`);
 
       throw error;
     }
 
-    const newSlug = data.slug;
+    const updatedSlug = data.slug;
 
     logger.info(ctx, `Team name updated`);
 
-    if (newSlug) {
-      const nextPath = path.replace('[account]', newSlug);
+    if (updatedSlug && updatedSlug !== slug) {
+      const nextPath = path.replace('[account]', updatedSlug);
 
       redirect(nextPath);
     }
