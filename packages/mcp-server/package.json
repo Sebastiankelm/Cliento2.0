@@ -24,9 +24,9 @@
   "devDependencies": {
     "@kit/prettier-config": "workspace:*",
     "@kit/tsconfig": "workspace:*",
-    "@modelcontextprotocol/sdk": "1.25.1",
+    "@modelcontextprotocol/sdk": "1.25.2",
     "@types/node": "catalog:",
-    "postgres": "3.4.7",
+    "postgres": "3.4.8",
     "zod": "catalog:"
   },
   "prettier": "@kit/prettier-config",

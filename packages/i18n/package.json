@@ -27,9 +27,9 @@
     "react-i18next": "catalog:"
   },
   "dependencies": {
-    "i18next": "25.7.3",
-    "i18next-browser-languagedetector": "8.2.0",
-    "i18next-resources-to-backend": "^1.2.1"
+    "i18next": "catalog:",
+    "i18next-browser-languagedetector": "catalog:",
+    "i18next-resources-to-backend": "catalog:"
   },
   "typesVersions": {
     "*": {

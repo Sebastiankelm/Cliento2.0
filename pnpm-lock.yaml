@@ -15,6 +15,9 @@ catalogs:
     '@next/eslint-plugin-next':
       specifier: 16.1.1
       version: 16.1.1
+    '@react-email/components':
+      specifier: 1.0.4
+      version: 1.0.4
     '@stripe/react-stripe-js':
       specifier: 5.4.1
       version: 5.4.1
@@ -22,8 +25,8 @@ catalogs:
       specifier: 8.6.1
       version: 8.6.1
     '@supabase/supabase-js':
-      specifier: 2.89.0
-      version: 2.89.0
+      specifier: 2.90.1
+      version: 2.90.1
     '@tailwindcss/postcss':
       specifier: 4.1.18
       version: 4.1.18
@@ -42,6 +45,15 @@ catalogs:
     eslint-config-next:
       specifier: 16.1.1
       version: 16.1.1
+    i18next:
+      specifier: 25.7.4
+      version: 25.7.4
+    i18next-browser-languagedetector:
+      specifier: 8.2.0
+      version: 8.2.0
+    i18next-resources-to-backend:
+      specifier: 1.2.1
+      version: 1.2.1
     lucide-react:
       specifier: 0.562.0
       version: 0.562.0
@@ -61,11 +73,11 @@ catalogs:
       specifier: 16.5.1
       version: 16.5.1
     stripe:
-      specifier: 20.1.1
-      version: 20.1.1
+      specifier: 20.1.2
+      version: 20.1.2
     supabase:
-      specifier: 2.71.2
-      version: 2.71.2
+      specifier: 2.72.2
+      version: 2.72.2
     tailwindcss:
       specifier: 4.1.18
       version: 4.1.18
@@ -105,8 +117,8 @@ importers:
         specifier: ^2.0.88
         version: 2.0.88(zod@3.25.76)
       '@faker-js/faker':
-        specifier: ^10.1.0
-        version: 10.1.0
+        specifier: ^10.2.0
+        version: 10.2.0
       '@hookform/resolvers':
         specifier: ^5.2.2
         version: 5.2.2(react-hook-form@7.70.0(react@19.2.3))
@@ -206,7 +218,7 @@ importers:
         version: 1.57.0
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@types/node':
         specifier: 'catalog:'
         version: 25.0.3
@@ -214,11 +226,11 @@ importers:
         specifier: 17.2.3
         version: 17.2.3
       node-html-parser:
-        specifier: ^7.0.1
-        version: 7.0.1
+        specifier: ^7.0.2
+        version: 7.0.2
       totp-generator:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.0.1
+        version: 2.0.1
 
   apps/web:
     dependencies:
@@ -284,10 +296,10 @@ importers:
         version: link:../../packages/ui
       '@makerkit/data-loader-supabase-core':
         specifier: ^0.0.10
-        version: 0.0.10(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)
+        version: 0.0.10(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)
       '@makerkit/data-loader-supabase-nextjs':
         specifier: ^1.2.5
-        version: 1.2.5(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 1.2.5(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@marsidev/react-turnstile':
         specifier: ^1.4.1
         version: 1.4.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -299,7 +311,7 @@ importers:
         version: 1.3.2(react@19.2.3)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -332,7 +344,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       recharts:
         specifier: 2.15.3
         version: 2.15.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -387,7 +399,7 @@ importers:
         version: 3.7.4
       supabase:
         specifier: 'catalog:'
-        version: 2.71.2
+        version: 2.72.2
       tailwindcss:
         specifier: 'catalog:'
         version: 4.1.18
@@ -465,7 +477,7 @@ importers:
         version: link:../../ui
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.7
@@ -486,7 +498,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -541,7 +553,7 @@ importers:
         version: 8.6.1
       stripe:
         specifier: 'catalog:'
-        version: 20.1.1(@types/node@25.0.3)
+        version: 20.1.2(@types/node@25.0.3)
     devDependencies:
       '@kit/billing':
         specifier: workspace:*
@@ -714,7 +726,7 @@ importers:
         version: link:../../tooling/typescript
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -722,8 +734,8 @@ importers:
   packages/email-templates:
     dependencies:
       '@react-email/components':
-        specifier: 1.0.3
-        version: 1.0.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 'catalog:'
+        version: 1.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
     devDependencies:
       '@kit/eslint-config':
         specifier: workspace:*
@@ -788,7 +800,7 @@ importers:
         version: 1.3.2(react@19.2.3)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -818,7 +830,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -851,13 +863,13 @@ importers:
         version: link:../../ui
       '@makerkit/data-loader-supabase-core':
         specifier: ^0.0.10
-        version: 0.0.10(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)
+        version: 0.0.10(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)
       '@makerkit/data-loader-supabase-nextjs':
         specifier: ^1.2.5
-        version: 1.2.5(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 1.2.5(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -917,7 +929,7 @@ importers:
         version: 1.3.2(react@19.2.3)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -938,7 +950,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -969,7 +981,7 @@ importers:
         version: link:../../ui
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -987,7 +999,7 @@ importers:
         version: 19.2.3(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
 
   packages/features/team-accounts:
     dependencies:
@@ -1042,7 +1054,7 @@ importers:
         version: link:../../ui
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -1078,7 +1090,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -1086,13 +1098,13 @@ importers:
   packages/i18n:
     dependencies:
       i18next:
-        specifier: 25.7.3
-        version: 25.7.3(typescript@5.9.3)
+        specifier: 'catalog:'
+        version: 25.7.4(typescript@5.9.3)
       i18next-browser-languagedetector:
-        specifier: 8.2.0
+        specifier: 'catalog:'
         version: 8.2.0
       i18next-resources-to-backend:
-        specifier: ^1.2.1
+        specifier: 'catalog:'
         version: 1.2.1
     devDependencies:
       '@kit/eslint-config':
@@ -1121,7 +1133,7 @@ importers:
         version: 19.2.3(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
 
   packages/mailers/core:
     devDependencies:
@@ -1223,14 +1235,14 @@ importers:
         specifier: workspace:*
         version: link:../../tooling/typescript
       '@modelcontextprotocol/sdk':
-        specifier: 1.25.1
-        version: 1.25.1(hono@4.11.1)(zod@3.25.76)
+        specifier: 1.25.2
+        version: 1.25.2(hono@4.11.1)(zod@3.25.76)
       '@types/node':
         specifier: 'catalog:'
         version: 25.0.3
       postgres:
-        specifier: 3.4.7
-        version: 3.4.7
+        specifier: 3.4.8
+        version: 3.4.8
       zod:
         specifier: 3.25.76
         version: 3.25.76
@@ -1330,7 +1342,7 @@ importers:
         version: link:../../tooling/typescript
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@types/node':
         specifier: 'catalog:'
         version: 25.0.3
@@ -1378,7 +1390,7 @@ importers:
         version: 1.3.2(react@19.2.3)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@types/react':
         specifier: 'catalog:'
         version: 19.2.7
@@ -1452,10 +1464,10 @@ importers:
         version: link:../../tooling/typescript
       '@supabase/ssr':
         specifier: ^0.8.0
-        version: 0.8.0(@supabase/supabase-js@2.89.0)
+        version: 0.8.0(@supabase/supabase-js@2.90.1)
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -1522,7 +1534,7 @@ importers:
         version: link:../../tooling/typescript
       '@supabase/supabase-js':
         specifier: 'catalog:'
-        version: 2.89.0
+        version: 2.90.1
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.90.16(react@19.2.3)
@@ -1561,7 +1573,7 @@ importers:
         version: 7.70.0(react@19.2.3)
       react-i18next:
         specifier: 'catalog:'
-        version: 16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        version: 16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       sonner:
         specifier: ^2.0.7
         version: 2.0.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1975,8 +1987,8 @@ packages:
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@faker-js/faker@10.1.0':
-    resolution: {integrity: sha512-C3mrr3b5dRVlKPJdfrAXS8+dq+rq8Qm5SNRazca0JKgw1HQERFmrVb0towvMmw5uu8hHKNiQasMaR/tydf3Zsg==}
+  '@faker-js/faker@10.2.0':
+    resolution: {integrity: sha512-rTXwAsIxpCqzUnZvrxVh3L0QA0NzToqWBLAhV+zDV3MIIwiQhAZHMdPCIaj5n/yADu/tyk12wIPgL6YHGXJP+g==}
     engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@floating-ui/core@1.7.3':
@@ -2318,8 +2330,8 @@ packages:
       react: ^17.0.2 || ^18.0.0 || ^19.0
       react-dom: ^17.0.2 || ^18.0.0 || ^19.0
 
-  '@modelcontextprotocol/sdk@1.25.1':
-    resolution: {integrity: sha512-yO28oVFFC7EBoiKdAn+VqRm+plcfv4v0xp6osG/VsCB0NlPZWi87ajbCZZ8f/RvOFLEu7//rSRmuZZ7lMoe3gQ==}
+  '@modelcontextprotocol/sdk@1.25.2':
+    resolution: {integrity: sha512-LZFeo4F9M5qOhC/Uc1aQSrBHxMrvxett+9KLHt7OhcExtoiRN9DKgbZffMP/nxjutWDQpfMDfP3nkHI4X9ijww==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
@@ -3637,8 +3649,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/components@1.0.3':
-    resolution: {integrity: sha512-RbleOT35XSCWM54Rs76/BgfPA0Son55OH4awBYlkHZgLw0AdbPwobhE7izNDFqY4nHW7+omLfe3CByWbsg/hEw==}
+  '@react-email/components@1.0.4':
+    resolution: {integrity: sha512-XpSs/mN0APMD9E3TYZnj8N6kRXqb6WBl9WrE+IHyB4PdgLNqXe7uZ5+5oZkKSE8Tskzw/K2vDJUqSZ2v+sRjUA==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -3703,8 +3715,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/render@2.0.1':
-    resolution: {integrity: sha512-eYNL4+SSrV1+58MIcT4znarX4YTMuYBr1uzhI6U8fBFvRMZPryxNOnD7jnZ/Ser3MtJEquQNbXjrAP+RVkfLbg==}
+  '@react-email/render@2.0.2':
+    resolution: {integrity: sha512-AGuNo86TP9Y2JBUwFcT+z0frPDML4WLIFlnCi7laCPYJA+43kdim0y+qRNPxRxZkJiUz1JMPnE2M5HaNYhWwIg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
@@ -4494,20 +4506,20 @@ packages:
     resolution: {integrity: sha512-UJ05U2062XDgydbUcETH1AoRQLNhigQ2KmDn1BG8sC3xfzu6JKg95Qt6YozdzFpxl1Npii/02m2LEWFt1RYjVA==}
     engines: {node: '>=12.16'}
 
-  '@supabase/auth-js@2.89.0':
-    resolution: {integrity: sha512-wiWZdz8WMad8LQdJMWYDZ2SJtZP5MwMqzQq3ehtW2ngiI3UTgbKiFrvMUUS3KADiVlk4LiGfODB2mrYx7w2f8w==}
+  '@supabase/auth-js@2.90.1':
+    resolution: {integrity: sha512-vxb66dgo6h3yyPbR06735Ps+dK3hj0JwS8w9fdQPVZQmocSTlKUW5MfxSy99mN0XqCCuLMQ3jCEiIIUU23e9ng==}
     engines: {node: '>=20.0.0'}
 
-  '@supabase/functions-js@2.89.0':
-    resolution: {integrity: sha512-XEueaC5gMe5NufNYfBh9kPwJlP5M2f+Ogr8rvhmRDAZNHgY6mI35RCkYDijd92pMcNM7g8pUUJov93UGUnqfyw==}
+  '@supabase/functions-js@2.90.1':
+    resolution: {integrity: sha512-x9mV9dF1Lam9qL3zlpP6mSM5C9iqMPtF5B/tU1Jj/F0ufX5mjDf9ghVBaErVxmrQJRL4+iMKWKY2GnODkpS8tw==}
     engines: {node: '>=20.0.0'}
 
-  '@supabase/postgrest-js@2.89.0':
-    resolution: {integrity: sha512-/b0fKrxV9i7RNOEXMno/I1862RsYhuUo+Q6m6z3ar1f4ulTMXnDfv0y4YYxK2POcgrOXQOgKYQx1eArybyNvtg==}
+  '@supabase/postgrest-js@2.90.1':
+    resolution: {integrity: sha512-jh6vqzaYzoFn3raaC0hcFt9h+Bt+uxNRBSdc7PfToQeRGk7PDPoweHsbdiPWREtDVTGKfu+PyPW9e2jbK+BCgQ==}
     engines: {node: '>=20.0.0'}
 
-  '@supabase/realtime-js@2.89.0':
-    resolution: {integrity: sha512-aMOvfDb2a52u6PX6jrrjvACHXGV3zsOlWRzZsTIOAJa0hOVvRp01AwC1+nLTGUzxzezejrYeCX+KnnM1xHdl+w==}
+  '@supabase/realtime-js@2.90.1':
+    resolution: {integrity: sha512-PWbnEMkcQRuor8jhObp4+Snufkq8C6fBp+MchVp2qBPY1NXk/c3Iv3YyiFYVzo0Dzuw4nAlT4+ahuPggy4r32w==}
     engines: {node: '>=20.0.0'}
 
   '@supabase/ssr@0.8.0':
@@ -4515,12 +4527,12 @@ packages:
     peerDependencies:
       '@supabase/supabase-js': ^2.76.1
 
-  '@supabase/storage-js@2.89.0':
-    resolution: {integrity: sha512-6zKcXofk/M/4Eato7iqpRh+B+vnxeiTumCIP+Tz26xEqIiywzD9JxHq+udRrDuv6hXE+pmetvJd8n5wcf4MFRQ==}
+  '@supabase/storage-js@2.90.1':
+    resolution: {integrity: sha512-GHY+Ps/K/RBfRj7kwx+iVf2HIdqOS43rM2iDOIDpapyUnGA9CCBFzFV/XvfzznGykd//z2dkGZhlZZprsVFqGg==}
     engines: {node: '>=20.0.0'}
 
-  '@supabase/supabase-js@2.89.0':
-    resolution: {integrity: sha512-KlaRwSfFA0fD73PYVMHj5/iXFtQGCcX7PSx0FdQwYEEw9b2wqM7GxadY+5YwcmuEhalmjFB/YvqaoNVF+sWUlg==}
+  '@supabase/supabase-js@2.90.1':
+    resolution: {integrity: sha512-U8KaKGLUgTIFHtwEW1dgw1gK7XrdpvvYo7nzzqPx721GqPe8WZbAiLh/hmyKLGBYQ/mmQNr20vU9tWSDZpii3w==}
     engines: {node: '>=20.0.0'}
 
   '@swc/helpers@0.5.15':
@@ -5269,8 +5281,8 @@ packages:
   bl@4.1.0:
     resolution: {integrity: sha512-1W07cM9gS6DcLperZfFSj+bWLtaPGSOHWhPiGzXmvVJbRLdG82sH/Kn8EtW1VqWVA54AKf2h5k5BbnIbwF3h6w==}
 
-  body-parser@2.2.1:
-    resolution: {integrity: sha512-nfDwkulwiZYQIGwxdy0RUmowMhKcFVcYXUU7m4QlKYim1rUtg83xm2yjZ40QjDuc291AJjjeSc9b++AWHSgSHw==}
+  body-parser@2.2.2:
+    resolution: {integrity: sha512-oP5VkATKlNwcgvxi0vM0p/D3n2C3EReYVX+DNYs5TjZFn/oQt2j+4sVJtSMr18pdRr8wjTcBl6LoV+FUwzPmNA==}
     engines: {node: '>=18'}
 
   boolbase@1.0.0:
@@ -6428,8 +6440,8 @@ packages:
   i18next-resources-to-backend@1.2.1:
     resolution: {integrity: sha512-okHbVA+HZ7n1/76MsfhPqDou0fptl2dAlhRDu2ideXloRRduzHsqDOznJBef+R3DFZnbvWoBW+KxJ7fnFjd6Yw==}
 
-  i18next@25.7.3:
-    resolution: {integrity: sha512-2XaT+HpYGuc2uTExq9TVRhLsso+Dxym6PWaKpn36wfBmTI779OQ7iP/XaZHzrnGyzU4SHpFrTYLKfVyBfAhVNA==}
+  i18next@25.7.4:
+    resolution: {integrity: sha512-hRkpEblXXcXSNbw8mBNq9042OEetgyB/ahc/X17uV/khPwzV+uB8RHceHh3qavyrkPJvmXFKXME2Sy1E0KjAfw==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -6444,8 +6456,8 @@ packages:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
 
-  iconv-lite@0.7.1:
-    resolution: {integrity: sha512-2Tth85cXwGFHfvRgZWszZSvdo+0Xsqmw8k8ZwxScfcBneNUraK+dxRxRm24nszx80Y0TVio8kKLt5sLE7ZCLlw==}
+  iconv-lite@0.7.2:
+    resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
     engines: {node: '>=0.10.0'}
 
   idb-keyval@6.2.2:
@@ -7282,8 +7294,8 @@ packages:
     resolution: {integrity: sha512-dRB78srN/l6gqWulah9SrxeYnxeddIG30+GOqK/9OlLVyLg3HPnr6SqOWTWOXKRwC2eGYCkZ59NNuSgvSrpgOA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  node-html-parser@7.0.1:
-    resolution: {integrity: sha512-KGtmPY2kS0thCWGK0VuPyOS+pBKhhe8gXztzA2ilAOhbUbxa9homF1bOyKvhGzMLXUoRds9IOmr/v5lr/lqNmA==}
+  node-html-parser@7.0.2:
+    resolution: {integrity: sha512-DxodLVh7a6JMkYzWyc8nBX9MaF4M0lLFYkJHlWOiu7+9/I6mwNK9u5TbAMC7qfqDJEPX9OIoWA2A9t4C2l1mUQ==}
 
   node-plop@0.26.3:
     resolution: {integrity: sha512-Cov028YhBZ5aB7MdMWJEmwyBig43aGL5WT4vdoB28Oitau1zZAcHUn8Sgfk9HM33TqhtLJ9PlM/O0Mv+QpV/4Q==}
@@ -7740,8 +7752,8 @@ packages:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
 
-  postgres@3.4.7:
-    resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
+  postgres@3.4.8:
+    resolution: {integrity: sha512-d+JFcLM17njZaOLkv6SCev7uoLaBtfK86vMUXhW1Z4glPWh4jozno9APvW/XKFJ3CCxVoC7OL38BqRydtu5nGg==}
     engines: {node: '>=12'}
 
   prelude-ls@1.2.1:
@@ -8395,8 +8407,8 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  stripe@20.1.1:
-    resolution: {integrity: sha512-yD2jgS2QfqQOXxF3ByB/BcRTGChor/OxhK1211AvQPkzkTV7qCg7z/whOdhNCX0AZkNjBpicoViqC5TMvaxM9w==}
+  stripe@20.1.2:
+    resolution: {integrity: sha512-qU+lQRRJnTxmyvglYBPE24/IepncmywsAg0GDTsTdP2pb+3e3RdREHJZjKgqCmv0phPxN/nmgNPnIPPH8w0P4A==}
     engines: {node: '>=16'}
     peerDependencies:
       '@types/node': '>=16'
@@ -8429,8 +8441,8 @@ packages:
   stylis@4.2.0:
     resolution: {integrity: sha512-Orov6g6BB1sDfYgzWfTHDOxamtX1bE/zo104Dh9e6fqJ3PooipYyfJ0pUmrZO2wAvO8YbEyeFrkV91XTsGMSrw==}
 
-  supabase@2.71.2:
-    resolution: {integrity: sha512-Wo1Ad31daligE1R+8d2kc53nSr6CUqYMdqsiWZG5w7i/fFcROV3/Rd3oUiIay+CLvwpN8eiYeJIUHGEOcJPIOQ==}
+  supabase@2.72.2:
+    resolution: {integrity: sha512-vnLeNqLGJnuqs4XkE1dYCGF6dSiRV4/BGExUEexUnyEhiR9+VDvTVt1/LM45hFbG4WF2hiVgePu5JDuwcpY8Tg==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -8553,8 +8565,8 @@ packages:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}
     engines: {node: '>=6'}
 
-  totp-generator@2.0.0:
-    resolution: {integrity: sha512-YXqrJupB/w762T4PrI9qLg5ekb0Of1MRerIW5wh3GRRkH/mgSROw5Gale0gidtc4CfTsNNyZFStS7H4uXJgL2Q==}
+  totp-generator@2.0.1:
+    resolution: {integrity: sha512-50DiKmv9zKTPzCgWOqQYVBMvxh+tpL9O3IUFIqzGUlFXzJyb/IQZac8bonXudvLbfuDY8laZ9qTDX+yAvTBNSQ==}
 
   tr46@0.0.3:
     resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
@@ -8906,8 +8918,8 @@ packages:
       utf-8-validate:
         optional: true
 
-  ws@8.18.3:
-    resolution: {integrity: sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==}
+  ws@8.19.0:
+    resolution: {integrity: sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -8970,8 +8982,8 @@ packages:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
 
-  zod-to-json-schema@3.25.0:
-    resolution: {integrity: sha512-HvWtU2UG41LALjajJrML6uQejQhNJx+JBO9IflpSja4R03iNWfKXrj6W2h7ljuLyc1nKS+9yDyL/9tD1U/yBnQ==}
+  zod-to-json-schema@3.25.1:
+    resolution: {integrity: sha512-pM/SU9d3YAggzi6MtR4h7ruuQlqKtad8e9S0fmxcMi+ueAK5Korys/aWcV9LIIHTVbj01NdzxcnXSN+O74ZIVA==}
     peerDependencies:
       zod: 3.25.76
 
@@ -9669,7 +9681,7 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
-  '@faker-js/faker@10.1.0': {}
+  '@faker-js/faker@10.2.0': {}
 
   '@floating-ui/core@1.7.3':
     dependencies:
@@ -10092,16 +10104,16 @@ snapshots:
 
   '@lemonsqueezy/lemonsqueezy.js@4.0.0': {}
 
-  '@makerkit/data-loader-supabase-core@0.0.10(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)':
+  '@makerkit/data-loader-supabase-core@0.0.10(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)':
     dependencies:
-      '@supabase/postgrest-js': 2.89.0
-      '@supabase/supabase-js': 2.89.0
+      '@supabase/postgrest-js': 2.90.1
+      '@supabase/supabase-js': 2.90.1
       ts-case-convert: 2.1.0
 
-  '@makerkit/data-loader-supabase-nextjs@1.2.5(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
+  '@makerkit/data-loader-supabase-nextjs@1.2.5(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)(@tanstack/react-query@5.90.16(react@19.2.3))(next@16.1.1(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)':
     dependencies:
-      '@makerkit/data-loader-supabase-core': 0.0.10(@supabase/postgrest-js@2.89.0)(@supabase/supabase-js@2.89.0)
-      '@supabase/supabase-js': 2.89.0
+      '@makerkit/data-loader-supabase-core': 0.0.10(@supabase/postgrest-js@2.90.1)(@supabase/supabase-js@2.90.1)
+      '@supabase/supabase-js': 2.90.1
       '@tanstack/react-query': 5.90.16(react@19.2.3)
       next: 16.1.1(@babel/core@7.28.5)(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
@@ -10155,7 +10167,7 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  '@modelcontextprotocol/sdk@1.25.1(hono@4.11.1)(zod@3.25.76)':
+  '@modelcontextprotocol/sdk@1.25.2(hono@4.11.1)(zod@3.25.76)':
     dependencies:
       '@hono/node-server': 1.19.7(hono@4.11.1)
       ajv: 8.17.1
@@ -10172,7 +10184,7 @@ snapshots:
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
       zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod-to-json-schema: 3.25.1(zod@3.25.76)
     transitivePeerDependencies:
       - hono
       - supports-color
@@ -11852,7 +11864,7 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  '@react-email/components@1.0.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@react-email/components@1.0.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       '@react-email/body': 0.2.1(react@19.2.3)
       '@react-email/button': 0.2.1(react@19.2.3)
@@ -11869,7 +11881,7 @@ snapshots:
       '@react-email/link': 0.0.13(react@19.2.3)
       '@react-email/markdown': 0.0.18(react@19.2.3)
       '@react-email/preview': 0.0.14(react@19.2.3)
-      '@react-email/render': 2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      '@react-email/render': 2.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@react-email/row': 0.0.13(react@19.2.3)
       '@react-email/section': 0.0.17(react@19.2.3)
       '@react-email/tailwind': 2.0.3(@react-email/body@0.2.1(react@19.2.3))(@react-email/button@0.2.1(react@19.2.3))(@react-email/code-block@0.2.1(react@19.2.3))(@react-email/code-inline@0.0.6(react@19.2.3))(@react-email/container@0.0.16(react@19.2.3))(@react-email/heading@0.0.16(react@19.2.3))(@react-email/hr@0.0.12(react@19.2.3))(@react-email/img@0.0.12(react@19.2.3))(@react-email/link@0.0.13(react@19.2.3))(@react-email/preview@0.0.14(react@19.2.3))(@react-email/text@0.1.6(react@19.2.3))(react@19.2.3)
@@ -11919,7 +11931,7 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  '@react-email/render@2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
+  '@react-email/render@2.0.2(react-dom@19.2.3(react@19.2.3))(react@19.2.3)':
     dependencies:
       html-to-text: 9.0.5
       prettier: 3.7.4
@@ -12909,45 +12921,45 @@ snapshots:
 
   '@stripe/stripe-js@8.6.1': {}
 
-  '@supabase/auth-js@2.89.0':
+  '@supabase/auth-js@2.90.1':
     dependencies:
       tslib: 2.8.1
 
-  '@supabase/functions-js@2.89.0':
+  '@supabase/functions-js@2.90.1':
     dependencies:
       tslib: 2.8.1
 
-  '@supabase/postgrest-js@2.89.0':
+  '@supabase/postgrest-js@2.90.1':
     dependencies:
       tslib: 2.8.1
 
-  '@supabase/realtime-js@2.89.0':
+  '@supabase/realtime-js@2.90.1':
     dependencies:
       '@types/phoenix': 1.6.7
       '@types/ws': 8.18.1
       tslib: 2.8.1
-      ws: 8.18.3
+      ws: 8.19.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@supabase/ssr@0.8.0(@supabase/supabase-js@2.89.0)':
+  '@supabase/ssr@0.8.0(@supabase/supabase-js@2.90.1)':
     dependencies:
-      '@supabase/supabase-js': 2.89.0
+      '@supabase/supabase-js': 2.90.1
       cookie: 1.1.1
 
-  '@supabase/storage-js@2.89.0':
+  '@supabase/storage-js@2.90.1':
     dependencies:
       iceberg-js: 0.8.1
       tslib: 2.8.1
 
-  '@supabase/supabase-js@2.89.0':
+  '@supabase/supabase-js@2.90.1':
     dependencies:
-      '@supabase/auth-js': 2.89.0
-      '@supabase/functions-js': 2.89.0
-      '@supabase/postgrest-js': 2.89.0
-      '@supabase/realtime-js': 2.89.0
-      '@supabase/storage-js': 2.89.0
+      '@supabase/auth-js': 2.90.1
+      '@supabase/functions-js': 2.90.1
+      '@supabase/postgrest-js': 2.90.1
+      '@supabase/realtime-js': 2.90.1
+      '@supabase/storage-js': 2.90.1
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -13753,13 +13765,13 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  body-parser@2.2.1:
+  body-parser@2.2.2:
     dependencies:
       bytes: 3.1.2
       content-type: 1.0.5
       debug: 4.4.3
       http-errors: 2.0.1
-      iconv-lite: 0.7.1
+      iconv-lite: 0.7.2
       on-finished: 2.4.1
       qs: 6.14.1
       raw-body: 3.0.2
@@ -14725,7 +14737,7 @@ snapshots:
   express@5.2.1:
     dependencies:
       accepts: 2.0.0
-      body-parser: 2.2.1
+      body-parser: 2.2.2
       content-disposition: 1.0.1
       content-type: 1.0.5
       cookie: 0.7.2
@@ -15133,7 +15145,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
 
-  i18next@25.7.3(typescript@5.9.3):
+  i18next@25.7.4(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
     optionalDependencies:
@@ -15145,7 +15157,7 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
-  iconv-lite@0.7.1:
+  iconv-lite@0.7.2:
     dependencies:
       safer-buffer: 2.1.2
 
@@ -16124,7 +16136,7 @@ snapshots:
       fetch-blob: 3.2.0
       formdata-polyfill: 4.0.10
 
-  node-html-parser@7.0.1:
+  node-html-parser@7.0.2:
     dependencies:
       css-select: 5.2.2
       he: 1.2.0
@@ -16622,7 +16634,7 @@ snapshots:
     dependencies:
       xtend: 4.0.2
 
-  postgres@3.4.7: {}
+  postgres@3.4.8: {}
 
   prelude-ls@1.2.1: {}
 
@@ -16804,7 +16816,7 @@ snapshots:
     dependencies:
       bytes: 3.1.2
       http-errors: 2.0.1
-      iconv-lite: 0.7.1
+      iconv-lite: 0.7.2
       unpipe: 1.0.0
 
   rc@1.2.8:
@@ -16837,11 +16849,11 @@ snapshots:
     dependencies:
       react: 19.2.3
 
-  react-i18next@16.5.1(i18next@25.7.3(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
+  react-i18next@16.5.1(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
       html-parse-stringify: 3.0.1
-      i18next: 25.7.3(typescript@5.9.3)
+      i18next: 25.7.4(typescript@5.9.3)
       react: 19.2.3
       use-sync-external-store: 1.6.0(react@19.2.3)
     optionalDependencies:
@@ -17433,7 +17445,7 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  stripe@20.1.1(@types/node@25.0.3):
+  stripe@20.1.2(@types/node@25.0.3):
     dependencies:
       qs: 6.14.1
     optionalDependencies:
@@ -17456,7 +17468,7 @@ snapshots:
 
   stylis@4.2.0: {}
 
-  supabase@2.71.2:
+  supabase@2.72.2:
     dependencies:
       bin-links: 6.0.0
       https-proxy-agent: 7.0.6
@@ -17575,7 +17587,7 @@ snapshots:
 
   totalist@3.0.1: {}
 
-  totp-generator@2.0.0:
+  totp-generator@2.0.1:
     dependencies:
       jssha: 3.3.1
 
@@ -18018,7 +18030,7 @@ snapshots:
 
   ws@7.5.10: {}
 
-  ws@8.18.3: {}
+  ws@8.19.0: {}
 
   xtend@4.0.2: {}
 
@@ -18056,7 +18068,7 @@ snapshots:
 
   yocto-queue@1.2.2: {}
 
-  zod-to-json-schema@3.25.0(zod@3.25.76):
+  zod-to-json-schema@3.25.1(zod@3.25.76):
     dependencies:
       zod: 3.25.76
 
