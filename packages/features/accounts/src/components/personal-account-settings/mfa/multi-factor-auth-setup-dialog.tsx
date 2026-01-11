@@ -433,6 +433,7 @@ function useEnrollFactor(userId: string) {
     const response = await client.auth.mfa.enroll({
       friendlyName: factorName,
       factorType: 'totp',
+      issuer: process.env.NEXT_PUBLIC_PRODUCT_NAME,
     });
 
     if (response.error) {
