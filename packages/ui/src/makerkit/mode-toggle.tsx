@@ -36,7 +36,7 @@ export function ModeToggle(props: { className?: string }) {
           key={mode}
           onClick={() => {
             setTheme(mode);
-            setCookeTheme(mode);
+            setCookieTheme(mode);
           }}
         >
           <Icon theme={mode} />
@@ -80,7 +80,7 @@ export function SubMenuModeToggle() {
             key={mode}
             onClick={() => {
               setTheme(mode);
-              setCookeTheme(mode);
+              setCookieTheme(mode);
             }}
           >
             <Icon theme={mode} />
@@ -125,8 +125,9 @@ export function SubMenuModeToggle() {
   );
 }
 
-function setCookeTheme(theme: string) {
-  document.cookie = `theme=${theme}; path=/; max-age=31536000`;
+function setCookieTheme(theme: string) {
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  document.cookie = `theme=${theme}; path=/; max-age=31536000; SameSite=Lax${secure ? '; Secure' : ''}`;
 }
 
 function Icon({ theme }: { theme: string | undefined }) {
