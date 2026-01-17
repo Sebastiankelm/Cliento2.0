@@ -5,21 +5,50 @@
  * and assign them to roles.
  * 
  * Note: ALTER TYPE ADD VALUE must be done carefully in PostgreSQL.
- * These commands should be executed separately if needed.
+ * Each ALTER TYPE ADD VALUE requires a separate transaction (COMMIT).
+ * In Supabase Dashboard SQL Editor, execute each ALTER TYPE separately,
+ * then execute the INSERT statements.
  * -------------------------------------------------------
  */
 
--- Add clients permissions to app_permissions enum
--- Note: ALTER TYPE ADD VALUE cannot be easily rolled back in a transaction
--- These should be executed sequentially
+-- ============================================================
+-- PART 1: Add clients permissions to app_permissions enum
+-- ============================================================
+-- IMPORTANT: Execute each ALTER TYPE command separately in Supabase Dashboard!
+-- After each command, click "Run" (it auto-commits), then run the next one.
+-- 
+-- Alternatively, if using psql or Supabase CLI, add COMMIT; after each:
+-- 
+-- alter type public.app_permissions add value if not exists 'clients.read';
+-- COMMIT;
+-- alter type public.app_permissions add value if not exists 'clients.create';
+-- COMMIT;
+-- ... etc
+-- ============================================================
 
+-- Execute these ONE AT A TIME in Supabase Dashboard SQL Editor:
+-- (Each must be committed before the next can use the new enum value)
+
+-- Step 1:
 alter type public.app_permissions add value if not exists 'clients.read';
+
+-- Step 2: (After Step 1 completes, run this)
 alter type public.app_permissions add value if not exists 'clients.create';
+
+-- Step 3: (After Step 2 completes, run this)
 alter type public.app_permissions add value if not exists 'clients.update';
+
+-- Step 4: (After Step 3 completes, run this)
 alter type public.app_permissions add value if not exists 'clients.delete';
+
+-- Step 5: (After Step 4 completes, run this)
 alter type public.app_permissions add value if not exists 'clients.manage';
 
--- Assign permissions to roles
+-- ============================================================
+-- PART 2: Assign permissions to roles
+-- ============================================================
+-- Execute this AFTER all ALTER TYPE commands above have completed:
+
 -- Owner gets all permissions
 insert into public.role_permissions (role, permission) values
   ('owner', 'clients.read'),
