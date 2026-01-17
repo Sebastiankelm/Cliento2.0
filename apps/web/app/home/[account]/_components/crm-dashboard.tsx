@@ -4,14 +4,13 @@ import { useMemo } from 'react';
 
 import { Cell, Pie, PieChart } from 'recharts';
 
-import { Tables } from '@kit/supabase/database';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@kit/ui/card';
 import { ChartContainer, ChartConfig, ChartTooltip, ChartTooltipContent } from '@kit/ui/chart';
-import { Link } from '@kit/ui/link';
 
 import { loadClientsStats } from '../clients/_lib/server/clients-page.loader';
 
-type Client = Tables<'clients'>;
+// TODO: Replace with Tables<'clients'> after migration and typegen
+type Client = any;
 
 interface CRMDashboardProps {
   stats: Awaited<ReturnType<typeof loadClientsStats>>;
