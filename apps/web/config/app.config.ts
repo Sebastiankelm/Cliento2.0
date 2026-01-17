@@ -69,7 +69,7 @@ const appConfig = AppConfigSchema.parse({
   description: process.env.NEXT_PUBLIC_SITE_DESCRIPTION,
   url: process.env.NEXT_PUBLIC_SITE_URL,
   locale: process.env.NEXT_PUBLIC_DEFAULT_LOCALE,
-  theme: process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE,
+  theme: process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE?.trim(),
   themeColor: process.env.NEXT_PUBLIC_THEME_COLOR,
   themeColorDark: process.env.NEXT_PUBLIC_THEME_COLOR_DARK,
   production,
