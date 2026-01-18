@@ -135,3 +135,83 @@ export async function loadClient(
 
   return data;
 }
+
+/**
+ * Load custom fields for an account
+ */
+export async function loadCustomFields(
+  client: SupabaseClient<Database>,
+  accountId: string,
+) {
+  const { data, error } = await client
+    .from('client_custom_fields')
+    .select('*')
+    .eq('account_id', accountId)
+    .eq('is_active', true)
+    .order('display_order', { ascending: true });
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Load custom field values for a client
+ */
+export async function loadClientCustomFieldValues(
+  client: SupabaseClient<Database>,
+  clientId: string,
+) {
+  const { data, error } = await client
+    .from('client_field_values')
+    .select(`
+      *,
+      custom_field:client_custom_fields(*)
+    `)
+    .eq('client_id', clientId);
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}
+
+/**
+ * Load interactions for a client
+ */
+export async function loadClientInteractions(
+  client: SupabaseClient<Database>,
+  clientId: string,
+  options?: {
+    limit?: number;
+    offset?: number;
+  },
+) {
+  let query = client
+    .from('client_interactions')
+    .select('*')
+    .eq('client_id', clientId)
+    .order('interaction_date', { ascending: false });
+
+  if (options?.limit) {
+    query = query.limit(options.limit);
+  }
+
+  if (options?.offset) {
+    query = query.range(
+      options.offset,
+      options.offset + (options.limit || 50) - 1,
+    );
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return data ?? [];
+}

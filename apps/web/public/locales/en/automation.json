@@ -1,0 +1,15 @@
+{
+  "automation": "Automation",
+  "automationDescription": "Automate your CRM workflows",
+  "rules": "Automation Rules",
+  "sequences": "Email Sequences",
+  "createRule": "Create Rule",
+  "createSequence": "Create Sequence",
+  "ruleName": "Rule Name",
+  "triggerEvent": "Trigger Event",
+  "conditions": "Conditions",
+  "actions": "Actions",
+  "isActive": "Active",
+  "noRules": "No automation rules found",
+  "noSequences": "No email sequences found"
+}

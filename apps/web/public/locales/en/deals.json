@@ -1,0 +1,20 @@
+{
+  "deals": "Deals",
+  "dealsDescription": "Manage your sales opportunities and deals",
+  "newDeal": "New Deal",
+  "editDeal": "Edit Deal",
+  "deleteDeal": "Delete Deal",
+  "dealName": "Deal Name",
+  "dealValue": "Deal Value",
+  "expectedCloseDate": "Expected Close Date",
+  "actualCloseDate": "Actual Close Date",
+  "status": "Status",
+  "pipeline": "Pipeline",
+  "stage": "Stage",
+  "client": "Client",
+  "assignedTo": "Assigned To",
+  "probability": "Win Probability",
+  "notes": "Notes",
+  "noDeals": "No deals found",
+  "createFirstDeal": "Create your first deal to get started"
+}

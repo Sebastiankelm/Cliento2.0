@@ -1,0 +1,16 @@
+{
+  "reports": "Reports & Analytics",
+  "reportsDescription": "View sales performance and analytics",
+  "revenue": "Revenue",
+  "conversions": "Conversions",
+  "salesFunnel": "Sales Funnel",
+  "pipelinePerformance": "Pipeline Performance",
+  "activityStats": "Activity Stats",
+  "teamActivity": "Team Activity",
+  "averageCloseTime": "Average Close Time",
+  "winRate": "Win Rate",
+  "exportReport": "Export Report",
+  "dateRange": "Date Range",
+  "filter": "Filter",
+  "noData": "No data available"
+}

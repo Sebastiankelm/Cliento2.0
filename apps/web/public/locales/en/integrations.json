@@ -1,0 +1,15 @@
+{
+  "integrations": "Integrations",
+  "integrationsDescription": "Connect your email and calendar accounts",
+  "connectGmail": "Connect Gmail",
+  "connectOutlook": "Connect Outlook",
+  "gmail": "Gmail",
+  "outlook": "Outlook",
+  "connected": "Connected",
+  "disconnected": "Disconnected",
+  "syncEnabled": "Sync Enabled",
+  "lastSync": "Last Sync",
+  "disconnect": "Disconnect",
+  "noIntegrations": "No integrations connected",
+  "connectFirstIntegration": "Connect your first integration to get started"
+}

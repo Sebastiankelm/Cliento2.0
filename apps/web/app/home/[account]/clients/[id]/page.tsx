@@ -13,7 +13,12 @@ import { loadTeamWorkspace } from '~/home/[account]/_lib/server/team-account-wor
 
 import { TeamAccountLayoutPageHeader } from '../../_components/team-account-layout-page-header';
 import { ClientDetails } from '../_components/client-details';
-import { loadClient } from '../_lib/server/clients-page.loader';
+import {
+  loadClient,
+  loadCustomFields,
+  loadClientCustomFieldValues,
+  loadClientInteractions,
+} from '../_lib/server/clients-page.loader';
 
 interface ClientDetailPageProps {
   params: Promise<{ account: string; id: string }>;
@@ -44,6 +49,13 @@ async function ClientDetailPage(props: ClientDetailPageProps) {
     redirect(`/home/${accountSlug}/clients`);
   }
 
+  // Load custom fields and interactions
+  const [customFields, fieldValues, interactions] = await Promise.all([
+    loadCustomFields(client, account.id),
+    loadClientCustomFieldValues(client, clientId),
+    loadClientInteractions(client, clientId, { limit: 50 }),
+  ]);
+
   const canUpdate = account.permissions.includes('clients.update');
   const canDelete = account.permissions.includes('clients.delete');
 
@@ -67,6 +79,9 @@ async function ClientDetailPage(props: ClientDetailPageProps) {
           accountSlug={accountSlug}
           canUpdate={canUpdate}
           canDelete={canDelete}
+          customFields={customFields}
+          fieldValues={fieldValues}
+          interactions={interactions}
         />
       </PageBody>
     </>

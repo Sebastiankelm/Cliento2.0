@@ -68,7 +68,12 @@
     "profile": "Profile",
     "application": "Application",
     "crm": "CRM",
-    "clients": "Clients"
+    "clients": "Clients",
+    "deals": "Deals",
+    "tasks": "Tasks",
+    "automation": "Automation",
+    "integrations": "Integrations",
+    "reports": "Reports"
   },
   "roles": {
     "owner": {

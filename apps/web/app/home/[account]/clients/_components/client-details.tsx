@@ -23,8 +23,15 @@ import { toast } from '@kit/ui/sonner';
 import { ClientForm } from './client-form';
 import { DeleteClientDialog } from './delete-client-dialog';
 import { updateClientAction } from '../_lib/server/clients-server-actions';
+import { CustomFieldsManager } from '../[id]/_components/custom-fields-manager';
+import { InteractionHistory } from '../[id]/_components/interaction-history';
 
 type Client = Tables<'clients'>;
+type CustomField = Tables<'client_custom_fields'>;
+type CustomFieldValue = Tables<'client_field_values'> & {
+  custom_field: CustomField;
+};
+type Interaction = Tables<'client_interactions'>;
 
 interface ClientDetailsProps {
   client: Client;
@@ -33,6 +40,9 @@ interface ClientDetailsProps {
   canUpdate: boolean;
   canDelete: boolean;
   backLink?: string; // Optional custom back link
+  customFields?: CustomField[];
+  fieldValues?: CustomFieldValue[];
+  interactions?: Interaction[];
 }
 
 export function ClientDetails({
@@ -42,6 +52,9 @@ export function ClientDetails({
   canUpdate,
   canDelete,
   backLink,
+  customFields = [],
+  fieldValues = [],
+  interactions = [],
 }: ClientDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -229,6 +242,20 @@ export function ClientDetails({
           </div>
         </CardContent>
       </Card>
+
+      <CustomFieldsManager
+        clientId={client.id}
+        accountId={accountId}
+        customFields={customFields}
+        fieldValues={fieldValues}
+        canUpdate={canUpdate}
+      />
+
+      <InteractionHistory
+        clientId={client.id}
+        interactions={interactions}
+        canUpdate={canUpdate}
+      />
 
       <div>
         <Link href={backLink || `/home/${accountSlug}/clients`}>

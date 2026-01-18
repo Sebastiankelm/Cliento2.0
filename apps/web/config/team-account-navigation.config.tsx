@@ -1,4 +1,15 @@
-import { CreditCard, LayoutDashboard, Settings, Users, UserCircle } from 'lucide-react';
+import {
+  CreditCard,
+  LayoutDashboard,
+  Settings,
+  Users,
+  UserCircle,
+  Briefcase,
+  CheckSquare,
+  Zap,
+  Mail,
+  BarChart3,
+} from 'lucide-react';
 
 import { NavigationConfigSchema } from '@kit/ui/navigation-schema';
 
@@ -31,6 +42,31 @@ const getRoutes = (account: string) => [
         label: 'common:routes.clients',
         path: `/home/${account}/clients`,
         Icon: <UserCircle className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.deals',
+        path: `/home/${account}/deals`,
+        Icon: <Briefcase className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.tasks',
+        path: `/home/${account}/tasks`,
+        Icon: <CheckSquare className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.automation',
+        path: `/home/${account}/automation`,
+        Icon: <Zap className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.integrations',
+        path: `/home/${account}/integrations`,
+        Icon: <Mail className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.reports',
+        path: `/home/${account}/reports`,
+        Icon: <BarChart3 className={iconClasses} />,
       },
     ],
   },
