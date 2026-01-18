@@ -50,9 +50,23 @@ export const createClientAction = enhanceAction(
         },
         'Failed to create client',
       );
-      throw new Error(
-        `Failed to create client: ${error.message}${error.hint ? ` (${error.hint})` : ''}`,
-      );
+      
+      // Provide more user-friendly error messages based on error code
+      let errorMessage = 'Failed to create client';
+      
+      if (error.code === '42501') {
+        // Insufficient privilege error (RLS policy violation)
+        errorMessage = 'You do not have permission to create clients. Please contact your administrator.';
+      } else if (error.code === 'PGRST116') {
+        // Row not found or permission denied
+        errorMessage = 'Permission denied. Please ensure you have the correct permissions.';
+      } else if (error.hint) {
+        errorMessage = `${error.message}. ${error.hint}`;
+      } else {
+        errorMessage = `${error.message}`;
+      }
+      
+      throw new Error(errorMessage);
     }
 
     logger.info({ clientId: clientRecord.id }, 'Client created successfully');
