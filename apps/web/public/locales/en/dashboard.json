@@ -1,0 +1,12 @@
+{
+  "overview": "Overview of your team accounts and clients",
+  "totalTeamAccounts": "Total team accounts",
+  "allClients": "Clients across all accounts",
+  "activeClients": "Active clients",
+  "teamAccounts": "Team Accounts",
+  "viewDashboard": "View dashboard",
+  "byStatus": "By status",
+  "noTeamAccounts": "No Team Accounts",
+  "createFirstTeamAccount": "Create your first team account to start managing clients",
+  "teamAccountsDisabled": "Team accounts are disabled"
+}
