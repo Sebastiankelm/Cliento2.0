@@ -172,11 +172,27 @@ class AccountInvitationsService {
       throw error;
     }
 
-    const accountResponse = await this.client
-      .from('accounts')
-      .select('name')
-      .eq('slug', accountSlug)
-      .single();
+    // Check if accountSlug is a UUID (personal account) or slug (team account)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      accountSlug,
+    );
+
+    let accountResponse;
+    if (isUuid) {
+      // Personal account - use ID directly
+      accountResponse = await this.client
+        .from('accounts')
+        .select('id, name')
+        .eq('id', accountSlug)
+        .single();
+    } else {
+      // Team account - use slug
+      accountResponse = await this.client
+        .from('accounts')
+        .select('id, name')
+        .eq('slug', accountSlug)
+        .single();
+    }
 
     if (!accountResponse.data) {
       logger.error(
@@ -187,9 +203,12 @@ class AccountInvitationsService {
       throw new Error('Account not found');
     }
 
+    // For personal accounts (UUID), we need to use the account ID directly
+    // The RPC function expects slug, but for personal accounts we'll use the ID
+    // Note: This is a workaround - ideally the RPC should support account_id
     const response = await this.client.rpc('add_invitations_to_account', {
       invitations,
-      account_slug: accountSlug,
+      account_slug: isUuid ? accountResponse.data.id : accountSlug, // Use ID for personal accounts
       invited_by: invitedBy,
     });
 

@@ -77,15 +77,33 @@ class InvitationContextBuilder {
 
   /**
    * Gets the account from the database
-   * @param accountSlug - The slug of the account to get
+   * @param accountSlug - The slug of the account to get, or UUID for personal accounts
    * @returns
    */
   private async getAccount(accountSlug: string) {
-    const { data: account } = await this.client
-      .from('accounts')
-      .select('id')
-      .eq('slug', accountSlug)
-      .single();
+    // Check if accountSlug is a UUID (personal account) or slug (team account)
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      accountSlug,
+    );
+
+    let account;
+    if (isUuid) {
+      // Personal account - use ID directly
+      const result = await this.client
+        .from('accounts')
+        .select('id')
+        .eq('id', accountSlug)
+        .single();
+      account = result.data;
+    } else {
+      // Team account - use slug
+      const result = await this.client
+        .from('accounts')
+        .select('id')
+        .eq('slug', accountSlug)
+        .single();
+      account = result.data;
+    }
 
     if (!account) {
       throw new Error('Account not found');

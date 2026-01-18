@@ -38,11 +38,33 @@ export const createInvitationsAction = enhanceAction(
     const client = getSupabaseServerClient();
 
     // Get account ID from slug (needed for permission checks and policies)
-    const { data: account, error: accountError } = await client
-      .from('accounts')
-      .select('id')
-      .eq('slug', params.accountSlug)
-      .single();
+    // For personal accounts, accountSlug might be the account ID (UUID) instead of slug
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      params.accountSlug,
+    );
+
+    let account;
+    let accountError;
+
+    if (isUuid) {
+      // Personal account - use ID directly
+      const result = await client
+        .from('accounts')
+        .select('id')
+        .eq('id', params.accountSlug)
+        .single();
+      account = result.data;
+      accountError = result.error;
+    } else {
+      // Team account - use slug
+      const result = await client
+        .from('accounts')
+        .select('id')
+        .eq('slug', params.accountSlug)
+        .single();
+      account = result.data;
+      accountError = result.error;
+    }
 
     if (accountError || !account) {
       logger.error(
