@@ -36,9 +36,17 @@ async function PersonalTasksPage(props: TasksPageProps) {
   }
 
   const account = workspace.workspace;
-  const { tasks } = await loadTasks(client, account.id, {
-    status: searchParams.status,
-  });
+  let tasks: Awaited<ReturnType<typeof loadTasks>>['tasks'] = [];
+
+  try {
+    const result = await loadTasks(client, account.id, {
+      status: searchParams.status,
+    });
+    tasks = result.tasks;
+  } catch (error) {
+    console.error('Error loading tasks:', error);
+    // Continue with empty array
+  }
 
   // For personal accounts, user is owner so has all permissions
   const canCreate = true;
@@ -55,7 +63,7 @@ async function PersonalTasksPage(props: TasksPageProps) {
         <TasksList
           tasks={tasks}
           accountId={account.id}
-          accountSlug={account.id}
+          accountSlug=""
           canCreate={canCreate}
           canUpdate={canUpdate}
           canDelete={canDelete}

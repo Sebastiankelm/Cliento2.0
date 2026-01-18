@@ -93,7 +93,11 @@ export function DealCard({
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <Link
-            href={`/home/${accountSlug}/deals/${deal.id}`}
+            href={
+              accountSlug
+                ? `/home/${accountSlug}/deals/${deal.id}`
+                : `/home/deals/${deal.id}`
+            }
             className="flex-1"
           >
             <CardTitle className="text-sm font-medium line-clamp-2">

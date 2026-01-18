@@ -43,10 +43,18 @@ async function PersonalDealsPage(props: DealsPageProps) {
   const account = workspace.workspace;
 
   // Load pipelines and default pipeline
-  const [pipelines, defaultPipeline] = await Promise.all([
-    loadPipelines(client, account.id),
-    loadDefaultPipeline(client, account.id),
-  ]);
+  let pipelines: Awaited<ReturnType<typeof loadPipelines>> = [];
+  let defaultPipeline: Awaited<ReturnType<typeof loadDefaultPipeline>> = null;
+
+  try {
+    [pipelines, defaultPipeline] = await Promise.all([
+      loadPipelines(client, account.id),
+      loadDefaultPipeline(client, account.id),
+    ]);
+  } catch (error) {
+    console.error('Error loading pipelines:', error);
+    // Continue with empty pipelines
+  }
 
   // Use selected pipeline or default
   const selectedPipelineId =
@@ -74,13 +82,41 @@ async function PersonalDealsPage(props: DealsPageProps) {
   const selectedPipeline =
     pipelines.find((p) => p.id === selectedPipelineId) || defaultPipeline;
 
+  if (!selectedPipeline) {
+    return (
+      <>
+        <HomeLayoutPageHeader
+          title={<Trans i18nKey={'deals:deals'} defaults={'Deals'} />}
+          description={<AppBreadcrumbs />}
+        />
+        <PageBody>
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">
+              No sales pipeline configured. Please create a pipeline first.
+            </p>
+          </div>
+        </PageBody>
+      </>
+    );
+  }
+
   // Load deals and clients for the selected pipeline
-  const [{ deals }, { clients }] = await Promise.all([
-    loadDeals(client, account.id, {
-      pipelineId: selectedPipelineId,
-    }),
-    loadClients(client, account.id),
-  ]);
+  let deals: Awaited<ReturnType<typeof loadDeals>>['deals'] = [];
+  let clients: Awaited<ReturnType<typeof loadClients>>['clients'] = [];
+
+  try {
+    const [dealsResult, clientsResult] = await Promise.all([
+      loadDeals(client, account.id, {
+        pipelineId: selectedPipelineId,
+      }),
+      loadClients(client, account.id),
+    ]);
+    deals = dealsResult.deals;
+    clients = clientsResult.clients;
+  } catch (error) {
+    console.error('Error loading deals or clients:', error);
+    // Continue with empty arrays
+  }
 
   // For personal accounts, user is owner so has all permissions
   const canCreate = true;
@@ -95,12 +131,12 @@ async function PersonalDealsPage(props: DealsPageProps) {
       />
       <PageBody>
         <DealsPipelineView
-          pipeline={selectedPipeline!}
+          pipeline={selectedPipeline}
           pipelines={pipelines}
           deals={deals}
           clients={clients}
           accountId={account.id}
-          accountSlug={account.id}
+          accountSlug=""
           canCreate={canCreate}
           canUpdate={canUpdate}
           canDelete={canDelete}
