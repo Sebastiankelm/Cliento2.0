@@ -20,7 +20,19 @@ export const generateMetadata = async () => {
 };
 
 async function PersonalAccountCRMPage() {
-  const stats = await loadPersonalAccountCRMStats();
+  let stats;
+  try {
+    stats = await loadPersonalAccountCRMStats();
+  } catch (error) {
+    console.error('Failed to load CRM stats in page:', error);
+    // Return empty stats to allow graceful degradation
+    stats = {
+      totalCount: 0,
+      statusCounts: {},
+      sourceCounts: {},
+      recentClients: [],
+    };
+  }
 
   return (
     <>
