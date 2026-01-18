@@ -1,4 +1,15 @@
-import { CreditCard, User, Users, BarChart3, UserCircle, LayoutDashboard } from 'lucide-react';
+import {
+  CreditCard,
+  User,
+  Users,
+  BarChart3,
+  UserCircle,
+  LayoutDashboard,
+  Briefcase,
+  CheckSquare,
+  Zap,
+  Mail,
+} from 'lucide-react';
 import { z } from 'zod';
 
 import { NavigationConfigSchema } from '@kit/ui/navigation-schema';
@@ -29,6 +40,31 @@ const baseRoutes = [
         label: 'common:routes.clients',
         path: '/home/clients',
         Icon: <UserCircle className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.deals',
+        path: '/home/deals',
+        Icon: <Briefcase className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.tasks',
+        path: '/home/tasks',
+        Icon: <CheckSquare className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.automation',
+        path: '/home/automation',
+        Icon: <Zap className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.integrations',
+        path: '/home/integrations',
+        Icon: <Mail className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.reports',
+        path: '/home/reports',
+        Icon: <BarChart3 className={iconClasses} />,
       },
     ],
   },
