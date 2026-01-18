@@ -1,5 +1,3 @@
-import { use } from 'react';
-
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
 import { PageBody } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
@@ -21,7 +19,7 @@ export const generateMetadata = async () => {
 };
 
 async function PersonalReportsPage() {
-  const workspace = use(loadUserWorkspace());
+  const workspace = await loadUserWorkspace();
 
   if (!workspace.workspace || !workspace.workspace.id) {
     throw new Error('Workspace not found or account ID is missing');

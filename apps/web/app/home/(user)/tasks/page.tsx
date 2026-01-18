@@ -1,5 +1,3 @@
-import { use } from 'react';
-
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
 import { PageBody } from '@kit/ui/page';
@@ -29,7 +27,7 @@ export const generateMetadata = async () => {
 async function PersonalTasksPage(props: TasksPageProps) {
   const client = getSupabaseServerClient();
   const searchParams = await props.searchParams;
-  const workspace = use(loadUserWorkspace());
+  const workspace = await loadUserWorkspace();
 
   if (!workspace.workspace || !workspace.workspace.id) {
     throw new Error('Workspace not found or account ID is missing');
