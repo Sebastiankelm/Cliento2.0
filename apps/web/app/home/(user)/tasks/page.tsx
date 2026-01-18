@@ -39,23 +39,22 @@ async function PersonalTasksPage(props: TasksPageProps) {
   const accountId = account.id;
   let tasks: Awaited<ReturnType<typeof loadTasks>>['tasks'] = [];
 
-  try {
-    const result = await loadTasks(client, accountId, {
+  const result = await Promise.allSettled([
+    loadTasks(client, accountId, {
       status: searchParams.status,
-    }).catch((err) => {
-      console.error('Error loading tasks:', {
-        error: err,
-        message: err?.message,
-        code: err?.code,
-        details: err?.details,
-        hint: err?.hint,
-      });
-      return { tasks: [], totalCount: 0 };
+    }),
+  ]);
+
+  if (result[0].status === 'fulfilled') {
+    tasks = result[0].value.tasks;
+  } else {
+    console.error('Error loading tasks:', {
+      error: result[0].reason,
+      message: result[0].reason?.message,
+      code: result[0].reason?.code,
+      details: result[0].reason?.details,
+      hint: result[0].reason?.hint,
     });
-    tasks = result.tasks;
-  } catch (error) {
-    console.error('Unexpected error loading tasks:', error);
-    // Continue with empty array
   }
 
   // For personal accounts, user is owner so has all permissions
