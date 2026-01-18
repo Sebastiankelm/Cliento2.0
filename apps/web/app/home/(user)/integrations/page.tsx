@@ -25,11 +25,12 @@ export const generateMetadata = async () => {
 async function PersonalIntegrationsPage() {
   const workspace = use(loadUserWorkspace());
 
-  if (!workspace.workspace) {
-    throw new Error('Workspace not found');
+  if (!workspace.workspace || !workspace.workspace.id) {
+    throw new Error('Workspace not found or account ID is missing');
   }
 
   const account = workspace.workspace;
+  const accountId = account.id;
 
   // For personal accounts, user is owner so has all permissions
   const canManage = true;
@@ -46,7 +47,7 @@ async function PersonalIntegrationsPage() {
         description={<AppBreadcrumbs />}
       />
       <PageBody>
-        <IntegrationsDashboard accountId={account.id} canManage={canManage} />
+        <IntegrationsDashboard accountId={accountId} canManage={canManage} />
       </PageBody>
     </>
   );

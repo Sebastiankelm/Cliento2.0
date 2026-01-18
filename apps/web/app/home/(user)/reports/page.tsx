@@ -23,11 +23,12 @@ export const generateMetadata = async () => {
 async function PersonalReportsPage() {
   const workspace = use(loadUserWorkspace());
 
-  if (!workspace.workspace) {
-    throw new Error('Workspace not found');
+  if (!workspace.workspace || !workspace.workspace.id) {
+    throw new Error('Workspace not found or account ID is missing');
   }
 
   const account = workspace.workspace;
+  const accountId = account.id;
 
   return (
     <>
@@ -36,7 +37,7 @@ async function PersonalReportsPage() {
         description={<AppBreadcrumbs />}
       />
       <PageBody>
-        <ReportsDashboard accountId={account.id} />
+        <ReportsDashboard accountId={accountId} />
       </PageBody>
     </>
   );

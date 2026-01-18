@@ -31,15 +31,16 @@ async function PersonalTasksPage(props: TasksPageProps) {
   const searchParams = await props.searchParams;
   const workspace = use(loadUserWorkspace());
 
-  if (!workspace.workspace) {
-    throw new Error('Workspace not found');
+  if (!workspace.workspace || !workspace.workspace.id) {
+    throw new Error('Workspace not found or account ID is missing');
   }
 
   const account = workspace.workspace;
+  const accountId = account.id;
   let tasks: Awaited<ReturnType<typeof loadTasks>>['tasks'] = [];
 
   try {
-    const result = await loadTasks(client, account.id, {
+    const result = await loadTasks(client, accountId, {
       status: searchParams.status,
     }).catch((err) => {
       console.error('Error loading tasks:', {
@@ -71,7 +72,7 @@ async function PersonalTasksPage(props: TasksPageProps) {
       <PageBody>
         <TasksList
           tasks={tasks}
-          accountId={account.id}
+          accountId={accountId}
           accountSlug=""
           canCreate={canCreate}
           canUpdate={canUpdate}

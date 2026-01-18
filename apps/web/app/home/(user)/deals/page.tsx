@@ -36,11 +36,12 @@ async function PersonalDealsPage(props: DealsPageProps) {
   const searchParams = await props.searchParams;
   const workspace = use(loadUserWorkspace());
 
-  if (!workspace.workspace) {
-    throw new Error('Workspace not found');
+  if (!workspace.workspace || !workspace.workspace.id) {
+    throw new Error('Workspace not found or account ID is missing');
   }
 
   const account = workspace.workspace;
+  const accountId = account.id;
 
   // Load pipelines and default pipeline
   let pipelines: Awaited<ReturnType<typeof loadPipelines>> = [];
@@ -48,7 +49,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
 
   try {
     [pipelines, defaultPipeline] = await Promise.all([
-      loadPipelines(client, account.id).catch((err) => {
+      loadPipelines(client, accountId).catch((err) => {
         // Log full error for debugging
         console.error('Error loading pipelines:', {
           error: err,
@@ -59,7 +60,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
         });
         return [];
       }),
-      loadDefaultPipeline(client, account.id).catch((err) => {
+      loadDefaultPipeline(client, accountId).catch((err) => {
         // PGRST116 is "not found" - that's ok
         if (err?.code === 'PGRST116') {
           return null;
@@ -139,7 +140,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
         });
         return { deals: [], totalCount: 0 };
       }),
-      loadClients(client, account.id).catch((err) => {
+      loadClients(client, accountId).catch((err) => {
         console.error('Error loading clients:', {
           error: err,
           message: err?.message,
@@ -178,7 +179,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
           pipelines={pipelines}
           deals={deals}
           clients={clients}
-          accountId={account.id}
+          accountId={accountId}
           accountSlug=""
           canCreate={canCreate}
           canUpdate={canUpdate}
