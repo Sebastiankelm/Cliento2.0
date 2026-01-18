@@ -43,8 +43,8 @@ async function PersonalAccountMembersPage() {
   const [members, invitations, canAddMember, account] =
     await loadPersonalAccountMembers(client, user.id);
 
-  const canManageRoles = account.permissions.includes('roles.manage');
-  const canManageInvitations = account.permissions.includes('invites.manage');
+  const canManageRoles = (account.permissions || []).includes('roles.manage');
+  const canManageInvitations = (account.permissions || []).includes('invites.manage');
 
   const isPrimaryOwner = account.primary_owner_user_id === user.id;
   const currentUserRoleHierarchy = account.role_hierarchy_level;
@@ -114,8 +114,11 @@ async function PersonalAccountMembersPage() {
             <CardContent>
               <AccountInvitationsTable
                 invitations={invitations}
-                canManageInvitations={canManageInvitations}
-                accountId={account.id}
+                permissions={{
+                  canUpdateInvitation: canManageRoles,
+                  canRemoveInvitation: canManageRoles,
+                  currentUserRoleHierarchy,
+                }}
               />
             </CardContent>
           </Card>

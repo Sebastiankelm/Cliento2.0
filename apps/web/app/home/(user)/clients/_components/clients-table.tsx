@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo } from 'react';
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -44,6 +43,8 @@ export function ClientsTable({
 
   return <DataTable data={data} columns={columns} />;
 }
+
+// Remove unused import
 
 function useGetColumns(
   account: { id: string; slug: string },
