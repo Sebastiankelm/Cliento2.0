@@ -21,9 +21,9 @@ type Pipeline = Tables<'sales_pipelines'> & {
 };
 
 type Deal = Tables<'deals'> & {
-  client: Tables<'clients'>;
-  stage: Tables<'pipeline_stages'>;
-  pipeline: Tables<'sales_pipelines'>;
+  client?: Tables<'clients'> | null;
+  stage?: Tables<'pipeline_stages'> | null;
+  pipeline?: Tables<'sales_pipelines'> | null;
 };
 
 type Client = Tables<'clients'>;
@@ -57,10 +57,12 @@ export function DealsPipelineView({
   const dealsByStage = deals.reduce(
     (acc, deal) => {
       const stageId = deal.stage_id;
-      if (!acc[stageId]) {
-        acc[stageId] = [];
+      if (stageId) {
+        if (!acc[stageId]) {
+          acc[stageId] = [];
+        }
+        acc[stageId].push(deal);
       }
-      acc[stageId].push(deal);
       return acc;
     },
     {} as Record<string, Deal[]>,
@@ -112,7 +114,13 @@ export function DealsPipelineView({
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-4">
-        {sortedStages.map((stage) => {
+        {sortedStages.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground w-full">
+            <p>No stages configured for this pipeline.</p>
+            <p className="text-sm mt-2">Please add stages to the pipeline first.</p>
+          </div>
+        ) : (
+          sortedStages.map((stage) => {
           const stageDeals = dealsByStage[stage.id] || [];
           const stageValue = stageDeals.reduce(
             (sum, deal) => sum + Number(deal.value || 0),
@@ -169,7 +177,8 @@ export function DealsPipelineView({
               </Card>
             </div>
           );
-        })}
+        })
+        )}
       </div>
     </div>
   );

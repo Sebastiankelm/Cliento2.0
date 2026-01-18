@@ -27,8 +27,8 @@ import { toast } from '@kit/ui/sonner';
 import { deleteDealAction } from '../_lib/server/deals-server-actions';
 
 type Deal = Tables<'deals'> & {
-  client: Tables<'clients'>;
-  stage: Tables<'pipeline_stages'>;
+  client?: Tables<'clients'> | null;
+  stage?: Tables<'pipeline_stages'> | null;
 };
 
 type Stage = Tables<'pipeline_stages'>;
@@ -141,12 +141,14 @@ export function DealCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-2 pt-0">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <User className="h-3 w-3" />
-          <span>
-            {deal.client.first_name} {deal.client.last_name}
-          </span>
-        </div>
+        {deal.client && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <User className="h-3 w-3" />
+            <span>
+              {deal.client.first_name} {deal.client.last_name}
+            </span>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 text-sm font-semibold">
           <DollarSign className="h-3 w-3" />
