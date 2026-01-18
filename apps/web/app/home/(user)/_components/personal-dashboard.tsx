@@ -1,11 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@kit/ui/card';
 import { Button } from '@kit/ui/button';
 import { Trans } from '@kit/ui/trans';
 import { Plus, Building2, Users } from 'lucide-react';
+
+import { CreateTeamAccountDialog } from '@kit/team-accounts/components';
 
 import { loadPersonalDashboard } from '../_lib/server/personal-dashboard.loader';
 
@@ -21,6 +24,7 @@ export function PersonalDashboard({
   canCreateTeamAccount,
 }: PersonalDashboardProps) {
   const { totalClients, totalTeamAccounts, teamAccounts, statusCounts } = data;
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   return (
     <div className="flex flex-col space-y-6">
@@ -91,15 +95,19 @@ export function PersonalDashboard({
               <Trans i18nKey={'dashboard:teamAccounts'} defaults={'Team Accounts'} />
             </h2>
             {canCreateTeamAccount && (
-              <Link href="/home">
-                <Button>
+              <>
+                <Button onClick={() => setIsCreateDialogOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
                   <Trans
                     i18nKey={'teams:createTeam'}
                     defaults={'Create Team Account'}
                   />
                 </Button>
-              </Link>
+                <CreateTeamAccountDialog
+                  isOpen={isCreateDialogOpen}
+                  setIsOpen={setIsCreateDialogOpen}
+                />
+              </>
             )}
           </div>
 
@@ -188,15 +196,19 @@ export function PersonalDashboard({
           </CardHeader>
           <CardContent>
             {canCreateTeamAccount ? (
-              <Link href="/home">
-                <Button>
+              <>
+                <Button onClick={() => setIsCreateDialogOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
                   <Trans
                     i18nKey={'teams:createTeam'}
                     defaults={'Create Team Account'}
                   />
                 </Button>
-              </Link>
+                <CreateTeamAccountDialog
+                  isOpen={isCreateDialogOpen}
+                  setIsOpen={setIsCreateDialogOpen}
+                />
+              </>
             ) : (
               <p className="text-sm text-muted-foreground">
                 <Trans

@@ -35,6 +35,7 @@ export function HomeSidebar(props: HomeSidebarProps) {
             condition={featuresFlagConfig.enableTeamAccounts}
             fallback={
               <AppLogo
+                href="/home"
                 className={cn(
                   'p-2 group-data-[minimized=true]/sidebar:max-w-full group-data-[minimized=true]/sidebar:py-0',
                 )}

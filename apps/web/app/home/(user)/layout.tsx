@@ -80,7 +80,7 @@ function MobileNavigation({
 }) {
   return (
     <>
-      <AppLogo />
+      <AppLogo href="/home" />
 
       <HomeMobileNavigation workspace={workspace} />
     </>
