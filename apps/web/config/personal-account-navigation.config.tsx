@@ -1,4 +1,4 @@
-import { CreditCard, Home, User, Users, BarChart3 } from 'lucide-react';
+import { CreditCard, User, Users, BarChart3, UserCircle, LayoutDashboard } from 'lucide-react';
 import { z } from 'zod';
 
 import { NavigationConfigSchema } from '@kit/ui/navigation-schema';
@@ -11,17 +11,24 @@ const iconClasses = 'w-4';
 const baseRoutes = [
   {
     label: 'common:routes.application',
+    collapsible: true,
+    collapsed: false,
     children: [
       {
-        label: 'common:routes.home',
+        label: 'common:routes.dashboard',
         path: pathsConfig.app.home,
-        Icon: <Home className={iconClasses} />,
+        Icon: <LayoutDashboard className={iconClasses} />,
         end: true,
       },
       {
         label: 'common:routes.crm',
         path: '/home/crm',
         Icon: <BarChart3 className={iconClasses} />,
+      },
+      {
+        label: 'common:routes.clients',
+        path: '/home/clients',
+        Icon: <UserCircle className={iconClasses} />,
       },
     ],
   },
