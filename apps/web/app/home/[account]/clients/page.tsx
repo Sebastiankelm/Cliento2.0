@@ -1,11 +1,10 @@
-import { use } from 'react';
+import { Suspense, use } from 'react';
 
 import { ServerDataLoader } from '@makerkit/data-loader-supabase-nextjs';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
 import { Heading } from '@kit/ui/heading';
 import { If } from '@kit/ui/if';
-import { Input } from '@kit/ui/input';
 import { PageBody } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 
@@ -16,6 +15,7 @@ import { loadTeamWorkspace } from '~/home/[account]/_lib/server/team-account-wor
 import { TeamAccountLayoutPageHeader } from '../_components/team-account-layout-page-header';
 import { ClientsTable } from './_components/clients-table';
 import { NewClientDialog } from './_components/new-client-dialog';
+import { ClientsFilters } from './_components/clients-filters';
 
 interface SearchParams {
   page?: string;
@@ -60,28 +60,21 @@ async function ClientsPage(props: ClientsPageProps) {
       />
 
       <PageBody className={'space-y-4'}>
-        <div className={'flex items-center justify-between'}>
-          <div>
-            <Heading level={4}>
-              <Trans i18nKey={'clients:clientsList'} defaults={'All Clients'} />
-            </Heading>
-          </div>
+        <div className={'flex flex-col gap-4 md:flex-row md:items-center md:justify-between'}>
+          <Heading level={4}>
+            <Trans i18nKey={'clients:clientsList'} defaults={'All Clients'} />
+          </Heading>
 
           <div className={'flex items-center gap-x-2'}>
-            <form className={'w-full'}>
-              <Input
-                name={'query'}
-                defaultValue={query}
-                className={'w-full lg:w-[18rem]'}
-                placeholder={'Search clients...'}
-              />
-            </form>
-
             <If condition={canCreateClients}>
               <NewClientDialog accountId={account.id} />
             </If>
           </div>
         </div>
+
+        <Suspense fallback={<div className="h-10" />}>
+          <ClientsFilters />
+        </Suspense>
 
         <ServerDataLoader
           client={client}

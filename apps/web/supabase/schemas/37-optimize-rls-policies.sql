@@ -140,6 +140,15 @@ GRANT EXECUTE ON FUNCTION public.is_current_user(uuid) TO authenticated, service
 -- CLIENTS TABLE
 -- ============================================
 
+-- SELECT: Team members can read clients
+DROP POLICY IF EXISTS "clients_select" ON public.clients;
+CREATE POLICY "clients_select" ON public.clients
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.has_role_on_account(account_id)
+  );
+
 DROP POLICY IF EXISTS "clients_insert" ON public.clients;
 CREATE POLICY "clients_insert" ON public.clients
   FOR INSERT
@@ -574,6 +583,19 @@ CREATE POLICY "client_interactions_delete" ON public.client_interactions
 -- ACCOUNTS TABLE
 -- ============================================
 
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "accounts_read" ON public.accounts;
+DROP POLICY IF EXISTS "super_admins_access_accounts" ON public.accounts;
+CREATE POLICY "accounts_read" ON public.accounts
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR public.is_current_user(primary_owner_user_id)
+    OR public.has_role_on_account(id)
+    OR public.is_account_team_member(id)
+  );
+
 -- Optimize accounts_self_update policy
 DROP POLICY IF EXISTS "accounts_self_update" ON public.accounts;
 CREATE POLICY "accounts_self_update" ON public.accounts
@@ -584,4 +606,137 @@ CREATE POLICY "accounts_self_update" ON public.accounts
   )
   WITH CHECK (
     public.is_current_user(primary_owner_user_id)
+  );
+
+-- ============================================
+-- ACCOUNTS_MEMBERSHIPS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "accounts_memberships_read" ON public.accounts_memberships;
+DROP POLICY IF EXISTS "super_admins_access_accounts_memberships" ON public.accounts_memberships;
+CREATE POLICY "accounts_memberships_read" ON public.accounts_memberships
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR public.is_current_user(user_id)
+    OR public.has_role_on_account(account_id)
+  );
+
+-- ============================================
+-- INVITATIONS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "invitations_read_self" ON public.invitations;
+DROP POLICY IF EXISTS "super_admins_access_invitations" ON public.invitations;
+CREATE POLICY "invitations_read_self" ON public.invitations
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR public.has_role_on_account(account_id)
+  );
+
+-- ============================================
+-- ORDERS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "orders_read_self" ON public.orders;
+DROP POLICY IF EXISTS "super_admins_access_orders" ON public.orders;
+CREATE POLICY "orders_read_self" ON public.orders
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR (
+      public.is_current_user(account_id)
+      AND public.is_set('enable_account_billing')
+    )
+    OR (
+      public.has_role_on_account(account_id)
+      AND public.is_set('enable_team_account_billing')
+    )
+  );
+
+-- ============================================
+-- ORDER_ITEMS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "order_items_read_self" ON public.order_items;
+DROP POLICY IF EXISTS "super_admins_access_order_items" ON public.order_items;
+CREATE POLICY "order_items_read_self" ON public.order_items
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR EXISTS (
+      SELECT 1 FROM public.orders
+      WHERE orders.id = order_items.order_id
+      AND (
+        public.is_current_user(orders.account_id)
+        OR public.has_role_on_account(orders.account_id)
+      )
+    )
+  );
+
+-- ============================================
+-- SUBSCRIPTIONS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "subscriptions_read_self" ON public.subscriptions;
+DROP POLICY IF EXISTS "super_admins_access_subscriptions" ON public.subscriptions;
+CREATE POLICY "subscriptions_read_self" ON public.subscriptions
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR (
+      public.has_role_on_account(account_id)
+      AND public.is_set('enable_team_account_billing')
+    )
+    OR (
+      public.is_current_user(account_id)
+      AND public.is_set('enable_account_billing')
+    )
+  );
+
+-- ============================================
+-- SUBSCRIPTION_ITEMS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "subscription_items_read_self" ON public.subscription_items;
+DROP POLICY IF EXISTS "super_admins_access_subscription_items" ON public.subscription_items;
+CREATE POLICY "subscription_items_read_self" ON public.subscription_items
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin()
+    OR EXISTS (
+      SELECT 1 FROM public.subscriptions
+      WHERE subscriptions.id = subscription_items.subscription_id
+      AND (
+        public.is_current_user(subscriptions.account_id)
+        OR public.has_role_on_account(subscriptions.account_id)
+      )
+    )
+  );
+
+-- ============================================
+-- ROLE_PERMISSIONS TABLE
+-- ============================================
+
+-- Consolidate multiple permissive SELECT policies into one
+DROP POLICY IF EXISTS "role_permissions_read" ON public.role_permissions;
+DROP POLICY IF EXISTS "super_admins_access_role_permissions" ON public.role_permissions;
+CREATE POLICY "role_permissions_read" ON public.role_permissions
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.is_super_admin() OR true
   );
