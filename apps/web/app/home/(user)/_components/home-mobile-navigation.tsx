@@ -18,7 +18,7 @@ import { If } from '@kit/ui/if';
 import { Trans } from '@kit/ui/trans';
 
 import featuresFlagConfig from '~/config/feature-flags.config';
-import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
+import { getPersonalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
 
 // home imports
 import { HomeAccountSelector } from '../_components/home-account-selector';
@@ -26,8 +26,9 @@ import type { UserWorkspace } from '../_lib/server/load-user-workspace';
 
 export function HomeMobileNavigation(props: { workspace: UserWorkspace }) {
   const signOut = useSignOut();
+  const navigationConfig = getPersonalAccountNavigationConfig(props.workspace.accounts);
 
-  const Links = personalAccountNavigationConfig.routes.map((item, index) => {
+  const Links = navigationConfig.routes.map((item, index) => {
     if ('children' in item) {
       return item.children.map((child) => {
         return (

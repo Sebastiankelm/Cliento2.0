@@ -11,7 +11,7 @@ import { cn } from '@kit/ui/utils';
 import { AppLogo } from '~/components/app-logo';
 import { ProfileAccountDropdownContainer } from '~/components/personal-account-dropdown-container';
 import featuresFlagConfig from '~/config/feature-flags.config';
-import { personalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
+import { getPersonalAccountNavigationConfig } from '~/config/personal-account-navigation.config';
 import { UserNotifications } from '~/home/(user)/_components/user-notifications';
 
 // home imports
@@ -24,7 +24,8 @@ interface HomeSidebarProps {
 
 export function HomeSidebar(props: HomeSidebarProps) {
   const { workspace, user, accounts } = props.workspace;
-  const collapsible = personalAccountNavigationConfig.sidebarCollapsedStyle;
+  const navigationConfig = getPersonalAccountNavigationConfig(accounts);
+  const collapsible = navigationConfig.sidebarCollapsedStyle;
 
   return (
     <Sidebar collapsible={collapsible}>
@@ -50,7 +51,7 @@ export function HomeSidebar(props: HomeSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent>
-        <SidebarNavigation config={personalAccountNavigationConfig} />
+        <SidebarNavigation config={navigationConfig} />
       </SidebarContent>
 
       <SidebarFooter>
