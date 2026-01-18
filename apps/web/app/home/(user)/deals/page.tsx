@@ -48,8 +48,18 @@ async function PersonalDealsPage(props: DealsPageProps) {
 
   try {
     [pipelines, defaultPipeline] = await Promise.all([
-      loadPipelines(client, account.id),
-      loadDefaultPipeline(client, account.id),
+      loadPipelines(client, account.id).catch((err) => {
+        console.error('Error loading pipelines:', err);
+        return [];
+      }),
+      loadDefaultPipeline(client, account.id).catch((err) => {
+        // PGRST116 is "not found" - that's ok
+        if (err?.code === 'PGRST116') {
+          return null;
+        }
+        console.error('Error loading default pipeline:', err);
+        return null;
+      }),
     ]);
   } catch (error) {
     console.error('Error loading pipelines:', error);
@@ -108,8 +118,14 @@ async function PersonalDealsPage(props: DealsPageProps) {
     const [dealsResult, clientsResult] = await Promise.all([
       loadDeals(client, account.id, {
         pipelineId: selectedPipelineId,
+      }).catch((err) => {
+        console.error('Error loading deals:', err);
+        return { deals: [], totalCount: 0 };
       }),
-      loadClients(client, account.id),
+      loadClients(client, account.id).catch((err) => {
+        console.error('Error loading clients:', err);
+        return { clients: [], totalCount: 0 };
+      }),
     ]);
     deals = dealsResult.deals;
     clients = clientsResult.clients;
