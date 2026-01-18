@@ -40,7 +40,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { createDealAction } from '../_lib/server/deals-server-actions';
-import { CreateDealSchema } from '../schema/deal.schema';
+import { CreateDealSchema } from '../_lib/schema/deal.schema';
 
 type Stage = Tables<'pipeline_stages'>;
 type Client = Tables<'clients'>;
@@ -99,7 +99,7 @@ export function NewDealDialog({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>
           <PlusCircle className="mr-2 h-4 w-4" />
@@ -128,7 +128,6 @@ export function NewDealDialog({
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                     value={field.value}
-                    disabled={loadingClients}
                   >
                     <FormControl>
                     <SelectTrigger>

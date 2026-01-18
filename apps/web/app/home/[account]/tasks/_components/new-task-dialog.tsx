@@ -39,7 +39,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 import { createTaskAction } from '../_lib/server/tasks-server-actions';
-import { CreateTaskSchema } from '../schema/task.schema';
+import { CreateTaskSchema } from '../_lib/schema/task.schema';
 
 interface NewTaskDialogProps {
   accountId: string;
