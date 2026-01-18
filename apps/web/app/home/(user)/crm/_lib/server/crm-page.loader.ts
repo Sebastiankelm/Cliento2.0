@@ -3,7 +3,7 @@ import 'server-only';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { Database } from '~/lib/database.types';
 
-import { loadUserWorkspace } from '../../_lib/server/load-user-workspace';
+import { loadUserWorkspace } from '../../../_lib/server/load-user-workspace';
 import { loadClientsStats } from '~/home/[account]/clients/_lib/server/clients-page.loader';
 
 /**
