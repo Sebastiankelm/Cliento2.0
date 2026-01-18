@@ -1,3 +1,5 @@
+import { use } from 'react';
+
 import { PageBody } from '@kit/ui/page';
 import { Trans } from '@kit/ui/trans';
 
@@ -6,10 +8,13 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 
 // local imports
 import { HomeLayoutPageHeader } from './_components/home-page-header';
+import { PersonalDashboard } from './_components/personal-dashboard';
+import { loadPersonalDashboard } from './_lib/server/personal-dashboard.loader';
+import { loadUserWorkspace } from './_lib/server/load-user-workspace';
 
 export const generateMetadata = async () => {
   const i18n = await createI18nServerInstance();
-  const title = i18n.t('account:homePage');
+  const title = i18n.t('common:routes.dashboard', { defaultValue: 'Dashboard' });
 
   return {
     title,
@@ -17,14 +22,27 @@ export const generateMetadata = async () => {
 };
 
 function UserHomePage() {
+  const dashboardData = use(loadPersonalDashboard());
+  const workspace = use(loadUserWorkspace());
+
   return (
     <>
       <HomeLayoutPageHeader
-        title={<Trans i18nKey={'common:routes.home'} />}
-        description={<Trans i18nKey={'common:homeTabDescription'} />}
+        title={<Trans i18nKey={'common:routes.dashboard'} defaults={'Dashboard'} />}
+        description={
+          <Trans
+            i18nKey={'dashboard:overview'}
+            defaults={'Overview of your team accounts and clients'}
+          />
+        }
       />
 
-      <PageBody></PageBody>
+      <PageBody>
+        <PersonalDashboard
+          data={dashboardData}
+          canCreateTeamAccount={workspace.canCreateTeamAccount.allowed}
+        />
+      </PageBody>
     </>
   );
 }
