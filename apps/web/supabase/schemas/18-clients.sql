@@ -128,10 +128,10 @@ create policy "clients_delete" on public.clients
 create trigger clients_updated_at
   before update on public.clients
   for each row
-  execute function kit.trigger_set_timestamps();
+  execute function public.trigger_set_timestamps();
 
 -- Trigger for user tracking
 create trigger clients_track_changes
   before insert or update on public.clients
   for each row
-  execute function kit.trigger_set_user_tracking();
+  execute function public.trigger_set_user_tracking();
