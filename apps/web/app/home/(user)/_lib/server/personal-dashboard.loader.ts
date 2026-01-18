@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { Database } from '~/lib/database.types';
 
-import { loadUserWorkspace } from '../load-user-workspace';
+import { loadUserWorkspace } from './load-user-workspace';
 
 /**
  * Load dashboard data for personal account
