@@ -42,12 +42,18 @@ async function PersonalTasksPage(props: TasksPageProps) {
     const result = await loadTasks(client, account.id, {
       status: searchParams.status,
     }).catch((err) => {
-      console.error('Error loading tasks:', err);
+      console.error('Error loading tasks:', {
+        error: err,
+        message: err?.message,
+        code: err?.code,
+        details: err?.details,
+        hint: err?.hint,
+      });
       return { tasks: [], totalCount: 0 };
     });
     tasks = result.tasks;
   } catch (error) {
-    console.error('Error loading tasks:', error);
+    console.error('Unexpected error loading tasks:', error);
     // Continue with empty array
   }
 

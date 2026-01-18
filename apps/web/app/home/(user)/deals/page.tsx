@@ -49,7 +49,14 @@ async function PersonalDealsPage(props: DealsPageProps) {
   try {
     [pipelines, defaultPipeline] = await Promise.all([
       loadPipelines(client, account.id).catch((err) => {
-        console.error('Error loading pipelines:', err);
+        // Log full error for debugging
+        console.error('Error loading pipelines:', {
+          error: err,
+          message: err?.message,
+          code: err?.code,
+          details: err?.details,
+          hint: err?.hint,
+        });
         return [];
       }),
       loadDefaultPipeline(client, account.id).catch((err) => {
@@ -57,12 +64,16 @@ async function PersonalDealsPage(props: DealsPageProps) {
         if (err?.code === 'PGRST116') {
           return null;
         }
-        console.error('Error loading default pipeline:', err);
+        console.error('Error loading default pipeline:', {
+          error: err,
+          message: err?.message,
+          code: err?.code,
+        });
         return null;
       }),
     ]);
   } catch (error) {
-    console.error('Error loading pipelines:', error);
+    console.error('Unexpected error loading pipelines:', error);
     // Continue with empty pipelines
   }
 
@@ -119,20 +130,36 @@ async function PersonalDealsPage(props: DealsPageProps) {
       loadDeals(client, account.id, {
         pipelineId: selectedPipelineId,
       }).catch((err) => {
-        console.error('Error loading deals:', err);
+        console.error('Error loading deals:', {
+          error: err,
+          message: err?.message,
+          code: err?.code,
+          details: err?.details,
+          hint: err?.hint,
+        });
         return { deals: [], totalCount: 0 };
       }),
       loadClients(client, account.id).catch((err) => {
-        console.error('Error loading clients:', err);
+        console.error('Error loading clients:', {
+          error: err,
+          message: err?.message,
+          code: err?.code,
+        });
         return { clients: [], totalCount: 0 };
       }),
     ]);
     deals = dealsResult.deals;
     clients = clientsResult.clients;
   } catch (error) {
-    console.error('Error loading deals or clients:', error);
+    console.error('Unexpected error loading deals or clients:', error);
     // Continue with empty arrays
   }
+
+  // Ensure pipeline has stages array
+  const pipelineWithStages = {
+    ...selectedPipeline,
+    stages: selectedPipeline.stages || [],
+  };
 
   // For personal accounts, user is owner so has all permissions
   const canCreate = true;
@@ -147,7 +174,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
       />
       <PageBody>
         <DealsPipelineView
-          pipeline={selectedPipeline}
+          pipeline={pipelineWithStages}
           pipelines={pipelines}
           deals={deals}
           clients={clients}
