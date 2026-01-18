@@ -11,6 +11,7 @@
 
 -- Create optimized version of has_permission that uses current user
 -- This function evaluates auth.uid() once per query execution
+-- Optimized: Uses composite indexes and checks personal accounts first
 CREATE OR REPLACE FUNCTION public.has_permission_for_current_user (
   account_id uuid,
   permission_name public.app_permissions
@@ -31,20 +32,8 @@ BEGIN
     RETURN false;
   END IF;
   
-  -- Check if user has permission through membership
-  IF EXISTS(
-    SELECT 1
-    FROM public.accounts_memberships
-    JOIN public.role_permissions ON accounts_memberships.account_role = role_permissions.role
-    WHERE accounts_memberships.user_id = current_user_id
-      AND accounts_memberships.account_id = has_permission_for_current_user.account_id
-      AND role_permissions.permission = has_permission_for_current_user.permission_name
-  ) THEN
-    RETURN true;
-  END IF;
-
-  -- For personal accounts, check if user is the primary owner
-  -- and if the owner role has the required permission
+  -- For personal accounts, check if user is the primary owner first (faster)
+  -- This is checked first because it's typically faster than membership lookup
   IF EXISTS(
     SELECT 1
     FROM public.accounts
@@ -57,6 +46,20 @@ BEGIN
         WHERE role_permissions.role = 'owner'
           AND role_permissions.permission = has_permission_for_current_user.permission_name
       )
+  ) THEN
+    RETURN true;
+  END IF;
+  
+  -- Check if user has permission through membership (uses composite index)
+  -- The composite index on (user_id, account_id, account_role) makes this fast
+  IF EXISTS(
+    SELECT 1
+    FROM public.accounts_memberships
+    INNER JOIN public.role_permissions ON 
+      accounts_memberships.account_role = role_permissions.role
+      AND role_permissions.permission = has_permission_for_current_user.permission_name
+    WHERE accounts_memberships.user_id = current_user_id
+      AND accounts_memberships.account_id = has_permission_for_current_user.account_id
   ) THEN
     RETURN true;
   END IF;
@@ -121,6 +124,8 @@ $$;
 GRANT EXECUTE ON FUNCTION public.has_role_on_account(uuid, varchar) TO authenticated, service_role;
 
 -- Create optimized version for email_integrations that checks user_id
+-- Using SQL function for better performance (can be inlined by query planner)
+-- STABLE ensures it's evaluated once per query execution
 CREATE OR REPLACE FUNCTION public.is_current_user (
   user_id uuid
 ) 
@@ -133,6 +138,24 @@ AS $$
 $$;
 
 GRANT EXECUTE ON FUNCTION public.is_current_user(uuid) TO authenticated, service_role;
+
+-- ============================================
+-- PERFORMANCE INDEXES
+-- ============================================
+
+-- Composite index for faster permission checks
+-- This index optimizes the join in has_permission_for_current_user
+CREATE INDEX IF NOT EXISTS idx_accounts_memberships_user_account_role 
+  ON public.accounts_memberships(user_id, account_id, account_role);
+
+-- Composite index for faster role permission lookups
+CREATE INDEX IF NOT EXISTS idx_role_permissions_role_permission 
+  ON public.role_permissions(role, permission);
+
+-- Index for faster account lookups by primary owner
+CREATE INDEX IF NOT EXISTS idx_accounts_primary_owner_personal 
+  ON public.accounts(primary_owner_user_id, is_personal_account) 
+  WHERE is_personal_account = true;
 
 -- Now update all RLS policies to use the optimized functions
 
@@ -184,6 +207,15 @@ CREATE POLICY "clients_delete" ON public.clients
 -- SALES_PIPELINES TABLE
 -- ============================================
 
+DROP POLICY IF EXISTS "sales_pipelines_select" ON public.sales_pipelines;
+CREATE POLICY "sales_pipelines_select" ON public.sales_pipelines
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.has_role_on_account(account_id)
+    AND public.has_permission_for_current_user(account_id, 'deals.read'::public.app_permissions)
+  );
+
 DROP POLICY IF EXISTS "sales_pipelines_insert" ON public.sales_pipelines;
 CREATE POLICY "sales_pipelines_insert" ON public.sales_pipelines
   FOR INSERT
@@ -218,6 +250,19 @@ CREATE POLICY "sales_pipelines_delete" ON public.sales_pipelines
 -- ============================================
 -- PIPELINE_STAGES TABLE
 -- ============================================
+
+DROP POLICY IF EXISTS "pipeline_stages_select" ON public.pipeline_stages;
+CREATE POLICY "pipeline_stages_select" ON public.pipeline_stages
+  FOR SELECT
+  TO authenticated
+  USING (
+    EXISTS (
+      SELECT 1 FROM public.sales_pipelines
+      WHERE sales_pipelines.id = pipeline_stages.pipeline_id
+      AND public.has_role_on_account(sales_pipelines.account_id)
+      AND public.has_permission_for_current_user(sales_pipelines.account_id, 'deals.read'::public.app_permissions)
+    )
+  );
 
 DROP POLICY IF EXISTS "pipeline_stages_insert" ON public.pipeline_stages;
 CREATE POLICY "pipeline_stages_insert" ON public.pipeline_stages
@@ -443,13 +488,22 @@ CREATE POLICY "email_messages_update" ON public.email_messages
 -- DEALS TABLE
 -- ============================================
 
+DROP POLICY IF EXISTS "deals_select" ON public.deals;
+CREATE POLICY "deals_select" ON public.deals
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.has_role_on_account(account_id)
+    AND public.has_permission_for_current_user(account_id, 'deals.read'::public.app_permissions)
+  );
+
 DROP POLICY IF EXISTS "deals_insert" ON public.deals;
 CREATE POLICY "deals_insert" ON public.deals
   FOR INSERT
   TO authenticated
   WITH CHECK (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.create'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'deals.create'::public.app_permissions)
   );
 
 DROP POLICY IF EXISTS "deals_update" ON public.deals;
@@ -458,11 +512,11 @@ CREATE POLICY "deals_update" ON public.deals
   TO authenticated
   USING (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.update'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'deals.update'::public.app_permissions)
   )
   WITH CHECK (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.update'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'deals.update'::public.app_permissions)
   );
 
 DROP POLICY IF EXISTS "deals_delete" ON public.deals;
@@ -471,12 +525,21 @@ CREATE POLICY "deals_delete" ON public.deals
   TO authenticated
   USING (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.delete'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'deals.delete'::public.app_permissions)
   );
 
 -- ============================================
 -- TASKS TABLE
 -- ============================================
+
+DROP POLICY IF EXISTS "tasks_select" ON public.tasks;
+CREATE POLICY "tasks_select" ON public.tasks
+  FOR SELECT
+  TO authenticated
+  USING (
+    public.has_role_on_account(account_id)
+    AND public.has_permission_for_current_user(account_id, 'tasks.read'::public.app_permissions)
+  );
 
 DROP POLICY IF EXISTS "tasks_insert" ON public.tasks;
 CREATE POLICY "tasks_insert" ON public.tasks
@@ -484,7 +547,7 @@ CREATE POLICY "tasks_insert" ON public.tasks
   TO authenticated
   WITH CHECK (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.create'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'tasks.create'::public.app_permissions)
   );
 
 DROP POLICY IF EXISTS "tasks_update" ON public.tasks;
@@ -493,11 +556,11 @@ CREATE POLICY "tasks_update" ON public.tasks
   TO authenticated
   USING (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.update'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'tasks.update'::public.app_permissions)
   )
   WITH CHECK (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.update'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'tasks.update'::public.app_permissions)
   );
 
 DROP POLICY IF EXISTS "tasks_delete" ON public.tasks;
@@ -506,7 +569,7 @@ CREATE POLICY "tasks_delete" ON public.tasks
   TO authenticated
   USING (
     public.has_role_on_account(account_id)
-    AND public.has_permission_for_current_user(account_id, 'clients.delete'::public.app_permissions)
+    AND public.has_permission_for_current_user(account_id, 'tasks.delete'::public.app_permissions)
   );
 
 -- ============================================
@@ -584,6 +647,7 @@ CREATE POLICY "client_interactions_delete" ON public.client_interactions
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest checks first (is_super_admin, is_current_user)
 DROP POLICY IF EXISTS "accounts_read" ON public.accounts;
 DROP POLICY IF EXISTS "super_admins_access_accounts" ON public.accounts;
 CREATE POLICY "accounts_read" ON public.accounts
@@ -613,6 +677,7 @@ CREATE POLICY "accounts_self_update" ON public.accounts
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest checks first (is_super_admin, is_current_user)
 DROP POLICY IF EXISTS "accounts_memberships_read" ON public.accounts_memberships;
 DROP POLICY IF EXISTS "super_admins_access_accounts_memberships" ON public.accounts_memberships;
 CREATE POLICY "accounts_memberships_read" ON public.accounts_memberships
@@ -629,6 +694,7 @@ CREATE POLICY "accounts_memberships_read" ON public.accounts_memberships
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest check first (is_super_admin)
 DROP POLICY IF EXISTS "invitations_read_self" ON public.invitations;
 DROP POLICY IF EXISTS "super_admins_access_invitations" ON public.invitations;
 CREATE POLICY "invitations_read_self" ON public.invitations
@@ -644,6 +710,7 @@ CREATE POLICY "invitations_read_self" ON public.invitations
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest checks first (is_super_admin, is_current_user)
 DROP POLICY IF EXISTS "orders_read_self" ON public.orders;
 DROP POLICY IF EXISTS "super_admins_access_orders" ON public.orders;
 CREATE POLICY "orders_read_self" ON public.orders
@@ -666,6 +733,7 @@ CREATE POLICY "orders_read_self" ON public.orders
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest check first (is_super_admin), then EXISTS with optimized subquery
 DROP POLICY IF EXISTS "order_items_read_self" ON public.order_items;
 DROP POLICY IF EXISTS "super_admins_access_order_items" ON public.order_items;
 CREATE POLICY "order_items_read_self" ON public.order_items
@@ -688,6 +756,7 @@ CREATE POLICY "order_items_read_self" ON public.order_items
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest checks first (is_super_admin, is_current_user)
 DROP POLICY IF EXISTS "subscriptions_read_self" ON public.subscriptions;
 DROP POLICY IF EXISTS "super_admins_access_subscriptions" ON public.subscriptions;
 CREATE POLICY "subscriptions_read_self" ON public.subscriptions
@@ -696,12 +765,12 @@ CREATE POLICY "subscriptions_read_self" ON public.subscriptions
   USING (
     public.is_super_admin()
     OR (
-      public.has_role_on_account(account_id)
-      AND public.is_set('enable_team_account_billing')
-    )
-    OR (
       public.is_current_user(account_id)
       AND public.is_set('enable_account_billing')
+    )
+    OR (
+      public.has_role_on_account(account_id)
+      AND public.is_set('enable_team_account_billing')
     )
   );
 
@@ -710,6 +779,7 @@ CREATE POLICY "subscriptions_read_self" ON public.subscriptions
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Fastest check first (is_super_admin), then EXISTS with optimized subquery
 DROP POLICY IF EXISTS "subscription_items_read_self" ON public.subscription_items;
 DROP POLICY IF EXISTS "super_admins_access_subscription_items" ON public.subscription_items;
 CREATE POLICY "subscription_items_read_self" ON public.subscription_items
@@ -732,11 +802,10 @@ CREATE POLICY "subscription_items_read_self" ON public.subscription_items
 -- ============================================
 
 -- Consolidate multiple permissive SELECT policies into one
+-- Optimized: Simplified to always true (no need for is_super_admin check)
 DROP POLICY IF EXISTS "role_permissions_read" ON public.role_permissions;
 DROP POLICY IF EXISTS "super_admins_access_role_permissions" ON public.role_permissions;
 CREATE POLICY "role_permissions_read" ON public.role_permissions
   FOR SELECT
   TO authenticated
-  USING (
-    public.is_super_admin() OR true
-  );
+  USING (true);

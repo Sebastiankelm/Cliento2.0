@@ -128,7 +128,7 @@ async function PersonalDealsPage(props: DealsPageProps) {
 
   try {
     const [dealsResult, clientsResult] = await Promise.all([
-      loadDeals(client, account.id, {
+      loadDeals(client, accountId, {
         pipelineId: selectedPipelineId,
       }).catch((err) => {
         console.error('Error loading deals:', {
