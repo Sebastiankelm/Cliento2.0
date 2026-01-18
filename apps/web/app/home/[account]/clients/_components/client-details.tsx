@@ -32,6 +32,7 @@ interface ClientDetailsProps {
   accountSlug: string;
   canUpdate: boolean;
   canDelete: boolean;
+  backLink?: string; // Optional custom back link
 }
 
 export function ClientDetails({
@@ -40,6 +41,7 @@ export function ClientDetails({
   accountSlug,
   canUpdate,
   canDelete,
+  backLink,
 }: ClientDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -229,7 +231,7 @@ export function ClientDetails({
       </Card>
 
       <div>
-        <Link href={`/home/${accountSlug}/clients`}>
+        <Link href={backLink || `/home/${accountSlug}/clients`}>
           <Button variant="outline">← Back to Clients</Button>
         </Link>
       </div>

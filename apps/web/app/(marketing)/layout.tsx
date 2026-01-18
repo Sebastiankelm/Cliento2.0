@@ -7,11 +7,15 @@ import { withI18n } from '~/lib/i18n/with-i18n';
 
 async function SiteLayout(props: React.PropsWithChildren) {
   const client = getSupabaseServerClient();
-  const user = await requireUser(client, { verifyMfa: false });
+  const auth = await requireUser(client, { verifyMfa: false });
+
+  // Marketing layout should work for both authenticated and unauthenticated users
+  // If there's an error, we just pass null to SiteHeader (it handles both cases)
+  const user = auth.error ? null : auth.data;
 
   return (
     <div className={'flex min-h-[100vh] flex-col'}>
-      <SiteHeader user={user.data} />
+      <SiteHeader user={user} />
 
       {props.children}
 

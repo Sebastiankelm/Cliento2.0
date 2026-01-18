@@ -1,6 +1,4 @@
-import { use } from 'react';
-
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
 
 import { getSupabaseServerClient } from '@kit/supabase/server-client';
 import { AppBreadcrumbs } from '@kit/ui/app-breadcrumbs';
@@ -32,20 +30,33 @@ async function PersonalClientDetailPage(props: ClientDetailPageProps) {
   const client = getSupabaseServerClient();
   const params = await props.params;
   const clientId = params.id;
-  const workspace = use(loadUserWorkspace());
+  const workspace = await loadUserWorkspace();
 
   const account = workspace.workspace;
 
-  // Load client details
-  const clientData = await loadClient(client, clientId);
+  // Load client details with error handling
+  let clientData;
+  try {
+    clientData = await loadClient(client, clientId);
+  } catch (error) {
+    // If client not found or access denied, redirect to clients list
+    redirect('/home/clients');
+  }
+
+  // If clientData is null or undefined, redirect
+  if (!clientData) {
+    redirect('/home/clients');
+  }
 
   // Verify client belongs to the account (RLS should handle this, but double-check)
   if (clientData.account_id !== account.id) {
     redirect('/home/clients');
   }
 
-  const canUpdate = account.permissions?.includes('clients.update') ?? false;
-  const canDelete = account.permissions?.includes('clients.delete') ?? false;
+  // Safely check permissions with fallback to empty array
+  const permissions = Array.isArray(account.permissions) ? account.permissions : [];
+  const canUpdate = permissions.includes('clients.update');
+  const canDelete = permissions.includes('clients.delete');
 
   return (
     <>

@@ -23,11 +23,15 @@ export const generateMetadata = async () => {
 
 const NotFoundPage = async () => {
   const client = getSupabaseServerClient();
-  const user = await requireUser(client, { verifyMfa: false });
+  const auth = await requireUser(client, { verifyMfa: false });
+
+  // NotFound page should work for both authenticated and unauthenticated users
+  // If there's an error, we just pass null to SiteHeader (it handles both cases)
+  const user = auth.error ? null : auth.data;
 
   return (
     <div className={'flex h-screen flex-1 flex-col'}>
-      <SiteHeader user={user.data} />
+      <SiteHeader user={user} />
 
       <div
         className={
