@@ -1,4 +1,4 @@
-import { Building2, CreditCard, Home, User } from 'lucide-react';
+import { CreditCard, Home, User, Users } from 'lucide-react';
 import { z } from 'zod';
 
 import { NavigationConfigSchema } from '@kit/ui/navigation-schema';
@@ -28,6 +28,11 @@ const baseRoutes = [
         path: pathsConfig.app.personalAccountSettings,
         Icon: <User className={iconClasses} />,
       },
+      {
+        label: 'common:routes.members',
+        path: '/home/members',
+        Icon: <Users className={iconClasses} />,
+      },
       featureFlagsConfig.enablePersonalAccountBilling
         ? {
             label: 'common:routes.billing',
@@ -40,27 +45,15 @@ const baseRoutes = [
 ] satisfies z.infer<typeof NavigationConfigSchema>['routes'];
 
 /**
- * Get personal account navigation config with team accounts links
+ * Get personal account navigation config (personal account is the organization)
  */
 export function getPersonalAccountNavigationConfig(accounts: Array<{
   label: string | null;
   value: string | null;
   image: string | null;
 }>) {
-  const teamAccountsRoutes = accounts.length > 0
-    ? [
-        {
-          label: 'common:teamAccounts',
-          children: accounts.map((account) => ({
-            label: account.label ?? account.value ?? 'Team Account',
-            path: pathsConfig.app.accountHome.replace('[account]', account.value ?? ''),
-            Icon: <Building2 className={iconClasses} />,
-          })),
-        },
-      ]
-    : [];
-
-  const routes = [...baseRoutes, ...teamAccountsRoutes] satisfies z.infer<typeof NavigationConfigSchema>['routes'];
+  // Team accounts are disabled - personal account is the organization
+  const routes = baseRoutes satisfies z.infer<typeof NavigationConfigSchema>['routes'];
 
   return NavigationConfigSchema.parse({
     routes,

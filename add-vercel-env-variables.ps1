@@ -37,6 +37,25 @@ $envVars = @{
     "NEXT_PUBLIC_REALTIME_NOTIFICATIONS" = "false"
 }
 
+# Secret variables - will prompt if not found in .env.local
+$secretVars = @{
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY" = $null
+    "SUPABASE_SERVICE_ROLE_KEY" = $null
+}
+
+# Try to load secrets from .env.local if exists
+if (Test-Path ".env.local") {
+    $envContent = Get-Content ".env.local"
+    foreach ($line in $envContent) {
+        if ($line -match '^NEXT_PUBLIC_SUPABASE_ANON_KEY=(.+)$') {
+            $secretVars["NEXT_PUBLIC_SUPABASE_ANON_KEY"] = $matches[1]
+        }
+        if ($line -match '^SUPABASE_SERVICE_ROLE_KEY=(.+)$') {
+            $secretVars["SUPABASE_SERVICE_ROLE_KEY"] = $matches[1]
+        }
+    }
+}
+
 # Environments to add variables to
 $environments = @("production", "preview", "development")
 
@@ -77,12 +96,51 @@ Write-Host "===========================================" -ForegroundColor Cyan
 Write-Host "✅ Successful: $successCount" -ForegroundColor Green
 Write-Host "❌ Failed: $failCount" -ForegroundColor $(if ($failCount -gt 0) { "Red" } else { "Green" })
 
-if ($failCount -eq 0) {
-    Write-Host "`n⚠️  IMPORTANT: You still need to add these SECRET variables manually:" -ForegroundColor Yellow
+# Add secret variables if available
+Write-Host "`n===========================================" -ForegroundColor Cyan
+Write-Host "Adding Secret Variables" -ForegroundColor Cyan
+Write-Host "===========================================`n" -ForegroundColor Cyan
+
+foreach ($secretName in $secretVars.Keys) {
+    $secretValue = $secretVars[$secretName]
+    
+    if ($null -eq $secretValue -or $secretValue -eq "") {
+        Write-Host "⚠️  $secretName not found in .env.local" -ForegroundColor Yellow
+        Write-Host "   Skipping - add manually via Vercel Dashboard" -ForegroundColor Gray
+        Write-Host "   URL: https://vercel.com/sebastiankelms-projects/cliento2-0/settings/environment-variables`n" -ForegroundColor Cyan
+        continue
+    }
+    
+    foreach ($env in $environments) {
+        Write-Host "Adding $secretName ($env)..." -ForegroundColor Gray -NoNewline
+        
+        $result = echo $secretValue | vercel env add "$secretName" "$env" 2>&1
+        
+        if ($LASTEXITCODE -eq 0) {
+            Write-Host " ✅" -ForegroundColor Green
+            $successCount++
+        } else {
+            if ($result -match "already exists" -or $result -match "Environment Variable already exists") {
+                Write-Host " ⚠️  (already exists)" -ForegroundColor Yellow
+                $successCount++
+            } else {
+                Write-Host " ❌" -ForegroundColor Red
+                Write-Host "   Error: $result" -ForegroundColor Red
+                $failCount++
+            }
+        }
+    }
+}
+
+if ($failCount -eq 0 -and ($secretVars["NEXT_PUBLIC_SUPABASE_ANON_KEY"] -ne $null -and $secretVars["SUPABASE_SERVICE_ROLE_KEY"] -ne $null)) {
+    Write-Host "`n✅ All variables (including secrets) have been added successfully!" -ForegroundColor Green
+} elseif ($secretVars["NEXT_PUBLIC_SUPABASE_ANON_KEY"] -eq $null -or $secretVars["SUPABASE_SERVICE_ROLE_KEY"] -eq $null) {
+    Write-Host "`n⚠️  IMPORTANT: Secret variables were not found in .env.local" -ForegroundColor Yellow
+    Write-Host "   You need to add these manually:" -ForegroundColor Yellow
     Write-Host "   - NEXT_PUBLIC_SUPABASE_ANON_KEY" -ForegroundColor Yellow
     Write-Host "   - SUPABASE_SERVICE_ROLE_KEY" -ForegroundColor Yellow
-    Write-Host "`nThese cannot be added via script for security reasons." -ForegroundColor Yellow
-    Write-Host "Add them via: https://vercel.com/sebastiankelms-projects/cliento2-0/settings/environment-variables" -ForegroundColor Cyan
+    Write-Host "`nAdd them via: https://vercel.com/sebastiankelms-projects/cliento2-0/settings/environment-variables" -ForegroundColor Cyan
+    Write-Host "Or add them to apps/web/.env.local and run this script again." -ForegroundColor Cyan
 }
 
 Write-Host "`nNext steps:" -ForegroundColor Cyan

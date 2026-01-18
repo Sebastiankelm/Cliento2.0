@@ -8,51 +8,22 @@ import { Database } from '~/lib/database.types';
 import { loadUserWorkspace } from './load-user-workspace';
 
 /**
- * Load dashboard data for personal account
- * Aggregates statistics from all team accounts the user has access to
+ * Load dashboard data for personal account (organization)
+ * Personal account is the organization - shows statistics for the user's organization
  */
 export const loadPersonalDashboard = cache(async () => {
   const client = getSupabaseServerClient();
   const workspace = await loadUserWorkspace();
 
-  // Get all team accounts the user is a member of
-  const { data: memberships, error: membershipsError } = await client
-    .from('accounts_memberships')
-    .select('account_id')
-    .eq('user_id', workspace.user.id);
+  // Personal account is the organization
+  const organizationAccountId = workspace.workspace.id;
 
-  if (membershipsError) {
-    throw membershipsError;
-  }
-
-  const accountIds = memberships?.map((m) => m.account_id) ?? [];
-
-  if (accountIds.length === 0) {
-    return {
-      totalClients: 0,
-      totalTeamAccounts: 0,
-      teamAccounts: [],
-      statusCounts: {},
-    };
-  }
-
-  // Get team account details
-  const { data: accounts, error: accountsError } = await client
-    .from('accounts')
-    .select('id, name, slug, picture_url')
-    .in('id', accountIds)
-    .eq('is_personal_account', false);
-
-  if (accountsError) {
-    throw accountsError;
-  }
-
-  // Get aggregated client statistics from all team accounts
+  // Get client statistics for the organization (personal account)
   // Handle case where clients table might not exist yet (migrations not applied)
   const { data: clients, error: clientsError } = await client
     .from('clients')
     .select('status, account_id')
-    .in('account_id', accountIds);
+    .eq('account_id', organizationAccountId);
 
   // If clients table doesn't exist or there's an error, return empty stats
   // This allows the dashboard to render even if migrations haven't been applied
@@ -62,38 +33,11 @@ export const loadPersonalDashboard = cache(async () => {
     console.warn('Error loading clients data:', clientsError.message);
     return {
       totalClients: 0,
-      totalTeamAccounts: accounts?.length ?? 0,
-      teamAccounts: (accounts ?? []).map((account) => ({
-        ...account,
-        totalClients: 0,
-        statusCounts: {},
-      })),
       statusCounts: {},
     };
   }
 
-  // Calculate statistics per account
-  const accountStats = (accounts ?? []).map((account) => {
-    const accountClients = (clients ?? []).filter(
-      (c) => c.account_id === account.id,
-    );
-    const statusCounts = accountClients.reduce(
-      (acc, client) => {
-        acc[client.status] = (acc[client.status] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
-
-    return {
-      ...account,
-      totalClients: accountClients.length,
-      statusCounts,
-    };
-  });
-
-  // Aggregate total statistics
-  const totalClients = (clients ?? []).length;
+  // Calculate status counts
   const statusCounts = (clients ?? []).reduce(
     (acc, client) => {
       acc[client.status] = (acc[client.status] || 0) + 1;
@@ -103,9 +47,7 @@ export const loadPersonalDashboard = cache(async () => {
   );
 
   return {
-    totalClients,
-    totalTeamAccounts: accounts?.length ?? 0,
-    teamAccounts: accountStats,
+    totalClients: (clients ?? []).length,
     statusCounts,
   };
 });

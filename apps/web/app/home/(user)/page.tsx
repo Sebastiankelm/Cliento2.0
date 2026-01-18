@@ -32,16 +32,13 @@ function UserHomePage() {
         description={
           <Trans
             i18nKey={'dashboard:overview'}
-            defaults={'Overview of your team accounts and clients'}
+            defaults={'Overview of your organization and clients'}
           />
         }
       />
 
       <PageBody>
-        <PersonalDashboard
-          data={dashboardData}
-          canCreateTeamAccount={workspace.canCreateTeamAccount.allowed}
-        />
+        <PersonalDashboard data={dashboardData} />
       </PageBody>
     </>
   );
