@@ -14,9 +14,26 @@ export function formatCurrency(params: {
   locale: string;
   value: string | number;
 }) {
-  const [lang, region] = params.locale.split('-');
+  // Normalize locale: trim whitespace and handle empty/invalid values
+  const normalizedLocale = (params.locale?.trim() || 'en').toLowerCase();
+  
+  // Split locale into language and region
+  const [lang, region] = normalizedLocale.split('-');
+  
+  // Use region if available, otherwise use language, fallback to 'en' if invalid
+  const localeTag = region ? `${lang}-${region}` : (lang || 'en');
+  
+  // Validate locale tag before using it with Intl.NumberFormat
+  let validLocale = localeTag;
+  try {
+    // Try to create a NumberFormat to validate the locale
+    new Intl.NumberFormat(localeTag);
+  } catch {
+    // If locale is invalid, fallback to 'en'
+    validLocale = 'en';
+  }
 
-  return new Intl.NumberFormat(region ?? lang, {
+  return new Intl.NumberFormat(validLocale, {
     style: 'currency',
     currency: params.currencyCode,
   }).format(Number(params.value));
