@@ -27,13 +27,45 @@ async function workspaceLoader() {
     ? () => api.loadUserAccounts()
     : () => Promise.resolve([]);
 
-  const workspacePromise = api.getAccountWorkspace();
-
-  const [accounts, workspace, user] = await Promise.all([
+  // Use Promise.allSettled to handle errors gracefully
+  const [accountsResult, workspaceResult, userResult] = await Promise.allSettled([
     accountsPromise(),
-    workspacePromise,
+    api.getAccountWorkspace(),
     requireUserInServerComponent(),
   ]);
+
+  // Handle accounts
+  let accounts: Awaited<ReturnType<typeof api.loadUserAccounts>> = [];
+  if (accountsResult.status === 'fulfilled') {
+    accounts = accountsResult.value;
+  } else {
+    console.error('Error loading accounts:', accountsResult.reason);
+  }
+
+  // Handle workspace - this is critical, so if it fails, we need to handle it
+  let workspace: Awaited<ReturnType<typeof api.getAccountWorkspace>> | null = null;
+  if (workspaceResult.status === 'fulfilled') {
+    workspace = workspaceResult.value;
+  } else {
+    console.error('Error loading workspace:', {
+      error: workspaceResult.reason,
+      message: workspaceResult.reason?.message,
+      code: workspaceResult.reason?.code,
+      details: workspaceResult.reason?.details,
+      hint: workspaceResult.reason?.hint,
+    });
+    // If workspace fails, we can't continue - throw error
+    throw new Error(`Failed to load workspace: ${workspaceResult.reason?.message || 'Unknown error'}`);
+  }
+
+  // Handle user
+  let user: Awaited<ReturnType<typeof requireUserInServerComponent>>;
+  if (userResult.status === 'fulfilled') {
+    user = userResult.value;
+  } else {
+    console.error('Error loading user:', userResult.reason);
+    throw new Error(`Failed to load user: ${userResult.reason?.message || 'Unknown error'}`);
+  }
 
   // Check if user can create team accounts (policy check)
   const canCreateTeamAccount = shouldLoadAccounts
