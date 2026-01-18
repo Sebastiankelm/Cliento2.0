@@ -156,10 +156,36 @@ async function PersonalDealsPage(props: DealsPageProps) {
     // Continue with empty arrays
   }
 
-  // Ensure pipeline has stages array
+  // Ensure pipeline has stages array and is serializable
+  // Create a clean, serializable object for the client component
   const pipelineWithStages = {
-    ...selectedPipeline,
-    stages: selectedPipeline.stages || [],
+    id: selectedPipeline.id,
+    name: selectedPipeline.name,
+    description: selectedPipeline.description || null,
+    is_default: selectedPipeline.is_default ?? false,
+    is_active: selectedPipeline.is_active ?? true,
+    account_id: selectedPipeline.account_id,
+    created_at: selectedPipeline.created_at,
+    updated_at: selectedPipeline.updated_at,
+    created_by: selectedPipeline.created_by || null,
+    updated_by: selectedPipeline.updated_by || null,
+    stages: Array.isArray(selectedPipeline.stages) 
+      ? selectedPipeline.stages.map(stage => ({
+          id: stage.id,
+          pipeline_id: stage.pipeline_id,
+          name: stage.name,
+          description: stage.description || null,
+          position: stage.position ?? 0,
+          color: stage.color || null,
+          probability_percent: stage.probability_percent || null,
+          is_closed: stage.is_closed ?? false,
+          is_lost: stage.is_lost ?? false,
+          created_at: stage.created_at,
+          updated_at: stage.updated_at,
+          created_by: stage.created_by || null,
+          updated_by: stage.updated_by || null,
+        }))
+      : [],
   };
 
   // For personal accounts, user is owner so has all permissions
