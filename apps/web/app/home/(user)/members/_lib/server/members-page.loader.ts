@@ -46,32 +46,10 @@ async function loadAccountMembers(
   client: SupabaseClient<Database>,
   accountId: string,
 ) {
-  // Query memberships directly since personal accounts don't have slugs
+  // Query memberships and join with accounts and roles manually
   const { data: memberships, error: membershipsError } = await client
     .from('accounts_memberships')
-    .select(
-      `
-      user_id,
-      account_id,
-      account_role,
-      created_at,
-      updated_at,
-      accounts!accounts_memberships_account_id_fkey (
-        id,
-        primary_owner_user_id
-      ),
-      accounts!accounts_memberships_user_id_fkey (
-        id,
-        name,
-        email,
-        picture_url
-      ),
-      roles!accounts_memberships_account_role_fkey (
-        name,
-        hierarchy_level
-      )
-    `,
-    )
+    .select('user_id, account_id, account_role, created_at, updated_at')
     .eq('account_id', accountId);
 
   if (membershipsError) {
@@ -79,22 +57,69 @@ async function loadAccountMembers(
     throw membershipsError;
   }
 
+  if (!memberships || memberships.length === 0) {
+    return [];
+  }
+
+  // Get account info
+  const { data: account, error: accountError } = await client
+    .from('accounts')
+    .select('id, primary_owner_user_id')
+    .eq('id', accountId)
+    .single();
+
+  if (accountError) {
+    console.error(accountError);
+    throw accountError;
+  }
+
+  // Get user accounts (for member details)
+  const userIds = memberships.map((m) => m.user_id);
+  const { data: userAccounts, error: userAccountsError } = await client
+    .from('accounts')
+    .select('id, name, email, picture_url')
+    .in('id', userIds)
+    .eq('is_personal_account', true);
+
+  if (userAccountsError) {
+    console.error(userAccountsError);
+    throw userAccountsError;
+  }
+
+  // Get roles
+  const roles = memberships.map((m) => m.account_role);
+  const { data: rolesData, error: rolesError } = await client
+    .from('roles')
+    .select('name, hierarchy_level')
+    .in('name', roles);
+
+  if (rolesError) {
+    console.error(rolesError);
+    throw rolesError;
+  }
+
   // Transform the data to match the expected format
-  return (
-    memberships?.map((m: any) => ({
-      id: m.accounts?.id || m.user_id,
+  const rolesMap = new Map(rolesData?.map((r) => [r.name, r.hierarchy_level]) || []);
+  const userAccountsMap = new Map(
+    userAccounts?.map((ua) => [ua.id, ua]) || [],
+  );
+
+  return memberships.map((m) => {
+    const userAccount = userAccountsMap.get(m.user_id);
+    return {
+      id: userAccount?.id || m.user_id,
       user_id: m.user_id,
       account_id: m.account_id,
       role: m.account_role,
-      role_hierarchy_level: m.roles?.hierarchy_level || 0,
-      primary_owner_user_id: m.accounts?.primary_owner_user_id,
-      name: m.accounts?.name || '',
-      email: m.accounts?.email || '',
-      picture_url: m.accounts?.picture_url || null,
+      role_hierarchy_level: rolesMap.get(m.account_role) || 0,
+      primary_owner_user_id: account?.primary_owner_user_id || null,
+      name: userAccount?.name || '',
+      email: userAccount?.email || '',
+      picture_url: userAccount?.picture_url || null,
       created_at: m.created_at,
       updated_at: m.updated_at,
-    })) || []
-  );
+    };
+  });
 }
 
 /**

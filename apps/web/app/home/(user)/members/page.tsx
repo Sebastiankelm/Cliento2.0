@@ -73,8 +73,7 @@ async function PersonalAccountMembersPage() {
               <If condition={canManageInvitations && canAddMember}>
                 <InviteMembersDialogContainer
                   userRoleHierarchy={currentUserRoleHierarchy}
-                  accountSlug={null}
-                  accountId={account.id}
+                  accountSlug={account.id}
                 >
                   <Button size={'sm'} data-test={'invite-members-form-trigger'}>
                     <PlusCircle className={'mr-2 w-4'} />
