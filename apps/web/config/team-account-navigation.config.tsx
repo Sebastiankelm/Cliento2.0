@@ -32,12 +32,9 @@ const getRoutes = (account: string) => [
   },
   {
     label: 'common:routes.crm',
+    collapsible: true,
+    collapsed: false,
     children: [
-      {
-        label: 'common:routes.dashboard',
-        path: pathsConfig.app.accountHome.replace('[account]', account),
-        Icon: <LayoutDashboard className={iconClasses} />,
-      },
       {
         label: 'common:routes.clients',
         path: `/home/${account}/clients`,

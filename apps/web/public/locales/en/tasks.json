@@ -2,6 +2,7 @@
   "tasks": "Tasks",
   "tasksDescription": "Manage tasks and activities",
   "newTask": "New Task",
+  "addNewTask": "Add New Task",
   "editTask": "Edit Task",
   "deleteTask": "Delete Task",
   "taskTitle": "Task Title",
