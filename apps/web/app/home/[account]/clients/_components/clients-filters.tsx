@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 
 import { Button } from '@kit/ui/button';
@@ -16,6 +16,7 @@ import { Trans } from '@kit/ui/trans';
 
 export function ClientsFilters() {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
 
   const query = searchParams.get('query') ?? '';
@@ -33,11 +34,11 @@ export function ClientsFilters() {
     // Reset to page 1 when filtering
     params.delete('page');
     
-    router.push(`?${params.toString()}`);
+    router.push(`${pathname}?${params.toString()}`);
   };
 
   const clearFilters = () => {
-    router.push(window.location.pathname);
+    router.push(pathname);
   };
 
   const hasActiveFilters = query || status;
@@ -84,7 +85,9 @@ export function ClientsFilters() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">
-              <Trans i18nKey="clients:allStatuses" defaults="All Statuses" />
+              <span>
+                <Trans i18nKey="clients:allStatuses" defaults="All Statuses" />
+              </span>
             </SelectItem>
             <SelectItem value="lead">Lead</SelectItem>
             <SelectItem value="active">Active</SelectItem>
