@@ -1,4 +1,4 @@
-import { CreditCard, Home, User, Users } from 'lucide-react';
+import { CreditCard, Home, User, Users, BarChart3 } from 'lucide-react';
 import { z } from 'zod';
 
 import { NavigationConfigSchema } from '@kit/ui/navigation-schema';
@@ -17,6 +17,11 @@ const baseRoutes = [
         path: pathsConfig.app.home,
         Icon: <Home className={iconClasses} />,
         end: true,
+      },
+      {
+        label: 'common:routes.crm',
+        path: '/home/crm',
+        Icon: <BarChart3 className={iconClasses} />,
       },
     ],
   },
