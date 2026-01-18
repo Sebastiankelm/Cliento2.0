@@ -21,6 +21,8 @@ const iconClasses = 'w-4';
 const getRoutes = (account: string) => [
   {
     label: 'common:routes.application',
+    collapsible: true,
+    collapsed: false,
     children: [
       {
         label: 'common:routes.dashboard',
