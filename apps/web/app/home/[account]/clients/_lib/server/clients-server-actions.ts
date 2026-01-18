@@ -39,14 +39,29 @@ export const createClientAction = enhanceAction(
       .single();
 
     if (error) {
-      logger.error(error, 'Failed to create client');
-      throw new Error('Failed to create client');
+      logger.error(
+        {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          accountId: data.account_id,
+          userId: user.id,
+        },
+        'Failed to create client',
+      );
+      throw new Error(
+        `Failed to create client: ${error.message}${error.hint ? ` (${error.hint})` : ''}`,
+      );
     }
 
     logger.info({ clientId: clientRecord.id }, 'Client created successfully');
 
+    // Revalidate both team account and personal account paths
     revalidatePath('/home/[account]/clients', 'page');
+    revalidatePath('/home/clients', 'page');
     revalidatePath('/home/[account]', 'page'); // Revalidate dashboard
+    revalidatePath('/home', 'page'); // Revalidate personal dashboard
 
     return { success: true, data: clientRecord };
   },
@@ -84,15 +99,31 @@ export const updateClientAction = enhanceAction(
       .eq('id', data.id);
 
     if (error) {
-      logger.error(error, 'Failed to update client');
-      throw new Error('Failed to update client');
+      logger.error(
+        {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          clientId: data.id,
+          userId: user.id,
+        },
+        'Failed to update client',
+      );
+      throw new Error(
+        `Failed to update client: ${error.message}${error.hint ? ` (${error.hint})` : ''}`,
+      );
     }
 
     logger.info({ clientId: data.id }, 'Client updated successfully');
 
+    // Revalidate both team account and personal account paths
     revalidatePath('/home/[account]/clients', 'page');
+    revalidatePath('/home/clients', 'page');
     revalidatePath('/home/[account]/clients/[id]', 'page');
+    revalidatePath('/home/clients/[id]', 'page');
     revalidatePath('/home/[account]', 'page');
+    revalidatePath('/home', 'page');
 
     return { success: true };
   },
@@ -120,14 +151,29 @@ export const deleteClientAction = enhanceAction(
       .eq('id', data.id);
 
     if (error) {
-      logger.error(error, 'Failed to delete client');
-      throw new Error('Failed to delete client');
+      logger.error(
+        {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+          clientId: data.id,
+          userId: user.id,
+        },
+        'Failed to delete client',
+      );
+      throw new Error(
+        `Failed to delete client: ${error.message}${error.hint ? ` (${error.hint})` : ''}`,
+      );
     }
 
     logger.info({ clientId: data.id }, 'Client deleted successfully');
 
+    // Revalidate both team account and personal account paths
     revalidatePath('/home/[account]/clients', 'page');
+    revalidatePath('/home/clients', 'page');
     revalidatePath('/home/[account]', 'page');
+    revalidatePath('/home', 'page');
 
     return { success: true };
   },
